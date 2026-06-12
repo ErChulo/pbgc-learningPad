@@ -1,0 +1,2677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MathLesson</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css"/>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.32.0/plotly.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/arquero@latest/dist/arquero.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mathlive/mathlive-static.css"/>
+
+<style>
+:root {
+  --bg:      #0f1117;
+  --surface: #181b24;
+  --border:  #252836;
+  --accent:  #5ecbff;
+  --purple:  #a78bfa;
+  --gold:    #fbbf24;
+  --green:   #34d399;
+  --red:     #f87171;
+  --text:    #e2e8f0;
+  --muted:   #64748b;
+  --radius:  8px;
+  --sans: 'Segoe UI', system-ui, sans-serif;
+  --mono: 'Fira Code', 'Cascadia Code', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+
+/* ── Layout ── */
+#app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: 52px 1fr;
+  grid-template-areas: "sb topbar" "sb content";
+  min-height: 100vh;
+}
+
+/* ── Top bar ── */
+#topbar {
+  grid-area: topbar;
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  position: sticky; top: 0; z-index: 10;
+}
+#lesson-title-top {
+  font-weight: 700; font-size: .95rem; color: var(--text);
+}
+#breadcrumb-sep { color: var(--border); font-size: 1.1rem; }
+#breadcrumb {
+  font-size: .85rem; color: var(--muted);
+}
+#topbar-right { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+#audio-pill {
+  display: flex; align-items: center; gap: .5rem;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 99px; padding: .25rem .75rem;
+}
+#audio-play { width:24px; height:24px; border-radius:50%; background:var(--accent); border:none; cursor:pointer; font-size:.65rem; color:#000; flex-shrink:0; }
+#audio-label { font-size:.75rem; color:var(--muted); }
+#audio-track { width:60px; height:3px; background:var(--border); border-radius:2px; overflow:hidden; }
+#audio-fill  { height:100%; width:0%; background:var(--accent); transition:width .3s linear; }
+
+/* ── Sidebar ── */
+#sidebar {
+  grid-area: sb;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 0;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.sidebar-logo {
+  display: flex; align-items: center; gap: .6rem;
+  padding: 0 1.2rem;
+  height: 52px;
+  font-size: 1rem; font-weight: 700; color: var(--accent);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-logo .logo-sub { color: var(--muted); font-weight:400; font-size:.7rem; margin-top:.1rem; }
+.nav-group { font-size: .65rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); padding: .8rem 1.2rem .3rem; }
+.nav-item {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .5rem 1.2rem;
+  font-size: .85rem; color: var(--muted);
+  cursor: pointer; border-left: 2px solid transparent;
+  transition: all .15s; user-select: none;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,.03); }
+.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(94,203,255,.05); }
+.nav-item.ex-active { color: var(--gold); border-left-color: var(--gold); background: rgba(251,191,36,.05); }
+.nav-sep { border: none; border-top: 1px solid var(--border); margin: .8rem 0; }
+#quiz-badge {
+  margin-left: auto; font-size: .65rem;
+  background: var(--border); color: var(--muted);
+  border-radius: 99px; padding: .1rem .5rem;
+}
+.nav-item.active #quiz-badge { background: var(--accent); color: #000; }
+
+/* lesson dropdown */
+#lesson-select {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: .82rem;
+  font-family: var(--sans);
+  padding: .45rem .65rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+#lesson-select:focus { border-color: var(--accent); }
+#lesson-select option { background: var(--surface); }
+
+/* ── Main content ── */
+#content {
+  grid-area: content;
+  padding: 2.5rem 3.5rem;
+  max-width: 820px;
+  overflow-y: auto;
+}
+
+/* ── Panels ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── Typography ── */
+h1 { font-size: 2rem; font-weight: 700; color: var(--text); margin-bottom: .25rem; line-height: 1.2; }
+h2 { font-size: 1.25rem; font-weight: 600; color: var(--accent); margin: 2.5rem 0 .75rem; }
+h3 { font-size: 1rem; font-weight: 600; color: var(--purple); margin: 1.5rem 0 .5rem; }
+p  { margin-bottom: 1rem; color: var(--text); font-size: .95rem; }
+strong { color: var(--gold); font-weight: 600; }
+em { color: var(--purple); font-style: italic; }
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+/* ── Math display ── */
+.math-display {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--purple);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+  font-size: 1.05rem;
+}
+.math-label {
+  font-size: .65rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--purple); margin-bottom: .5rem; font-family: var(--mono);
+}
+
+/* ── Callouts ── */
+.callout {
+  border-radius: var(--radius); padding: 1rem 1.2rem; margin: 1.25rem 0;
+}
+.callout-tag {
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .1em;
+  font-family: var(--mono); font-weight: 700; margin-bottom: .5rem;
+}
+.def  { background: rgba(94,203,255,.07);  border-left: 3px solid var(--accent); }
+.def  .callout-tag { color: var(--accent); }
+.thm  { background: rgba(167,139,250,.07); border-left: 3px solid var(--purple); }
+.thm  .callout-tag { color: var(--purple); }
+.ex   { background: rgba(251,191,36,.07);  border-left: 3px solid var(--gold); }
+.ex   .callout-tag { color: var(--gold); }
+
+/* ── Table ── */
+table { border-collapse: collapse; width: 100%; margin: 1rem 0 1.5rem; font-size: .88rem; }
+th { text-align: left; padding: .5rem .9rem; color: var(--accent); border-bottom: 2px solid var(--border); }
+td { padding: .4rem .9rem; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,.02); }
+
+/* ── Plotly wrapper ── */
+.plot { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: .75rem; margin: 1.5rem 0; }
+.plot-label { font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; color: var(--gold); font-family: var(--mono); margin-bottom: .5rem; }
+
+/* ── Manim slot ── */
+.manim-slot { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 1.5rem 0; }
+.manim-header { background: rgba(94,203,255,.06); padding: .6rem 1rem; font-size: .75rem; font-family: var(--mono); color: var(--accent); border-bottom: 1px solid var(--border); }
+.manim-slot video { width: 100%; display: block; background: #000; }
+.manim-placeholder {
+  aspect-ratio: 16/9;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: .4rem; color: var(--muted); font-size: .8rem; font-family: var(--mono);
+  background: repeating-linear-gradient(45deg,#0a0b0f,#0a0b0f 10px,#0d0e13 10px,#0d0e13 20px);
+}
+
+/* audio in topbar — see #audio-pill above */
+audio { display: none; }
+
+/* ── Quiz ── */
+.quiz-meta { font-size: .8rem; color: var(--muted); margin-bottom: 2rem; }
+.q-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.4rem 1.5rem; margin-bottom: 1.25rem;
+}
+.q-num { font-size: .65rem; font-family: var(--mono); color: var(--muted); margin-bottom: .5rem; }
+.q-type { display: inline-block; font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; font-family: var(--mono); border-radius: 4px; padding: .1rem .5rem; margin-bottom: .75rem; }
+.q-type-mc   { background: rgba(94,203,255,.12);  color: var(--accent); }
+.q-type-tf   { background: rgba(167,139,250,.12); color: var(--purple); }
+.q-type-math { background: rgba(251,191,36,.12);  color: var(--gold); }
+.q-type-free { background: rgba(52,211,153,.12);  color: var(--green); }
+.q-stem { font-size: .95rem; margin-bottom: 1rem; }
+
+.mc-options { display: flex; flex-direction: column; gap: .4rem; }
+.mc-opt {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .6rem .9rem; border: 1px solid var(--border); border-radius: 6px;
+  cursor: pointer; font-size: .88rem; transition: all .15s; user-select: none;
+}
+.mc-opt:hover { border-color: var(--accent); background: rgba(94,203,255,.04); }
+.mc-key { width: 20px; height: 20px; border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-family: var(--mono); flex-shrink: 0; background: var(--bg); color: var(--muted); }
+.mc-opt.selected { border-color: var(--accent); background: rgba(94,203,255,.07); }
+.mc-opt.selected .mc-key { border-color: var(--accent); color: var(--accent); }
+.mc-opt.correct { border-color: var(--green); background: rgba(52,211,153,.07); }
+.mc-opt.wrong   { border-color: var(--red);   background: rgba(248,113,113,.07); }
+
+.tf-options { display: flex; gap: .75rem; }
+.tf-btn { flex: 1; padding: .6rem; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; text-align: center; font-size: .88rem; transition: all .15s; user-select: none; }
+.tf-btn:hover    { border-color: var(--purple); }
+.tf-btn.selected { border-color: var(--purple); background: rgba(167,139,250,.07); }
+.tf-btn.correct  { border-color: var(--green);  background: rgba(52,211,153,.07); }
+.tf-btn.wrong    { border-color: var(--red);    background: rgba(248,113,113,.07); }
+
+math-field {
+  display: block; width: 100%; min-height: 46px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .5rem .9rem; font-size: 1.05rem; color: var(--text); outline: none;
+  transition: border-color .15s;
+  --caret-color: var(--gold);
+}
+math-field:focus-within { border-color: var(--gold); }
+math-field.correct { border-color: var(--green); }
+math-field.wrong   { border-color: var(--red); }
+
+.math-hint-text { font-size: .7rem; color: var(--muted); font-family: var(--mono); margin-top: .3rem; }
+
+textarea.free-area {
+  width: 100%; min-height: 100px; resize: vertical;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .65rem .9rem; font-size: .88rem; color: var(--text); font-family: var(--sans);
+  outline: none; transition: border-color .15s;
+}
+textarea.free-area:focus { border-color: var(--green); }
+
+.q-feedback {
+  margin-top: .75rem; padding: .55rem .9rem; border-radius: 6px;
+  font-size: .83rem; display: none;
+}
+.q-feedback.ok  { background: rgba(52,211,153,.08); color: var(--green); display: block; }
+.q-feedback.bad { background: rgba(248,113,113,.08); color: var(--red);   display: block; }
+.q-feedback.note{ background: rgba(251,191,36,.08);  color: var(--gold);  display: block; }
+.expected { font-size: .75rem; color: var(--muted); margin-top: .4rem; font-family: var(--mono); display: none; }
+.expected.show { display: block; }
+
+.quiz-btns { display: flex; gap: .75rem; justify-content: flex-end; margin-top: 2rem; }
+
+/* Score ring + review mode */
+#score-panel { display: none; text-align: center; padding: 3rem 1rem; }
+#score-panel.show { display: block; }
+#score-panel.compact {
+  padding: .65rem 1rem;
+  display: flex !important; align-items: center;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); text-align: left; margin-bottom: 1.5rem;
+}
+#score-panel.compact .score-ring,
+#score-panel.compact .score-grade,
+#score-panel.compact br,
+#score-panel.compact #btn-retake,
+#score-panel.compact #btn-review { display: none !important; }
+#score-panel.compact #score-compact-bar { display: flex !important; }
+#score-compact-bar {
+  display: none;
+  align-items: center; gap: 1rem; width: 100%;
+}
+.compact-pct  { font-size: 1rem; font-weight: 700; color: var(--accent); font-family: var(--mono); }
+.compact-label{ font-size: .78rem; color: var(--muted); flex: 1; }
+.score-ring {
+  width: 110px; height: 110px; border-radius: 50%;
+  background: conic-gradient(var(--accent) var(--pct,0%), var(--border) 0%);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem; position: relative;
+}
+.score-ring::before { content:''; position:absolute; inset:12px; background:var(--surface); border-radius:50%; }
+.score-ring span { position: relative; z-index:1; font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+.score-grade { color: var(--muted); font-size: .85rem; }
+/* per-card result badge shown in review mode */
+.q-result {
+  display: none; align-items: center; gap: .4rem;
+  font-size: .72rem; font-family: var(--mono); font-weight: 700;
+  padding: .3rem .65rem; border-radius: 5px; margin-bottom: .65rem;
+}
+.q-result.show { display: inline-flex; }
+.q-result.ok   { background: rgba(52,211,153,.1);  color: var(--green); }
+.q-result.bad  { background: rgba(248,113,113,.1); color: var(--red); }
+.q-result.note { background: rgba(251,191,36,.1);  color: var(--gold); }
+/* back-to-score */
+#review-back { display:none; text-align:center; padding:1.5rem 0 .25rem; }
+#review-back span { font-size:.82rem; color:var(--accent); cursor:pointer; }
+#review-back span:hover { text-decoration:underline; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem 1.1rem; border-radius: 6px; border: 1px solid transparent; font-size: .83rem; cursor: pointer; transition: all .15s; font-family: var(--sans); }
+.btn-primary { background: var(--accent); color: #000; font-weight: 600; border-color: var(--accent); }
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-ghost { background: transparent; border-color: var(--border); color: var(--muted); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-gold { background: var(--gold); color: #000; font-weight: 600; border-color: var(--gold); }
+.btn-gold:hover { filter: brightness(1.08); }
+
+/* Guide panel code blocks */
+.guide-panel pre {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1rem 1.2rem; overflow-x: auto; margin: .75rem 0 1.25rem;
+}
+.guide-panel pre code { font-family: var(--mono); font-size: .82rem; color: var(--accent); }
+.guide-panel code { font-family: var(--mono); font-size: .82em; background: rgba(255,255,255,.05); border: 1px solid var(--border); border-radius: 3px; padding: .1em .35em; color: var(--gold); }
+.guide-panel blockquote { border-left: 3px solid var(--purple); background: rgba(167,139,250,.06); padding: .7rem 1rem; border-radius: 0 var(--radius) var(--radius) 0; margin: 1rem 0; color: var(--muted); font-size: .9rem; }
+.guide-panel ul, .guide-panel ol { margin: .4rem 0 1rem 1.4rem; font-size: .92rem; }
+.guide-panel li { margin-bottom: .3rem; }
+.guide-panel table { font-size: .85rem; }
+
+/* ── Lesson Editor ─────────────────────────── */
+.ed-input {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: .45rem .75rem; color: var(--text);
+  font-family: var(--sans); font-size: .88rem; outline: none;
+  transition: border-color .15s;
+}
+.ed-input:focus { border-color: var(--accent); }
+.ed-toolbar {
+  display: flex; align-items: center; gap: .6rem;
+  margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.ed-toolbar .ed-input { flex: 1; min-width: 160px; }
+.ed-cols {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; margin-bottom: 1.5rem;
+}
+@media (max-width: 900px) { .ed-cols { grid-template-columns: 1fr; } }
+.ed-col-head {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted); margin-bottom: .6rem;
+  border-bottom: 1px solid var(--border); padding-bottom: .4rem;
+}
+.ed-list { display: flex; flex-direction: column; gap: .3rem; margin-bottom: .8rem; }
+.ed-list-item {
+  display: flex; align-items: center; gap: .4rem;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: .4rem .65rem;
+  font-size: .82rem; cursor: pointer; transition: border-color .15s;
+}
+.ed-list-item:hover { border-color: var(--accent); }
+.ed-list-item.active { border-color: var(--accent); background: rgba(94,203,255,.05); color: var(--accent); }
+.ed-list-item .ed-item-label { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ed-list-item .ed-item-btn {
+  width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+  border: none; background: transparent; color: var(--muted); cursor: pointer;
+  border-radius: 3px; font-size: .7rem; flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+.ed-list-item .ed-item-btn:hover { background: var(--border); color: var(--text); }
+.ed-list-item .del-btn:hover { color: var(--red); }
+.ed-field { margin-bottom: .9rem; }
+.ed-field label {
+  display: block; font-size: .68rem; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--muted); margin-bottom: .3rem; font-family: var(--mono);
+}
+.ed-textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: .6rem .75rem; color: var(--text);
+  font-family: var(--mono); font-size: .8rem; outline: none;
+  resize: vertical; transition: border-color .15s; min-height: 180px;
+  line-height: 1.6;
+}
+.ed-textarea:focus { border-color: var(--accent); }
+.ed-preview {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: 1rem 1.2rem; min-height: 180px; font-size: .9rem;
+  overflow-y: auto; max-height: 420px;
+}
+.ed-preview h1 { font-size: 1.4rem; margin-bottom: .5rem; }
+.ed-preview h2 { font-size: 1.1rem; margin: 1.2rem 0 .4rem; color: var(--accent); }
+.ed-preview h3 { font-size: .95rem; color: var(--purple); margin: 1rem 0 .3rem; }
+.ed-select {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-family: var(--sans); font-size: .85rem;
+  padding: .4rem .65rem; outline: none; cursor: pointer;
+}
+.ed-select:focus { border-color: var(--accent); }
+.ed-select option { background: var(--surface); }
+.ed-quiz-fields { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; margin-top: .6rem; }
+.ed-option-row { display: flex; align-items: center; gap: .5rem; margin-bottom: .4rem; }
+.ed-option-row .opt-key { font-size: .72rem; font-family: var(--mono); color: var(--muted); width: 18px; flex-shrink: 0; }
+.ed-option-row .ed-input { margin: 0; }
+.ed-option-row input[type=radio] { cursor: pointer; }
+.ed-status { font-size: .78rem; color: var(--green); margin-left: auto; opacity: 0; transition: opacity .4s; }
+.ed-status.show { opacity: 1; }
+
+/* ── Editor Modal ──────────────────────────── */
+#editor-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(3px);
+  align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+#editor-overlay.open { display: flex; }
+#editor-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 100%; max-width: 980px;
+  max-height: 90vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 24px 80px rgba(0,0,0,.6);
+  animation: modal-in .18s ease;
+}
+@keyframes modal-in {
+  from { opacity:0; transform: translateY(16px) scale(.98); }
+  to   { opacity:1; transform: none; }
+}
+#editor-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.4rem .9rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#editor-modal-title { font-weight: 700; font-size: 1rem; color: var(--text); }
+#editor-close-btn {
+  width: 28px; height: 28px;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: 6px; color: var(--muted); cursor: pointer;
+  font-size: .85rem; display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+#editor-close-btn:hover { background: var(--border); color: var(--text); }
+#editor-modal-body {
+  padding: 1.4rem 1.6rem;
+  overflow-y: auto; flex: 1;
+}
+/* remove the h1 inside modal — header already has title */
+#panel-editor > h1 { display: none; }
+#panel-editor > p:first-of-type { margin-top: 0; }
+
+/* ── Editor Tabs ───────────────────────────── */
+.ed-tabs {
+  display: flex; gap: 0; margin-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+.ed-tab {
+  padding: .5rem 1.1rem; font-size: .82rem; font-family: var(--sans);
+  background: transparent; border: none; border-bottom: 2px solid transparent;
+  color: var(--muted); cursor: pointer; transition: all .15s;
+  margin-bottom: -1px;
+}
+.ed-tab:hover { color: var(--text); }
+.ed-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.ed-tab-panel { display: none; }
+.ed-tab-panel.active { display: block; }
+
+/* ── Print styles ──────────────────────────── */
+@media print {
+  #sidebar, #topbar, #editor-overlay,
+  #panel-quiz, #panel-guide, .quiz-btns { display: none !important; }
+  #app { display: block; }
+  #content { max-width: 100%; padding: 1.5rem 2rem; overflow: visible; }
+  .lesson-panel { display: block !important; page-break-after: always; }
+  .lesson-panel:last-of-type { page-break-after: avoid; }
+  .plot { page-break-inside: avoid; }
+  .callout { page-break-inside: avoid; border: 1px solid #ccc !important; }
+  math-field { display: none; }
+  body { background: #fff !important; color: #111 !important; }
+  h1, h2, h3 { color: #111 !important; }
+  .math-display { border: 1px solid #ccc !important; background: #f9f9f9 !important; }
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+/* visited-section dot on nav item */
+.nav-item .visited-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); margin-left: auto; flex-shrink: 0;
+  opacity: 0; transition: opacity .2s;
+}
+.nav-item.visited .visited-dot { opacity: 1; }
+.nav-item.active  .visited-dot { opacity: 0; } /* hidden when active — redundant */
+
+/* quiz score chip in sidebar */
+.score-chip {
+  font-size: .62rem; font-family: var(--mono);
+  background: var(--border); color: var(--muted);
+  border-radius: 99px; padding: .1rem .45rem;
+  margin-left: auto;
+}
+.score-chip.good { background: rgba(52,211,153,.2); color: var(--green); }
+.score-chip.fair { background: rgba(251,191,36,.2); color: var(--gold); }
+.score-chip.poor { background: rgba(248,113,113,.2); color: var(--red); }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ══ SIDEBAR ══════════════════════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-logo">∑ MathLesson</div>
+
+  <div class="nav-group">Lesson</div>
+  <div style="padding:.3rem 1rem .6rem;">
+    <select id="lesson-select">
+      <option value="demo">★ Framework Demo</option>
+      <option value="bayes">Bayesian Inference</option>
+      <option value="annuity">Life Annuities</option>
+      <option value="calculus">Integral Calculus</option>
+    </select>
+  </div>
+
+  <div class="nav-group">Sections</div>
+  <div id="section-nav"></div>
+
+  <hr class="nav-sep">
+  <div class="nav-group">Assessment</div>
+  <div class="nav-item" data-panel="quiz">
+    ✦ Quiz / Exam <span id="quiz-badge">—</span>
+  </div>
+
+  <hr class="nav-sep">
+  <div class="nav-group">Reference</div>
+  <div class="nav-item" data-panel="guide">📖 Authoring Guide</div>
+  <div class="nav-item" id="nav-editor-btn">✏️ Lesson Editor</div>
+</nav>
+
+<!-- ══ TOP BAR ═══════════════════════════════ -->
+<header id="topbar">
+  <span id="lesson-title-top">MathLesson</span>
+  <span id="breadcrumb-sep">›</span>
+  <span id="breadcrumb">—</span>
+  <div id="topbar-right">
+    <button id="print-btn" class="btn btn-ghost" title="Print lesson" style="font-size:.78rem;padding:.35rem .8rem;">🖨 Print</button>
+    <div id="audio-pill">
+      <audio id="lesson-audio"></audio>
+      <button id="audio-play">▶</button>
+      <span id="audio-label">No audio</span>
+      <div id="audio-track"><div id="audio-fill"></div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ CONTENT ══════════════════════════════ -->
+<main id="content">
+  <!-- Section panels injected here by engine -->
+
+  <!-- Quiz panel -->
+  <section class="panel" id="panel-quiz">
+    <h1>Quiz</h1>
+    <div class="quiz-meta" id="quiz-meta"></div>
+    <div id="score-panel">
+      <div class="score-ring"><span id="score-num">—</span></div>
+      <div class="score-grade" id="score-grade"></div>
+      <br>
+      <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary" id="btn-review">Review Answers ↓</button>
+        <button class="btn btn-ghost"   id="btn-retake">↺ Retake</button>
+      </div>
+      <div id="score-compact-bar">
+        <span class="compact-pct" id="compact-pct-text">—</span>
+        <span class="compact-label" id="compact-label-text"></span>
+        <button class="btn btn-ghost" id="btn-retake-compact" style="font-size:.75rem;padding:.3rem .8rem;">↺ Retake</button>
+      </div>
+    </div>
+    <div id="quiz-questions"></div>
+    <div id="review-back"><span id="review-back-btn">↑ Back to score</span></div>
+    <div class="quiz-btns" id="quiz-btns">
+      <button class="btn btn-ghost" id="btn-reset">↺ Reset</button>
+      <button class="btn btn-gold"  id="btn-submit">Submit →</button>
+    </div>
+  </section>
+
+  <!-- Guide panel -->
+  <section class="panel guide-panel" id="panel-guide">
+    <h1>Authoring Guide</h1>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.5rem;">MathLesson v3.0 — reference for building and using lessons.</p>
+    <hr>
+
+    <h2>Quick Start</h2>
+    <p>Click <strong>✏️ Lesson Editor</strong> in the sidebar to open the editor. Pick an example from the dropdown, or build your own. No HTML editing required for user lessons.</p>
+
+    <h2>Math Syntax — all four styles work everywhere</h2>
+    <table>
+      <thead><tr><th>Syntax</th><th>Type</th></tr></thead>
+      <tbody>
+        <tr><td><code>$...$</code></td><td>Inline</td></tr>
+        <tr><td><code>$$...$$</code></td><td>Display block</td></tr>
+        <tr><td><code>\(...\)</code></td><td>Inline</td></tr>
+        <tr><td><code>\[...\]</code></td><td>Display block</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Heads-up:</strong> Since <code>$</code> triggers math, write literal dollar amounts as <code>\$24{,}000</code>.</p>
+
+    <h2>Editor — ① Sections Tab</h2>
+    <p>Content is HTML with embedded LaTeX. The live preview on the right renders as you type.</p>
+
+    <div class="callout def">
+      <div class="callout-tag">Callout boxes</div>
+      <p style="margin:.3rem 0;font-size:.85rem;">Three styles: <code>def</code> (cyan) · <code>thm</code> (purple) · <code>ex</code> (gold)</p>
+      <pre style="margin:.3rem 0;font-size:.78rem;font-family:var(--mono);color:var(--text);overflow-x:auto;">&lt;div class="callout def"&gt;
+  &lt;div class="callout-tag"&gt;Definition 1.1&lt;/div&gt;
+  Content with $math$ here.
+&lt;/div&gt;</pre>
+    </div>
+
+    <div class="callout thm">
+      <div class="callout-tag">Display math block</div>
+      <pre style="margin:.3rem 0;font-size:.78rem;font-family:var(--mono);color:var(--text);">&lt;div class="math-display"&gt;
+  &lt;div class="math-label"&gt;Optional label&lt;/div&gt;
+  $$your LaTeX$$
+&lt;/div&gt;</pre>
+    </div>
+
+    <div class="callout ex">
+      <div class="callout-tag">Manim CE video slot</div>
+      <pre style="margin:.3rem 0;font-size:.78rem;font-family:var(--mono);color:var(--text);">&lt;div class="manim-slot"&gt;
+  &lt;div class="manim-header"&gt;scene.mp4 — Title&lt;/div&gt;
+  &lt;video controls src="scene.mp4"&gt;&lt;/video&gt;
+&lt;/div&gt;</pre>
+    </div>
+
+    <h2>Editor — ② Quiz Tab</h2>
+    <table>
+      <thead><tr><th>Type</th><th>Auto-graded?</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Multiple Choice</td><td>Yes</td><td>Click radio button to mark correct answer</td></tr>
+        <tr><td>True / False</td><td>Yes</td><td>—</td></tr>
+        <tr><td>Math Input</td><td>Yes — symbolic</td><td>CortexJS Compute Engine. Enable Numeric for pure numbers.</td></tr>
+        <tr><td>Free Response</td><td>No</td><td>Saved to localStorage; model answer shown on submit.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Editor — ③ Settings Tab</h2>
+    <p><strong>Audio src:</strong> Path to an <code>.mp3</code> relative to this file. Player appears in the top bar.</p>
+    <p><strong>Export JSON:</strong> Downloads your lesson — use for backup or sharing.</p>
+    <p><strong>Import JSON:</strong> Loads a previously exported lesson into the editor.</p>
+
+    <h2>Keyboard Shortcuts</h2>
+    <table>
+      <thead><tr><th>Key</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td><code>→</code> / <code>↓</code></td><td>Next section</td></tr>
+        <tr><td><code>←</code> / <code>↑</code></td><td>Previous section</td></tr>
+        <tr><td><code>Esc</code></td><td>Close editor modal</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Printing</h2>
+    <p>Click <strong>🖨 Print</strong> in the top bar. All sections print sequentially; sidebar and quiz are hidden.</p>
+
+    <h2>localStorage — what is saved automatically</h2>
+    <table>
+      <thead><tr><th>Key</th><th>Stores</th></tr></thead>
+      <tbody>
+        <tr><td><code>ml_lesson</code></td><td>Last active lesson</td></tr>
+        <tr><td><code>ml_section_{key}</code></td><td>Last visited section</td></tr>
+        <tr><td><code>ml_visited_{key}</code></td><td>Visited section ids</td></tr>
+        <tr><td><code>ml_score_{key}</code></td><td>Quiz score</td></tr>
+        <tr><td><code>ml_mc/tf/free_{qi}_{key}</code></td><td>Quiz answer per question</td></tr>
+        <tr><td><code>ml_user_index</code></td><td>User lesson index</td></tr>
+        <tr><td><code>ml_user_lesson_{key}</code></td><td>Full user lesson JSON</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CONTENT TEMPLATES
+     Write LaTeX normally — single backslash.
+     No JS string escaping needed here.
+══════════════════════════════════════════════ -->
+
+<!-- ── LESSON: Bayesian Inference ── -->
+<template id="tpl-bayes-intro">
+  <h1>Introduction</h1>
+  <p class="quiz-meta">Bayesian Inference · §1 of 4</p>
+  <hr>
+  <p>Bayesian inference is a method of statistical reasoning that combines <strong>prior knowledge</strong> with <strong>observed evidence</strong> to update beliefs about uncertain quantities.</p>
+  <p>Unlike classical (frequentist) statistics, Bayesian methods treat probability as a measure of <em>degree of belief</em>, not just long-run frequency. The result is the <strong>posterior distribution</strong> — a complete probabilistic description of what we know after seeing data.</p>
+
+  <h2>The Core Formula</h2>
+  <div class="math-display">
+    <div class="math-label">Bayes' Rule</div>
+    \[ \mathbf{P}(\theta \mid x) = \frac{\mathbf{P}(x \mid \theta)\,\mathbf{P}(\theta)}{\mathbf{P}(x)} \]
+  </div>
+  <p>where \(\theta\) is the unknown parameter and \(x\) is observed data. Each term has a name and a role — covered in §2.</p>
+
+  <h2>Why It Matters</h2>
+  <ul style="margin:.4rem 0 1rem 1.4rem;font-size:.92rem;line-height:1.9;">
+    <li>Naturally incorporates domain expertise through the <strong>prior</strong></li>
+    <li>Produces full uncertainty quantification, not just point estimates</li>
+    <li>Applies to small samples where frequentist asymptotics break down</li>
+    <li>Underpins modern machine learning: Gaussian processes, variational inference</li>
+  </ul>
+</template>
+
+<template id="tpl-bayes-theory">
+  <h1>Bayes' Rule</h1>
+  <p class="quiz-meta">Bayesian Inference · §2 of 4</p>
+  <hr>
+  <h2>The Four Terms</h2>
+  <table>
+    <thead><tr><th>Term</th><th>Name</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>\(\mathbf{P}(\theta)\)</td><td><strong>Prior</strong></td><td>Belief before seeing data</td></tr>
+      <tr><td>\(\mathbf{P}(x\mid\theta)\)</td><td><strong>Likelihood</strong></td><td>How probable is \(x\) if \(\theta\) is true?</td></tr>
+      <tr><td>\(\mathbf{P}(x)\)</td><td><strong>Marginal likelihood</strong></td><td>Normalizing constant</td></tr>
+      <tr><td>\(\mathbf{P}(\theta\mid x)\)</td><td><strong>Posterior</strong></td><td>Updated belief after data</td></tr>
+    </tbody>
+  </table>
+  <p>The shorthand most practitioners use:</p>
+  <div class="math-display">\[ \text{Posterior} \;\propto\; \text{Likelihood} \times \text{Prior} \]</div>
+
+  <h2>Worked Example — Medical Testing</h2>
+  <p>A disease affects 1% of the population. A test has sensitivity 99% and specificity 95%. You test positive. What is \(\mathbf{P}(\text{disease} \mid \text{positive})\)?</p>
+  <div class="callout ex">
+    <div class="callout-tag">Calculation</div>
+    <p style="margin:.4rem 0;">\(\mathbf{P}(T) = 0.99\times0.01 + 0.05\times0.99 = 0.0594\)</p>
+    \[ \mathbf{P}(D\mid T) = \frac{0.99\times0.01}{0.0594} \approx \mathbf{16.7\%} \]
+  </div>
+  <p>Despite a 99% sensitive test, the <strong>low prevalence</strong> dominates — the posterior is only 16.7%. This is the <em>base rate fallacy</em>.</p>
+
+  <div class="callout thm">
+    <div class="callout-tag">Theorem — Law of Total Probability</div>
+    For a partition \(\{B_i\}\) of the sample space:
+    \[ \mathbf{P}(A) = \sum_i \mathbf{P}(A \mid B_i)\,\mathbf{P}(B_i) \]
+  </div>
+</template>
+
+<template id="tpl-bayes-conjugate">
+  <h1>Conjugate Priors</h1>
+  <p class="quiz-meta">Bayesian Inference · §3 of 4</p>
+  <hr>
+  <div class="callout def">
+    <div class="callout-tag">Definition</div>
+    A prior \(\mathbf{P}(\theta)\) is <strong>conjugate</strong> to a likelihood \(\mathbf{P}(x\mid\theta)\) if the posterior belongs to the same distributional family as the prior.
+  </div>
+
+  <h2>Beta–Binomial Conjugacy</h2>
+  <p>If \(X\mid p \sim \text{Binomial}(n,p)\) and \(p \sim \text{Beta}(\alpha,\beta)\), then:</p>
+  <div class="math-display">
+    \[ p \mid X=k \;\sim\; \text{Beta}(\alpha + k,\; \beta + n - k) \]
+  </div>
+  <p>The hyperparameters update additively: successes add to \(\alpha\), failures to \(\beta\).</p>
+
+  <h2>Example — Estimating a Coin's Bias</h2>
+  <p>Start with \(\text{Beta}(1,1)\) (uniform — complete ignorance). Observe 7 heads in 10 flips:</p>
+  \[ p \mid \text{data} \;\sim\; \text{Beta}(8,\,4), \qquad \hat{p} = \tfrac{8}{12} = \tfrac{2}{3} \]
+
+  <div class="plot">
+    <div class="plot-label">Prior · Likelihood · Posterior — Beta–Binomial</div>
+    <div data-plot="beta-plot" style="height:280px;"></div>
+  </div>
+
+  <h2>Common Conjugate Pairs</h2>
+  <table>
+    <thead><tr><th>Likelihood</th><th>Prior</th><th>Posterior</th></tr></thead>
+    <tbody>
+      <tr><td>Binomial</td><td>Beta</td><td>Beta</td></tr>
+      <tr><td>Poisson</td><td>Gamma</td><td>Gamma</td></tr>
+      <tr><td>Normal (known \(\sigma\))</td><td>Normal</td><td>Normal</td></tr>
+      <tr><td>Multinomial</td><td>Dirichlet</td><td>Dirichlet</td></tr>
+    </tbody>
+  </table>
+</template>
+
+<template id="tpl-bayes-sequential">
+  <h1>Sequential Updating</h1>
+  <p class="quiz-meta">Bayesian Inference · §4 of 4</p>
+  <hr>
+  <p>The posterior from one update becomes the prior for the next. Data can be incorporated one observation at a time.</p>
+  <div class="callout ex">
+    <div class="callout-tag">Example — Sequential Coin Flips from Beta(1,1)</div>
+    <table style="margin:.5rem 0;">
+      <thead><tr><th>Flip</th><th>Result</th><th>Updated Prior</th><th>Posterior Mean</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>H</td><td>Beta(2,1)</td><td>0.667</td></tr>
+        <tr><td>2</td><td>T</td><td>Beta(2,2)</td><td>0.500</td></tr>
+        <tr><td>3</td><td>H</td><td>Beta(3,2)</td><td>0.600</td></tr>
+        <tr><td>4</td><td>H</td><td>Beta(4,2)</td><td>0.667</td></tr>
+        <tr><td>5</td><td>H</td><td>Beta(5,2)</td><td>0.714</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="plot">
+    <div class="plot-label">Posterior Beta(5,2) — after 4H 1T</div>
+    <div data-plot="sequential-plot" style="height:240px;"></div>
+  </div>
+</template>
+
+<!-- ── LESSON: Life Annuities ── -->
+<template id="tpl-annuity-intro">
+  <h1>Life Annuities</h1>
+  <p class="quiz-meta">Actuarial Mathematics · §1 of 4</p>
+  <hr>
+  <p>A <strong>life annuity</strong> is a series of payments contingent on the survival of one or more lives. It is the fundamental building block of defined-benefit pension valuation.</p>
+  <div class="callout def">
+    <div class="callout-tag">Definition — Standard Notation</div>
+    <table style="margin:.5rem 0;">
+      <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>\(x\)</td><td>Age of annuitant at issue</td></tr>
+        <tr><td>\(v = (1+i)^{-1}\)</td><td>Discount factor</td></tr>
+        <tr><td>\({}_tp_x\)</td><td>Probability of \((x)\) surviving \(t\) more years</td></tr>
+        <tr><td>\(\ddot{a}_x\)</td><td>APV of whole life annuity-due, $1/year</td></tr>
+        <tr><td>\(\ddot{a}_{x:\overline{n}|}\)</td><td>APV of \(n\)-year temporary annuity-due</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h2>Relevance to Pension Actuaries</h2>
+  <p>Under <strong>IRC §417(e)</strong>, minimum lump-sum values must be computed using specified segment rates and the applicable mortality table. The present value of a pension benefit is:</p>
+  <div class="math-display">\[ PV = B \cdot \ddot{a}_x \]</div>
+  <p>where \(B\) is the annual benefit and \(\ddot{a}_x\) is evaluated at the applicable interest rate.</p>
+</template>
+
+<template id="tpl-annuity-apv">
+  <h1>Actuarial Present Values</h1>
+  <p class="quiz-meta">Actuarial Mathematics · §2 of 4</p>
+  <hr>
+  <h2>Whole Life Annuity-Due</h2>
+  <p>Pays $1 at the beginning of each year the annuitant is alive:</p>
+  <div class="math-display">\[ \ddot{a}_x = \sum_{t=0}^{\infty} v^t\,{}_tp_x \]</div>
+  <p>Via the insurance–annuity duality:</p>
+  <div class="math-display">\[ \ddot{a}_x = \frac{1 - A_x}{d} \]</div>
+  <p>where \(d = iv/(1+i)\) is the annual effective discount rate.</p>
+
+  <div class="callout thm">
+    <div class="callout-tag">Theorem — Annuity-Due Recursion</div>
+    \[ \ddot{a}_x = 1 + v\,p_x\,\ddot{a}_{x+1} \]
+    The first payment of $1 is certain (paid now). With probability \(p_x\), the annuitant survives to \(x+1\), at which point the remaining APV is \(\ddot{a}_{x+1}\), discounted one period.
+  </div>
+
+  <h2>Commutation Functions</h2>
+  <div class="math-display">
+    \[ D_x = v^x l_x \qquad N_x = \sum_{t=x}^{\infty} D_t \]
+    \[ \ddot{a}_x = \frac{N_x}{D_x} \qquad \ddot{a}_{x:\overline{n}|} = \frac{N_x - N_{x+n}}{D_x} \]
+  </div>
+</template>
+
+<template id="tpl-annuity-mortality">
+  <h1>Mortality Tables</h1>
+  <p class="quiz-meta">Actuarial Mathematics · §3 of 4</p>
+  <hr>
+  <p>A mortality table gives \(q_x\) — the probability of death between ages \(x\) and \(x+1\). The survival function:</p>
+  <div class="math-display">\[ {}_tp_x = \prod_{k=0}^{t-1}(1-q_{x+k}) \]</div>
+
+  <div id="mortality-table-wrap"></div>
+
+  <div class="plot">
+    <div class="plot-label">Illustrative \(q_x\) — Makeham-type mortality</div>
+    <div data-plot="qx-plot" style="height:260px;"></div>
+  </div>
+
+  <h2>Makeham's Law</h2>
+  <div class="math-display">\[ \mu_x = A + Bc^x \]</div>
+  <p>\(A\) captures accidental mortality; \(Bc^x\) captures senescent mortality.</p>
+</template>
+
+<template id="tpl-annuity-pension">
+  <h1>Pension Benefit Valuation</h1>
+  <p class="quiz-meta">Actuarial Mathematics · §4 of 4</p>
+  <hr>
+  <h2>The Standard Formula</h2>
+  <p>For a DB plan paying \(B\) per year commencing at Normal Retirement Age (NRA):</p>
+  <div class="math-display">\[ PV_x = B \cdot v^{NRA-x} \cdot {}_{NRA-x}p_x \cdot \ddot{a}_{NRA} \]</div>
+
+  <div class="callout ex">
+    <div class="callout-tag">Example — PBGC Valuation</div>
+    Participant age 55, benefit $24,000/yr, \(i=5\%\), \(\ddot{a}_{65}=12.40\), \({}_{10}p_{55}=0.872\):
+    \[ PV_{55} = 24{,}000 \times (1.05)^{-10} \times 0.872 \times 12.40 \approx \$159{,}400 \]
+  </div>
+
+  <h2>Early Retirement Reduction</h2>
+  <div class="math-display">
+    \[ r(x) = \begin{cases} 1 & x \geq 65 \\ 1 - 0.05(65-x) & 55 \leq x < 65 \end{cases} \]
+  </div>
+  <p>Reduced benefit \(B' = B \cdot r(x)\) is then valued at the early retirement date.</p>
+
+  <h2>IRC §415(b) Limit</h2>
+  <p>The maximum annual benefit from a qualified DB plan is limited by IRC §415(b). For 2024 the dollar limit is <strong>$275,000</strong>, subject to actuarial adjustment for age and payment form.</p>
+</template>
+
+<!-- ── LESSON: Integral Calculus ── -->
+<template id="tpl-calc-integral">
+  <h1>The Definite Integral</h1>
+  <p class="quiz-meta">Integral Calculus · §1 of 4</p>
+  <hr>
+  <p>Approximate the area under \(y=f(x)\) on \([a,b]\) with \(n\) rectangles:</p>
+  <div class="math-display">\[ S_n = \sum_{k=1}^{n} f(x_k^*)\,\Delta x, \qquad \Delta x = \frac{b-a}{n} \]</div>
+  <p>As \(n\to\infty\) the approximation becomes exact:</p>
+  <div class="math-display">\[ \int_a^b f(x)\,dx = \lim_{n\to\infty} S_n \]</div>
+
+  <div class="plot">
+    <div class="plot-label">Riemann sum approximation of \(\int_0^\pi \sin x\,dx\)</div>
+    <div data-plot="riemann-plot" style="height:280px;"></div>
+  </div>
+
+  <div class="callout def">
+    <div class="callout-tag">Note — Signed Area</div>
+    The integral measures <strong>signed area</strong>: regions where \(f(x)<0\) contribute negatively.
+    \[\int_0^{2\pi}\sin(x)\,dx = 0\]
+    Positive and negative areas cancel exactly.
+  </div>
+</template>
+
+<template id="tpl-calc-ftc">
+  <h1>Fundamental Theorem of Calculus</h1>
+  <p class="quiz-meta">Integral Calculus · §2 of 4</p>
+  <hr>
+  <h2>Part I — Differentiation of an Integral</h2>
+  <p>If \(f\) is continuous on \([a,b]\) and \(F(x)=\int_a^x f(t)\,dt\), then \(F'(x)=f(x)\).</p>
+
+  <div class="callout thm">
+    <div class="callout-tag">Theorem — FTC Part II</div>
+    If \(F\) is any antiderivative of \(f\) on \([a,b]\):
+    \[ \int_a^b f(x)\,dx = F(b) - F(a) \]
+    To compute an infinite Riemann sum, evaluate the antiderivative at <strong>two points</strong>.
+  </div>
+
+  <h2>Key Antiderivatives</h2>
+  <table>
+    <thead><tr><th>\(f(x)\)</th><th>\(\int f(x)\,dx\)</th></tr></thead>
+    <tbody>
+      <tr><td>\(x^n\;(n\neq-1)\)</td><td>\(\dfrac{x^{n+1}}{n+1}+C\)</td></tr>
+      <tr><td>\(e^x\)</td><td>\(e^x+C\)</td></tr>
+      <tr><td>\(\sin x\)</td><td>\(-\cos x+C\)</td></tr>
+      <tr><td>\(\cos x\)</td><td>\(\sin x+C\)</td></tr>
+      <tr><td>\(1/x\)</td><td>\(\ln|x|+C\)</td></tr>
+    </tbody>
+  </table>
+</template>
+
+<template id="tpl-calc-techniques">
+  <h1>Integration Techniques</h1>
+  <p class="quiz-meta">Integral Calculus · §3 of 4</p>
+  <hr>
+  <h2>Substitution</h2>
+  <p>Let \(u=g(x)\), \(du=g'(x)\,dx\):</p>
+  <div class="math-display">\[ \int f(g(x))\,g'(x)\,dx = \int f(u)\,du \]</div>
+  <div class="callout ex">
+    <div class="callout-tag">Example</div>
+    \(\displaystyle\int_0^1 2x\,e^{x^2}\,dx\) — let \(u=x^2\), \(du=2x\,dx\):
+    \[ = \int_0^1 e^u\,du = \Big[e^u\Big]_0^1 = e-1 \approx 1.718 \]
+  </div>
+
+  <h2>Integration by Parts</h2>
+  <div class="math-display">\[ \int u\,dv = uv - \int v\,du \]</div>
+  <div class="callout ex">
+    <div class="callout-tag">Example</div>
+    \(\displaystyle\int xe^x\,dx\): let \(u=x\), \(dv=e^x dx\):
+    \[ = xe^x - \int e^x\,dx = e^x(x-1)+C \]
+  </div>
+</template>
+
+<template id="tpl-calc-applications">
+  <h1>Applications</h1>
+  <p class="quiz-meta">Integral Calculus · §4 of 4</p>
+  <hr>
+  <h2>Area Between Curves</h2>
+  <div class="math-display">\[ A = \int_a^b \left[f(x)-g(x)\right]dx, \qquad f(x)\geq g(x) \]</div>
+
+  <h2>Probability — Normal Distribution</h2>
+  <div class="math-display">\[ \mathbf{P}(a\leq Z\leq b) = \int_a^b \frac{1}{\sqrt{2\pi}}e^{-x^2/2}\,dx \]</div>
+  <p>No closed-form antiderivative exists — computed via the error function \(\text{erf}\) or numerical methods.</p>
+
+  <h2>Actuarial — Continuous Annuity</h2>
+  <div class="math-display">\[ \bar{a}_x = \int_0^\infty e^{-\delta t}\,{}_tp_x\,dt \]</div>
+  <p>where \(\delta=\ln(1+i)\) is the force of interest. The continuous analogue of the discrete annuity-due \(\ddot{a}_x = \sum_{t=0}^\infty v^t\,{}_tp_x\).</p>
+
+  <div class="callout def">
+    <div class="callout-tag">Definition — Force of Interest</div>
+    \[ \delta = \lim_{m\to\infty}i^{(m)} = \ln(1+i) \]
+    Under constant force: \(e^{-\delta t}=v^t\).
+  </div>
+</template>
+
+<!-- ══ EDITOR MODAL ══════════════════════════ -->
+<div id="editor-overlay">
+<div id="editor-modal">
+  <div id="editor-modal-header">
+    <span id="editor-modal-title">✏️ Lesson Editor</span>
+    <button id="editor-close-btn" title="Close">✕</button>
+  </div>
+  <div id="editor-modal-body">
+<section id="panel-editor">
+
+  <!-- Toolbar — always visible -->
+  <div class="ed-toolbar">
+    <input class="ed-input" id="ed-title" type="text" placeholder="Lesson title…" autocomplete="off" style="flex:1;min-width:160px;"/>
+    <select class="ed-select" id="ed-saved-select" title="Load a saved lesson">
+      <option value="">Load saved…</option>
+    </select>
+    <button class="btn btn-ghost"    id="ed-new-btn">+ New</button>
+    <button class="btn btn-primary"  id="ed-save-btn">💾 Save</button>
+    <button class="btn btn-gold"     id="ed-load-btn">▶ Preview</button>
+    <span class="ed-status" id="ed-status">Saved.</span>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="ed-tabs">
+    <button class="ed-tab active" data-tab="content">① Sections</button>
+    <button class="ed-tab"        data-tab="quiz">② Quiz</button>
+    <button class="ed-tab"        data-tab="settings">③ Settings</button>
+  </div>
+
+  <!-- ── Tab: Content ─────────────────────── -->
+  <div class="ed-tab-panel active" id="ed-tab-content">
+    <div class="ed-cols">
+      <div>
+        <div class="ed-col-head">
+          Sections
+          <button class="btn btn-ghost" id="ed-add-sec" style="padding:.2rem .65rem;font-size:.75rem;">+ Add</button>
+        </div>
+        <div class="ed-list" id="ed-sec-list"></div>
+        <div id="ed-sec-editor" style="display:none;">
+          <div class="ed-field">
+            <label>Section label (shown in sidebar)</label>
+            <input class="ed-input" id="ed-sec-label" type="text" placeholder="§1  Introduction"/>
+          </div>
+          <div class="ed-field">
+            <label>Content — HTML + LaTeX &nbsp;<span style="color:var(--muted);font-weight:400;">use $…$ or \(…\)</span></label>
+            <textarea class="ed-textarea" id="ed-sec-content" rows="12"></textarea>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="ed-col-head">Live Preview</div>
+        <div class="ed-preview" id="ed-preview">
+          <span style="color:var(--muted);font-size:.82rem;">Add or select a section to preview.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tab: Quiz ────────────────────────── -->
+  <div class="ed-tab-panel" id="ed-tab-quiz">
+    <div class="ed-col-head" style="margin-bottom:.6rem;">
+      Questions
+      <button class="btn btn-ghost" id="ed-add-q" style="padding:.2rem .65rem;font-size:.75rem;">+ Add</button>
+    </div>
+    <div class="ed-list" id="ed-q-list"></div>
+
+    <div id="ed-q-editor" style="display:none;">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;">
+        <label style="font-size:.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;">Type</label>
+        <select class="ed-select" id="ed-q-type">
+          <option value="mc">Multiple Choice</option>
+          <option value="tf">True / False</option>
+          <option value="math">Math Input</option>
+          <option value="free">Free Response</option>
+        </select>
+      </div>
+      <div class="ed-quiz-fields">
+        <div class="ed-field">
+          <label>Stem — LaTeX ok ($…$ or \(…\))</label>
+          <textarea class="ed-textarea" id="ed-q-stem" rows="3" style="min-height:70px;"></textarea>
+        </div>
+        <div id="ed-mc-fields">
+          <div class="ed-field">
+            <label>Options — click radio button to mark correct answer</label>
+            <div class="ed-option-row"><span class="opt-key">A</span><input class="ed-input" id="ed-opt-0" type="text" placeholder="Option A"/><input type="radio" name="ed-correct" value="0"/></div>
+            <div class="ed-option-row"><span class="opt-key">B</span><input class="ed-input" id="ed-opt-1" type="text" placeholder="Option B"/><input type="radio" name="ed-correct" value="1"/></div>
+            <div class="ed-option-row"><span class="opt-key">C</span><input class="ed-input" id="ed-opt-2" type="text" placeholder="Option C"/><input type="radio" name="ed-correct" value="2"/></div>
+            <div class="ed-option-row"><span class="opt-key">D</span><input class="ed-input" id="ed-opt-3" type="text" placeholder="Option D"/><input type="radio" name="ed-correct" value="3"/></div>
+          </div>
+        </div>
+        <div id="ed-tf-fields" style="display:none;">
+          <div class="ed-field">
+            <label>Correct answer</label>
+            <select class="ed-select" id="ed-tf-answer">
+              <option value="true">True</option>
+              <option value="false">False</option>
+            </select>
+          </div>
+        </div>
+        <div id="ed-math-fields" style="display:none;">
+          <div class="ed-field">
+            <label>Answer (LaTeX — graded symbolically)</label>
+            <input class="ed-input" id="ed-math-answer" type="text" placeholder="\cos(x)"/>
+          </div>
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.9rem;">
+            <input type="checkbox" id="ed-math-numeric"/>
+            <label for="ed-math-numeric" style="font-size:.82rem;color:var(--muted);">Numeric comparison (for pure numbers)</label>
+          </div>
+          <div class="ed-field">
+            <label>Hint (shown if wrong)</label>
+            <input class="ed-input" id="ed-math-hint" type="text" placeholder="Hint text…"/>
+          </div>
+        </div>
+        <div class="ed-field">
+          <label>Feedback / model answer</label>
+          <textarea class="ed-textarea" id="ed-q-feedback" rows="2" style="min-height:56px;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tab: Settings ────────────────────── -->
+  <div class="ed-tab-panel" id="ed-tab-settings">
+    <div class="ed-field">
+      <label>Audio narration src (optional — .mp3 / .ogg)</label>
+      <input class="ed-input" id="ed-audio-src" type="text" placeholder="narration.mp3"/>
+    </div>
+    <div class="ed-field">
+      <label>Audio label (shown in top bar)</label>
+      <input class="ed-input" id="ed-audio-label" type="text" placeholder="Narration"/>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:1.2rem 0;">
+
+    <div class="ed-field">
+      <label>Export / Import</label>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <button class="btn btn-ghost" id="ed-export-btn">⬇ Export JSON</button>
+        <label class="btn btn-ghost" style="cursor:pointer;" id="ed-import-label">
+          ⬆ Import JSON
+          <input type="file" id="ed-import-input" accept=".json" style="display:none;"/>
+        </label>
+      </div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:.5rem;">
+        Export saves this lesson as a <code>.json</code> file. Import loads a previously exported lesson into the editor.
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:1.2rem 0;">
+
+    <div class="ed-field">
+      <button class="btn btn-ghost" id="ed-delete-btn" style="color:var(--red);border-color:var(--red);">🗑 Delete this lesson</button>
+    </div>
+  </div>
+
+</section>
+  </div><!-- editor-modal-body -->
+</div><!-- editor-modal -->
+</div><!-- editor-overlay -->
+
+<!-- ══════════════════════════════════════════
+     ENGINE
+══════════════════════════════════════════════ -->
+
+<!-- ── DEMO LESSON: Framework Showcase ── -->
+<template id="tpl-demo-overview">
+  <h1>Framework Demo</h1>
+  <p class="quiz-meta">Showcasing plots · tables · audio · video · math</p>
+  <hr>
+  <p>This lesson demonstrates every media type the framework supports. Switch to any real lesson using the dropdown. Content here is intentionally non-mathematical so the infrastructure is easy to inspect.</p>
+
+  <div class="callout def">
+    <div class="callout-tag">What you will see</div>
+    <ul style="margin:.4rem 0 0 1.2rem;line-height:2;">
+      <li><strong>§1 (here)</strong> — overview and inline math</li>
+      <li><strong>§2</strong> — Plotly interactive chart</li>
+      <li><strong>§3</strong> — Arquero-computed data table</li>
+      <li><strong>§4</strong> — audio player + video slot</li>
+    </ul>
+  </div>
+
+  <h2>Inline Math Rendering</h2>
+  <p>KaTeX renders inline math like \( e^{i\pi} + 1 = 0 \) and display math:</p>
+  <div class="math-display">
+    <div class="math-label">Euler's Identity</div>
+    \[ e^{i\pi} + 1 = 0 \]
+  </div>
+  <p>And more complex expressions:</p>
+  <div class="math-display">
+    \[ \hat{\sigma}^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2 \]
+  </div>
+
+  <div class="callout thm">
+    <div class="callout-tag">Theorem box example</div>
+    For any right triangle with legs \(a\), \(b\) and hypotenuse \(c\):
+    \[ a^2 + b^2 = c^2 \]
+  </div>
+
+  <div class="callout ex">
+    <div class="callout-tag">Example box</div>
+    If \(a=3\) and \(b=4\), then \(c = \sqrt{9+16} = 5\).
+  </div>
+</template>
+
+<template id="tpl-demo-chart">
+  <h1>Interactive Chart</h1>
+  <p class="quiz-meta">Demo · §2 — Plotly.js</p>
+  <hr>
+  <p>The chart below is rendered by <strong>Plotly.js</strong>. It is interactive: hover for values, click legend items to toggle series, zoom with scroll or drag. The data was generated in JavaScript — in a real lesson you would supply your own arrays or compute them with Arquero.</p>
+
+  <div class="plot">
+    <div class="plot-label">Monthly Temperature — Two Cities (°F, illustrative)</div>
+    <div data-plot="demo-chart" style="height:320px;"></div>
+  </div>
+
+  <p>Charts are defined in the lesson's <code>plots</code> object and injected lazily — Plotly only runs once the div is visible, preventing the "No DOM element" error.</p>
+
+  <h2>How to Add a Chart</h2>
+  <p>In your <code>&lt;template&gt;</code>: add a div with a <code>data-plot</code> id. In the lesson config:</p>
+  <div class="math-display" style="border-left-color:var(--gold);">
+    <div class="math-label" style="color:var(--gold);">lesson config snippet</div>
+    <pre style="margin:0;font-family:var(--mono);font-size:.8rem;color:var(--text);">plots: {
+  "demo-chart": L => Plotly.newPlot(el,
+    [{ x: months, y: cityA, name:"City A", ... }],
+    { ...L }
+  )
+}</pre>
+  </div>
+</template>
+
+<template id="tpl-demo-table">
+  <h1>Data Table</h1>
+  <p class="quiz-meta">Demo · §3 — Arquero</p>
+  <hr>
+  <p><strong>Arquero</strong> is an in-browser data wrangling library (similar to pandas). The table below is computed at runtime: group-by, aggregate, and format — all client-side, no server needed.</p>
+
+  <div id="demo-table-wrap"></div>
+
+  <h2>How it Works</h2>
+  <p>Define a function in the lesson's <code>tables</code> object that returns an HTML string (built from an Arquero table):</p>
+  <div class="math-display" style="border-left-color:var(--gold);">
+    <div class="math-label" style="color:var(--gold);">lesson config snippet</div>
+    <pre style="margin:0;font-family:var(--mono);font-size:.8rem;color:var(--text);">tables: {
+  "my-table-wrap": () => {
+    const tbl = aq.from(rawData)
+      .groupby("category")
+      .rollup({ mean: d => aq.op.mean(d.value) });
+    return renderAqTable(tbl);
+  }
+}</pre>
+  </div>
+  <p>In your template, place a div with the matching id: <code>&lt;div id="my-table-wrap"&gt;&lt;/div&gt;</code>.</p>
+</template>
+
+<template id="tpl-demo-media">
+  <h1>Audio &amp; Video</h1>
+  <p class="quiz-meta">Demo · §4 — Media slots</p>
+  <hr>
+
+  <h2>Audio — Generated Placeholder</h2>
+  <p>The clip below is synthesized in the browser using the <strong>Web Audio API</strong> — no file needed. In a real lesson, set <code>audio.src</code> to any <code>.mp3</code> path and it plays from the top-bar player.</p>
+
+  <div class="callout def">
+    <div class="callout-tag">Placeholder Audio — 440 Hz tone, 3 seconds</div>
+    <div style="display:flex;align-items:center;gap:1rem;margin-top:.6rem;">
+      <button id="demo-audio-play" class="btn btn-primary" style="min-width:90px;">▶ Play</button>
+      <div style="flex:1;">
+        <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">
+          <div id="demo-audio-bar" style="height:100%;width:0%;background:var(--accent);transition:width .1s linear;"></div>
+        </div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:.3rem;" id="demo-audio-time">0.0 / 3.0 s</div>
+      </div>
+      <button id="demo-audio-stop" class="btn btn-ghost">■ Stop</button>
+    </div>
+  </div>
+
+  <h2>Video — Canvas Animation Placeholder</h2>
+  <p>The animation below is drawn live on a <strong>Canvas</strong> element — a stand-in for a Manim CE render. In a real lesson, replace it with a <code>&lt;video src="scene.mp4"&gt;</code> tag.</p>
+
+  <div class="manim-slot">
+    <div class="manim-header">canvas-placeholder — Animated Demo (live canvas)</div>
+    <canvas id="demo-canvas" width="800" height="200" style="width:100%;display:block;background:#000;"></canvas>
+  </div>
+
+  <div class="callout ex">
+    <div class="callout-tag">Replacing with a real Manim CE video</div>
+    <ol style="margin:.4rem 0 0 1.2rem;line-height:2;font-size:.9rem;">
+      <li>Write your <code>Scene</code> class in Python with Manim CE</li>
+      <li>Run <code>manim -qh scene.py MyScene</code> → produces <code>MyScene.mp4</code></li>
+      <li>Place it next to this HTML file</li>
+      <li>Replace the <code>&lt;canvas&gt;</code> tag with <code>&lt;video controls src="MyScene.mp4"&gt;&lt;/video&gt;</code></li>
+    </ol>
+  </div>
+</template>
+
+<script type="module">
+import "https://esm.run/mathlive";
+import { ComputeEngine } from "https://esm.run/@cortex-js/compute-engine";
+
+/* ════════════════════════════════════════════
+   LESSON CONFIG — edit here
+════════════════════════════════════════════ */
+const ACTIVE_LESSON = "demo"; // "demo" | "bayes" | "annuity" | "calculus"
+
+const LESSONS = {
+
+demo: {
+  title: "Framework Demo",
+  audio: { src: "", label: "Demo Narration" },
+  sections: [
+    { id:"demo-overview", label:"§1  Overview & Math",  contentId:"tpl-demo-overview" },
+    { id:"demo-chart",    label:"§2  Plotly Chart",     contentId:"tpl-demo-chart" },
+    { id:"demo-table",    label:"§3  Arquero Table",    contentId:"tpl-demo-table" },
+    { id:"demo-media",    label:"§4  Audio & Video",    contentId:"tpl-demo-media" },
+  ],
+  plots: {
+    "demo-chart": (L,el) => {
+      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      const cityA  = [34,38,48,58,68,76,80,78,70,59,47,37];
+      const cityB  = [55,58,63,68,74,80,85,84,79,70,61,55];
+      Plotly.newPlot(el,[
+        { x:months, y:cityA, name:"City A (North)", mode:"lines+markers",
+          line:{color:"#5ecbff",width:2}, marker:{size:5} },
+        { x:months, y:cityB, name:"City B (South)", mode:"lines+markers",
+          line:{color:"#fbbf24",width:2}, marker:{size:5} },
+      ],{
+        ...L,
+        xaxis:{...L.xaxis, title:"Month"},
+        yaxis:{...L.yaxis, title:"Temp (°F)"},
+      },{displayModeBar:false,responsive:true});
+    }
+  },
+  tables: {
+    "demo-table-wrap": () => {
+      const aq = window.aq;
+      const raw = [
+        {dept:"Math",  score:88, students:32},
+        {dept:"Math",  score:91, students:28},
+        {dept:"Stats", score:79, students:45},
+        {dept:"Stats", score:83, students:40},
+        {dept:"CS",    score:94, students:55},
+        {dept:"CS",    score:90, students:50},
+      ];
+      const tbl = aq.from(raw)
+        .groupby("dept")
+        .rollup({
+          n:        aq.op.sum("students"),
+          avg_score: d => aq.op.mean(d.score),
+          max_score: d => aq.op.max(d.score),
+        })
+        .orderby("dept");
+      return renderAqTable(tbl, "Exam Results by Department — Arquero Group-by");
+    }
+  },
+  quiz: [
+    { type:"mc",
+      stem:"Which library renders the interactive charts in this framework?",
+      options:["D3.js","Chart.js","Plotly.js","Highcharts"],
+      answer:2,
+      feedback:"Plotly.js is used for all charts. It handles interactivity (hover, zoom, pan) out of the box." },
+    { type:"tf",
+      stem:"Lesson content in this framework is stored inside JavaScript template literals.",
+      answer:false,
+      feedback:"Content lives in HTML \`<template>\` tags so LaTeX can be written with single backslashes — no JS string escaping needed." },
+    { type:"math",
+      stem:"Euler's identity: \(e^{i\pi} + 1 =\)",
+      answer:"0",
+      numeric:true,
+      hint:"This is one of the most famous results in mathematics.",
+      feedback:"\(e^{i\pi} = \cos\pi + i\sin\pi = -1\), so \(e^{i\pi}+1=0\)." },
+    { type:"free",
+      stem:"Describe one advantage of storing lesson content in HTML \`<template>\` tags rather than JavaScript strings.",
+      feedback:"Templates are inert HTML — the browser doesn't parse or execute them. LaTeX is written exactly as-is (single backslashes, standard delimiters), KaTeX renders it cleanly, and authors don't need to understand JS string escaping rules." }
+  ]
+},
+
+bayes: {
+  title: "Bayesian Inference",
+  audio: { src:"", label:"Narration" },
+  sections: [
+    { id:"bayes-intro",      label:"§1  Introduction",       contentId:"tpl-bayes-intro" },
+    { id:"bayes-theory",     label:"§2  Bayes' Rule",        contentId:"tpl-bayes-theory" },
+    { id:"bayes-conjugate",  label:"§3  Conjugate Priors",   contentId:"tpl-bayes-conjugate" },
+    { id:"bayes-sequential", label:"§4  Sequential Updating",contentId:"tpl-bayes-sequential" },
+  ],
+  plots: {
+    "beta-plot": (L,el) => {
+      const xs = Array.from({length:300},(_,i)=>i/299);
+      const B = (a,b,x) => x<=0||x>=1 ? 0 : Math.pow(x,a-1)*Math.pow(1-x,b-1);
+      const sum = (fn,n=300) => { let s=0; for(let i=0;i<n;i++) s+=fn(i/(n-1)); return s||1; }
+      const norm = (a,b) => sum(x=>B(a,b,x));
+      const prior= xs.map(x=>B(1,1,x)/norm(1,1));
+      const post = xs.map(x=>B(8,4,x)/norm(8,4));
+      const likeRaw = xs.map(x=>Math.pow(x,7)*Math.pow(1-x,3));
+      const likeMax = Math.max(...likeRaw);
+      const postMax = Math.max(...post);
+      const like = likeRaw.map(v=>v/likeMax*postMax);
+      Plotly.newPlot(el,[
+        {x:xs,y:prior,name:"Prior Beta(1,1)",  line:{color:"#64748b",width:2,dash:"dot"},mode:"lines"},
+        {x:xs,y:like, name:"Likelihood (scaled)",line:{color:"#fbbf24",width:2,dash:"dash"},mode:"lines"},
+        {x:xs,y:post, name:"Posterior Beta(8,4)",line:{color:"#5ecbff",width:2.5},mode:"lines"},
+      ],{...L,xaxis:{...L.xaxis,title:"p"},yaxis:{...L.yaxis,title:"density"}},{displayModeBar:false,responsive:true});
+    },
+    "sequential-plot": (L,el) => {
+      const xs = Array.from({length:300},(_,i)=>i/299);
+      const B = (a,b,x) => x<=0||x>=1?0:Math.pow(x,a-1)*Math.pow(1-x,b-1);
+      const norm = (a,b) => { let s=0; xs.forEach(x=>s+=B(a,b,x)/300); return s||1; };
+      const traces = [[1,1],[2,1],[2,2],[5,2]].map(([a,b],i)=>({
+        x:xs, y:xs.map(x=>B(a,b,x)/norm(a,b)),
+        name:`Beta(${a},${b})`, mode:"lines",
+        line:{width:i===3?2.5:1.5, dash:i===3?"solid":"dot",
+              color:["#64748b","#a78bfa","#34d399","#5ecbff"][i]}
+      }));
+      Plotly.newPlot(el,traces,
+        {...L,xaxis:{...L.xaxis,title:"p"},yaxis:{...L.yaxis,title:"density"}},
+        {displayModeBar:false,responsive:true});
+    }
+  },
+  quiz: [
+    { type:"mc", stem:"In Bayes' Rule, \\(\\mathbf{P}(\\theta\\mid x)\\) is called the:",
+      options:["Likelihood","Prior","Posterior","Marginal likelihood"], answer:2,
+      feedback:"The posterior \\(\\mathbf{P}(\\theta\\mid x)\\) is our updated belief after observing data." },
+    { type:"tf", stem:"A conjugate prior guarantees the posterior belongs to the same distributional family as the prior.",
+      answer:true, feedback:"Correct — conjugacy makes the posterior analytically tractable." },
+    { type:"math", stem:"In the Beta–Binomial model with prior \\(\\text{Beta}(1,1)\\) and 7 successes in 10 trials, the posterior mean equals:",
+      answer:"8/12", numeric:true, hint:"Posterior is Beta(1+7, 1+3)=Beta(8,4). Mean of Beta(a,b) is a/(a+b).",
+      feedback:"Posterior mean \\(= 8/(8+4) = 2/3 \\approx 0.667\\)." },
+    { type:"math", stem:"Compute \\(\\mathbf{P}(T)\\) in the medical test example: prevalence 1%, sensitivity 99%, false-positive rate 5%.",
+      answer:"0.0594", numeric:true, hint:"P(T) = 0.99×0.01 + 0.05×0.99",
+      feedback:"\\(0.0099 + 0.0495 = 0.0594\\)." },
+    { type:"free", stem:"Explain why a very accurate test can yield a low posterior probability of disease when the condition is rare.",
+      feedback:"The low base rate (prior prevalence) dominates. Even a small false-positive rate applied to a large healthy population produces many false positives that swamp the true positives — the base rate fallacy." }
+  ]
+},
+
+annuity: {
+  title: "Life Annuities",
+  audio: { src:"", label:"Narration" },
+  sections: [
+    { id:"ann-intro",    label:"§1  Introduction",    contentId:"tpl-annuity-intro" },
+    { id:"ann-apv",      label:"§2  APV Formulas",    contentId:"tpl-annuity-apv" },
+    { id:"ann-mortality",label:"§3  Mortality Tables", contentId:"tpl-annuity-mortality" },
+    { id:"ann-pension",  label:"§4  Pension Valuation",contentId:"tpl-annuity-pension" },
+  ],
+  plots: {
+    "qx-plot": (L,el) => {
+      const ages = Array.from({length:51},(_,i)=>30+i);
+      const qx   = ages.map(x=>0.00022*Math.exp(0.096*(x-30)));
+      Plotly.newPlot(el,[{
+        x:ages, y:qx, mode:"lines", name:"q_x",
+        line:{color:"#a78bfa",width:2}, fill:"tozeroy", fillcolor:"rgba(167,139,250,.1)"
+      }],{...L,xaxis:{...L.xaxis,title:"Age x"},yaxis:{...L.yaxis,title:"q_x"}},
+      {displayModeBar:false,responsive:true});
+    }
+  },
+  tables: {
+    "mortality-table-wrap": () => {
+      const ages=[55,56,57,58,59,60,61,62,63,64,65];
+      const qx  =[.0068,.0075,.0083,.0093,.0105,.0118,.0134,.0153,.0175,.0200,.0230];
+      let px=1, rows=[];
+      ages.forEach((age,i)=>{
+        rows.push({Age:age,"q_x":qx[i].toFixed(4),"p_x":(1-qx[i]).toFixed(4),"ₜp₅₅":px.toFixed(4)});
+        px*=(1-qx[i]);
+      });
+      let h='<table><thead><tr>'+Object.keys(rows[0]).map(k=>`<th>${k}</th>`).join('')+'</tr></thead><tbody>';
+      rows.forEach(r=>{h+='<tr>'+Object.values(r).map(v=>`<td>${v}</td>`).join('')+'</tr>';});
+      return h+'</tbody></table>';
+    }
+  },
+  quiz: [
+    { type:"mc", stem:"Which formula correctly relates \\(\\ddot{a}_x\\) to \\(A_x\\)?",
+      options:["\\(\\ddot{a}_x=A_x/d\\)","\\(\\ddot{a}_x=(1-A_x)/d\\)","\\(\\ddot{a}_x=1-dA_x\\)","\\(\\ddot{a}_x=A_x\\delta\\)"],
+      answer:1, feedback:"Annuity–insurance duality: \\(\\ddot{a}_x=(1-A_x)/d\\)." },
+    { type:"tf", stem:"\\(N_x=\\sum_{t=x}^{\\infty}D_t\\) and \\(\\ddot{a}_x=N_x/D_x\\).",
+      answer:true, feedback:"Correct — commutation functions convert the sum into simple arithmetic." },
+    { type:"math", stem:"If \\(v^{10}\\cdot{}_{10}p_{55}=0.535\\) and \\(\\ddot{a}_{65}=12.4\\), compute the APV of $1/yr deferred to age 65.",
+      answer:"6.634", numeric:true, hint:"APV = 0.535 × 12.4",
+      feedback:"\\(0.535\\times12.4=6.634\\)." },
+    { type:"math", stem:"Using the recursion with \\(\\ddot{a}_{66}=11.8\\), \\(p_{65}=0.98\\), \\(i=5\\%\\), compute \\(\\ddot{a}_{65}\\).",
+      answer:"12.00952", numeric:true, hint:"ä₆₅ = 1 + (0.98/1.05)×11.8",
+      feedback:"\\(1+(0.98/1.05)\\times11.8\\approx12.010\\)." },
+    { type:"free", stem:"Explain why a lower interest rate assumption produces a higher pension liability and describe the practical consequence for a plan sponsor.",
+      feedback:"Lower discount rates increase the present value \\(v^t=(1+i)^{-t}\\) of each future payment. For a plan sponsor, this inflates the reported liability, increases required contributions, and may trigger ERISA funding notices." }
+  ]
+},
+
+calculus: {
+  title: "Integral Calculus",
+  audio: { src:"", label:"Narration" },
+  sections: [
+    { id:"calc-integral",    label:"§1  Definite Integral", contentId:"tpl-calc-integral" },
+    { id:"calc-ftc",         label:"§2  FTC",               contentId:"tpl-calc-ftc" },
+    { id:"calc-techniques",  label:"§3  Techniques",        contentId:"tpl-calc-techniques" },
+    { id:"calc-applications",label:"§4  Applications",      contentId:"tpl-calc-applications" },
+  ],
+  plots: {
+    "riemann-plot": (L,el) => {
+      const xs = Array.from({length:300},(_,i)=>i*Math.PI/299);
+      const ys = xs.map(x=>Math.sin(x));
+      const n=8, dx=Math.PI/n;
+      const bx=Array.from({length:n},(_,i)=>i*dx+dx/2);
+      const by=bx.map(x=>Math.sin(x));
+      Plotly.newPlot(el,[
+        {x:xs,y:ys,name:"sin(x)",mode:"lines",line:{color:"#5ecbff",width:2.5}},
+        {x:bx,y:by,type:"bar",name:"Riemann bars",width:Array(n).fill(dx*.92),
+         marker:{color:"rgba(251,191,36,.35)",line:{color:"#fbbf24",width:1}}}
+      ],{...L,xaxis:{...L.xaxis,title:"x"},yaxis:{...L.yaxis,title:"f(x)"},bargap:0},
+      {displayModeBar:false,responsive:true});
+    }
+  },
+  quiz: [
+    { type:"mc", stem:"FTC Part II states \\(\\int_a^b f(x)\\,dx\\) equals:",
+      options:["\\(f(b)-f(a)\\)","\\(F(a)-F(b)\\)","\\(F(b)-F(a)\\) where \\(F'=f\\)","\\(\\lim\\sum f(x_k)\\Delta x\\)"],
+      answer:2, feedback:"\\(\\int_a^b f=F(b)-F(a)\\) for any antiderivative \\(F\\)." },
+    { type:"tf", stem:"\\(\\int_0^{2\\pi}\\sin(x)\\,dx=0\\) because positive and negative areas cancel.",
+      answer:true, feedback:"\\([-\\cos x]_0^{2\\pi}=-1+1=0\\). Correct." },
+    { type:"math", stem:"Evaluate \\(\\displaystyle\\int_0^1 x^3\\,dx\\).",
+      answer:"\\frac{1}{4}", hint:"Power rule: \\(\\int x^n dx = x^{n+1}/(n+1)\\).",
+      feedback:"\\(\\left[x^4/4\\right]_0^1=1/4\\)." },
+    { type:"math", stem:"Evaluate \\(\\displaystyle\\int_0^1 2x\\,e^{x^2}\\,dx\\). Give answer to 3 decimal places.",
+      answer:"1.718", numeric:true, hint:"Let u=x², du=2x dx → ∫₀¹eᵘdu.",
+      feedback:"\\(e-1\\approx1.718\\)." },
+    { type:"free", stem:"Explain why the Fundamental Theorem of Calculus is considered remarkable — connect the geometric idea of area to the algebraic idea of antiderivatives.",
+      feedback:"The FTC reveals that two apparently unrelated operations — computing areas (a limiting sum) and finding rates of change (differentiation) — are inverses. It converts an infinite summation into evaluating a function at two points." }
+  ]
+}
+
+}; // end LESSONS
+/* ════ END CONFIG ════ */
+
+/* ── Persistence (localStorage) ────────────────
+   Key schema:
+     ml_lesson          → string key e.g. "bayes"
+     ml_section_{key}   → last visited section id for that lesson
+     ml_visited_{key}   → JSON array of visited section ids
+     ml_score_{key}     → { pct, correct, gradeable, grade } or null
+─────────────────────────────────────────────── */
+const LS = {
+  get:    k       => { try { return JSON.parse(localStorage.getItem(k)); } catch(_){ return null; } },
+  set:    (k,v)   => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(_){} },
+  remove: k       => { try { localStorage.removeItem(k); } catch(_){} },
+};
+
+function lsKey(suffix, key) { return "ml_" + suffix + "_" + (key||activeLessonKey); }
+
+function saveLesson(key)        { LS.set("ml_lesson", key); }
+function saveSection(id)        { LS.set(lsKey("section"), id); }
+function saveVisited(ids)       { LS.set(lsKey("visited"), ids); }
+function saveScore(data)        { LS.set(lsKey("score"), data); }
+function saveFreeAnswer(qi, txt){ LS.set(lsKey("free_"+qi), txt); }
+function loadFreeAnswer(qi)     { return LS.get(lsKey("free_"+qi)) || ""; }
+function saveMCSel(qi, val)     { LS.set(lsKey("mc_"+qi), val); }
+function loadMCSel(qi)          { const v=LS.get(lsKey("mc_"+qi)); return v===null?null:+v; }
+function saveTFSel(qi, val)     { LS.set(lsKey("tf_"+qi), String(val)); }
+function loadTFSel(qi)          { const v=LS.get(lsKey("tf_"+qi)); return v===null?null:(v==="true"); }
+function clearQuizState()       {
+  lesson.quiz.forEach((_,qi)=>{
+    LS.remove(lsKey("free_"+qi));
+    LS.remove(lsKey("mc_"+qi));
+    LS.remove(lsKey("tf_"+qi));
+  });
+}
+function clearFreeAnswers()     { lesson.quiz.forEach((_,qi)=>LS.remove(lsKey("free_"+qi))); }
+function loadSection()          { return LS.get(lsKey("section")); }
+function loadVisited()          { return LS.get(lsKey("visited")) || []; }
+function loadScore()            { return LS.get(lsKey("score")); }
+
+/* ── Engine ─────────────────────────────────── */
+const ce = new ComputeEngine();
+let lesson, quizRendered=false;
+let activeLessonKey = ACTIVE_LESSON;
+const mcSel={}, tfSel={};
+let visitedSections = new Set();
+
+// HTML-escape for user-authored text inserted via innerHTML
+// Safe for LaTeX: \, {, }, ^, _ don't need escaping — only <, >, &, "
+function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// Shared Arquero table renderer
+function renderAqTable(tbl, caption="") {
+  const cols = tbl.columnNames();
+  const rows = tbl.objects();
+  let h = "";
+  if (caption) h += `<p style="font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-family:var(--mono);margin-bottom:.5rem;">${caption}</p>`;
+  h += "<table><thead><tr>" + cols.map(c=>`<th>${c}</th>`).join("") + "</tr></thead><tbody>";
+  rows.forEach(r=>{
+    h += "<tr>" + cols.map(col=>{
+      const v = r[col];
+      return `<td>${typeof v==="number" ? v.toFixed(2) : v}</td>`;
+    }).join("") + "</tr>";
+  });
+  return h + "</tbody></table>";
+}
+
+const PLOT_LAYOUT = {
+  paper_bgcolor:"rgba(0,0,0,0)", plot_bgcolor:"rgba(0,0,0,0)",
+  font:{color:"#e2e8f0",family:"Segoe UI,system-ui,sans-serif",size:12},
+  margin:{t:10,b:48,l:48,r:16},
+  xaxis:{gridcolor:"#252836",zerolinecolor:"#252836"},
+  yaxis:{gridcolor:"#252836",zerolinecolor:"#252836"},
+  legend:{bgcolor:"rgba(0,0,0,0)",bordercolor:"#252836"}
+};
+
+function renderKatex(el) {
+  if (!window.renderMathInElement || !el) return;
+  renderMathInElement(el, {
+    delimiters:[
+      {left:"$$", right:"$$",  display:true},
+      {left:"$",  right:"$",   display:false},
+      {left:"\\[",right:"\\]",display:true},
+      {left:"\\(",right:"\\)",display:false},
+    ], throwOnError:false
+  });
+}
+
+/* ── Boot ──────────────────────────────────── */
+function boot(key) {
+  // Check user lessons first, then built-ins
+  const userLesson = editorGetSaved(key);
+  lesson = userLesson || LESSONS[key];
+  if (!lesson) return;
+  document.title = lesson.title + " — MathLesson";
+  document.getElementById("lesson-title-top").textContent = lesson.title;
+  activeLessonKey = key;
+  document.getElementById("lesson-select").value = key;
+  saveLesson(key);
+  // Restore visited set for this lesson
+  visitedSections = new Set(loadVisited());
+
+  // Audio
+  const aud = document.getElementById("lesson-audio");
+  if (lesson.audio.src) {
+    aud.src = lesson.audio.src;
+    document.getElementById("audio-label").textContent = lesson.audio.label;
+  } else {
+    aud.removeAttribute("src");
+    document.getElementById("audio-label").textContent = "No audio";
+  }
+
+  // Build section nav + panels
+  const nav = document.getElementById("section-nav");
+  nav.innerHTML = "";
+  const content = document.getElementById("content");
+  content.querySelectorAll(".lesson-panel").forEach(p=>p.remove());
+
+  lesson.sections.forEach((s,i) => {
+    // nav item
+    const div = document.createElement("div");
+    div.className = "nav-item" + (i===0?" active":"");
+    div.dataset.panel = s.id;
+    // label + visited dot
+    const labelSpan = document.createElement("span");
+    labelSpan.textContent = s.label;
+    labelSpan.style.flex = "1";
+    const dot = document.createElement("span");
+    dot.className = "visited-dot";
+    div.appendChild(labelSpan);
+    div.appendChild(dot);
+    if (visitedSections.has(s.id)) div.classList.add("visited");
+    nav.appendChild(div);
+    div.addEventListener("click", ()=>goPanel(s.id));
+
+    // panel — from <template> tag (built-in) or content string (user lesson)
+    const sec = document.createElement("section");
+    sec.className = "panel lesson-panel" + (i===0?" active":"");
+    sec.id = "panel-"+s.id;
+    if (s.contentId) {
+      const tpl = document.getElementById(s.contentId);
+      if (tpl) sec.appendChild(tpl.content.cloneNode(true));
+    } else if (s.content) {
+      const wrap = document.createElement("div");
+      wrap.innerHTML = s.content;
+      sec.appendChild(wrap);
+    }
+    content.insertBefore(sec, document.getElementById("panel-quiz"));
+  });
+
+  // Reset quiz
+  quizRendered=false;
+  Object.keys(mcSel).forEach(k=>delete mcSel[k]);
+  Object.keys(tfSel).forEach(k=>delete tfSel[k]);
+  document.getElementById("quiz-questions").innerHTML="";
+  document.getElementById("score-panel").classList.remove("show","compact");
+  document.getElementById("quiz-btns").style.display="flex";
+  document.getElementById("review-back").style.display="none";
+  document.getElementById("quiz-badge").textContent="—";
+  // (free answers for the NEW lesson will be restored when quiz renders)
+
+  // Restore saved score for this lesson
+  const saved = loadScore();
+  if (saved) {
+    document.getElementById("quiz-badge").textContent = saved.pct + "%";
+    updateScoreChip(saved);
+  }
+
+  // Mark active example
+  document.querySelectorAll(".lesson-sw").forEach(el=>{
+    el.classList.toggle("ex-active", el.dataset.lesson===key);
+  });
+
+  // KaTeX on static content (guide panel, etc.)
+  renderKatex(document.getElementById("panel-guide"));
+
+  // Navigate to first section — goPanel handles katex per-panel after injection
+  goPanel(lesson.sections[0].id);
+}
+
+function goPanel(id) {
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  const panel = document.getElementById("panel-"+id);
+  if (!panel) return;
+  panel.classList.add("active");
+  const navEl = document.querySelector(`[data-panel="${id}"]`);
+  if (navEl) navEl.classList.add("active");
+  // Update breadcrumb
+  const s = lesson.sections.find(s=>s.id===id);
+  document.getElementById("breadcrumb").textContent = s ? s.label : id==="quiz" ? "Quiz / Exam" : id==="guide" ? "Authoring Guide" : "";
+  // Track visited
+  if (s) {
+    visitedSections.add(id);
+    saveVisited([...visitedSections]);
+    saveSection(id);
+    const navEl2 = document.querySelector(`[data-panel="${id}"]`);
+    if (navEl2) navEl2.classList.add("visited");
+  }
+  if (id==="quiz") { renderQuiz(); return; }
+  if (id==="guide") { renderKatex(panel); animatePanel(id); return; }
+  if (id==="demo-media") {
+    requestAnimationFrame(()=>{ initDemoMedia(); animatePanel(id); renderKatex(panel); });
+    return;
+  }
+  injectTablesInPanel(id);
+  injectPlotsInPanel(id);
+  renderKatex(panel);        // run AFTER tables injected — safe to re-run (skips processed nodes)
+  animatePanel(id);
+}
+
+function animatePanel(id) {
+  const panel = document.getElementById("panel-"+id);
+  if (!panel) return;
+  const els = panel.querySelectorAll("h1,h2,h3,p,table,.math-display,.callout,.plot,.manim-slot,ul,ol,hr");
+  gsap.fromTo(els,{opacity:0,y:16},{opacity:1,y:0,duration:.4,stagger:.05,ease:"power2.out"});
+}
+
+function injectPlotsInPanel(id) {
+  if (!lesson || !lesson.plots) return;
+  const panel = document.getElementById("panel-"+id);
+  if (!panel) return;
+  panel.querySelectorAll("[data-plot]").forEach(el=>{
+    if (el.dataset.injected) return;
+    el.dataset.injected = "1";
+    const key    = el.dataset.plot;
+    const plotFn = lesson.plots[key];
+    if (!plotFn) return;
+    // Capture el reference — pass it directly to Plotly so no getElementById needed
+    const target = el;
+    const obs = new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if (!entry.isIntersecting) return;
+        obs.disconnect();
+        requestAnimationFrame(()=>{
+          requestAnimationFrame(()=>{ // double-rAF: ensures layout is fully resolved
+            try { plotFn(PLOT_LAYOUT, target); }
+            catch(e){ console.warn("Plot error ["+key+"]:",e); }
+          });
+        });
+      });
+    }, {threshold:0.01});
+    obs.observe(target);
+  });
+}
+
+function injectTablesInPanel(id) {
+  if (!lesson.tables) return;
+  const panel = document.getElementById("panel-"+id);
+  if (!panel) return;
+  panel.querySelectorAll("[id]").forEach(el=>{
+    const fn = lesson.tables[el.id];
+    if (fn && !el.dataset.injected) {
+      el.dataset.injected="1";
+      el.innerHTML = fn();
+    }
+  });
+}
+
+/* ── Audio ─────────────────────────────────── */
+const audioEl = document.getElementById("lesson-audio");
+audioEl.addEventListener("timeupdate",()=>{
+  if (!audioEl.duration) return;
+  document.getElementById("audio-fill").style.width=(audioEl.currentTime/audioEl.duration*100)+"%";
+});
+document.getElementById("audio-play").addEventListener("click",()=>{
+  if (!lesson.audio.src){ alert("No audio configured for this lesson."); return; }
+  const btn=document.getElementById("audio-play");
+  if (audioEl.paused){ audioEl.play(); btn.textContent="⏸"; }
+  else { audioEl.pause(); btn.textContent="▶"; }
+});
+
+/* ── Demo Media — synthesized audio + canvas animation ── */
+let demoAudioCtx = null, demoSource = null, demoStartTime = 0, demoAnimFrame = null;
+
+function initDemoMedia() {
+  const canvas = document.getElementById("demo-canvas");
+  const playBtn = document.getElementById("demo-audio-play");
+  const stopBtn = document.getElementById("demo-audio-stop");
+  if (!canvas || !playBtn) return; // panel not in DOM yet
+
+  // ── Canvas animation ──────────────────────
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  let t = 0;
+  function drawFrame() {
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, W, H);
+    // Animated sine wave
+    ctx.beginPath();
+    ctx.strokeStyle = "#5ecbff";
+    ctx.lineWidth = 2;
+    for (let x = 0; x < W; x++) {
+      const y = H/2 + Math.sin((x/W)*4*Math.PI + t) * H*0.28
+                     + Math.sin((x/W)*8*Math.PI + t*1.5) * H*0.1;
+      x === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    // Second wave
+    ctx.beginPath();
+    ctx.strokeStyle = "#fbbf24";
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.5;
+    for (let x = 0; x < W; x++) {
+      const y = H/2 + Math.cos((x/W)*6*Math.PI + t*0.8) * H*0.18;
+      x === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    // Label
+    ctx.fillStyle = "#64748b";
+    ctx.font = "11px monospace";
+    ctx.fillText("Canvas placeholder — replace with <video src='scene.mp4'>", 12, H-10);
+    t += 0.04;
+    demoAnimFrame = requestAnimationFrame(drawFrame);
+  }
+  if (demoAnimFrame) cancelAnimationFrame(demoAnimFrame);
+  drawFrame();
+
+  // ── Audio synthesis ───────────────────────
+  const DURATION = 3.0;
+  const bar      = document.getElementById("demo-audio-bar");
+  const timeEl   = document.getElementById("demo-audio-time");
+
+  function makeAudioBuffer(actx) {
+    const sr = actx.sampleRate, n = sr * DURATION;
+    const buf = actx.createBuffer(1, n, sr);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) {
+      const t = i / sr;
+      const env = Math.min(t/0.05, 1, (DURATION-t)/0.1);
+      data[i] = 0.35 * env * (
+        Math.sin(2*Math.PI*440*t) +
+        0.4*Math.sin(2*Math.PI*880*t) +
+        0.15*Math.sin(2*Math.PI*1320*t)
+      );
+    }
+    return buf;
+  }
+
+  function stopAudio() {
+    if (demoSource) { try { demoSource.stop(); } catch(_){} demoSource = null; }
+    if (demoAudioCtx) { demoAudioCtx.close(); demoAudioCtx = null; }
+    if (bar) { bar.style.width="0%"; }
+    if (timeEl) timeEl.textContent = "0.0 / "+DURATION.toFixed(1)+" s";
+    if (playBtn) playBtn.textContent = "▶ Play";
+  }
+
+  let rafId = null;
+  function trackProgress() {
+    if (!demoAudioCtx || !demoSource) return;
+    const elapsed = demoAudioCtx.currentTime - demoStartTime;
+    const pct = Math.min(elapsed / DURATION * 100, 100);
+    if (bar) bar.style.width = pct + "%";
+    if (timeEl) timeEl.textContent = Math.min(elapsed,DURATION).toFixed(1) + " / " + DURATION.toFixed(1) + " s";
+    if (elapsed < DURATION) rafId = requestAnimationFrame(trackProgress);
+    else { stopAudio(); }
+  }
+
+  if (playBtn._wired) return; // don't double-wire on re-entry
+  playBtn._wired = true;
+
+  playBtn.addEventListener("click", async ()=>{
+    stopAudio();
+    demoAudioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const buf = makeAudioBuffer(demoAudioCtx);
+    demoSource = demoAudioCtx.createBufferSource();
+    demoSource.buffer = buf;
+    demoSource.connect(demoAudioCtx.destination);
+    demoStartTime = demoAudioCtx.currentTime;
+    demoSource.start();
+    playBtn.textContent = "♪ Playing";
+    trackProgress();
+  });
+
+  stopBtn.addEventListener("click", stopAudio);
+}
+
+/* ── Quiz ──────────────────────────────────── */
+function gradeMath(latex, q) {
+  try {
+    const s=ce.parse(latex), e=ce.parse(q.answer);
+    if (q.numeric) {
+      const sv=s.N(), ev=e.N();
+      if (sv?.numericValue!=null && ev?.numericValue!=null)
+        return Math.abs(Number(sv.numericValue)-Number(ev.numericValue))<1e-4;
+    }
+    return s.isEqual(e)===true;
+  } catch(_){ return false; }
+}
+
+function renderQuiz() {
+  if (quizRendered) return;
+  quizRendered=true;
+  const container=document.getElementById("quiz-questions");
+  const mc=lesson.quiz.filter(q=>q.type==="math").length;
+  document.getElementById("quiz-meta").textContent=
+    `${lesson.quiz.length} questions · ${mc} symbolic math input`;
+  const labels={mc:"Multiple Choice",tf:"True / False",math:"Math Input",free:"Free Response"};
+
+  lesson.quiz.forEach((q,qi)=>{
+    const card=document.createElement("div");
+    card.className="q-card"; card.id="qcard-"+qi;
+
+    let inner=`<div class="q-num">Question ${qi+1} of ${lesson.quiz.length}</div>
+      <div class="q-result" id="qr-${qi}"></div>
+      <span class="q-type q-type-${q.type}">${labels[q.type]}</span>
+      <div class="q-stem">${escapeHTML(q.stem)}</div>`;
+
+    if (q.type==="mc") {
+      const keys=["A","B","C","D","E"];
+      inner+=`<div class="mc-options">`;
+      q.options.forEach((opt,oi)=>{
+        inner+=`<div class="mc-opt" data-qi="${qi}" data-oi="${oi}">
+          <span class="mc-key">${keys[oi]}</span><span>${escapeHTML(opt)}</span></div>`;
+      });
+      inner+=`</div>`;
+    }
+    if (q.type==="tf") {
+      inner+=`<div class="tf-options">
+        <div class="tf-btn" data-qi="${qi}" data-val="true">True</div>
+        <div class="tf-btn" data-qi="${qi}" data-val="false">False</div>
+      </div>`;
+    }
+    if (q.type==="math") {
+      inner+=`<math-field id="mf-${qi}" placeholder="Type or use the virtual keyboard…"></math-field>
+        <div class="math-hint-text">You can type LaTeX or use the virtual keyboard that appears below the field.</div>
+        <div class="expected" id="exp-${qi}"></div>`;
+    }
+    if (q.type==="free") {
+      const savedAns = loadFreeAnswer(qi);
+      inner+=`<textarea class="free-area" id="free-${qi}" placeholder="Write your response…">${savedAns}</textarea>`;
+    }
+    inner+=`<div class="q-feedback" id="fb-${qi}"></div>`;
+    card.innerHTML=inner;
+    container.appendChild(card);
+  });
+
+  // Restore MC/TF selections from localStorage
+  setTimeout(()=>{
+    lesson.quiz.forEach((q,qi)=>{
+      if (q.type==="mc") {
+        const saved = loadMCSel(qi);
+        if (saved!==null) {
+          mcSel[qi]=saved;
+          container.querySelectorAll(`[data-qi="${qi}"].mc-opt`).forEach((el,i)=>el.classList.toggle("selected",i===saved));
+        }
+      }
+      if (q.type==="tf") {
+        const saved = loadTFSel(qi);
+        if (saved!==null) {
+          tfSel[qi]=saved;
+          const tTrue  = container.querySelector(`[data-qi="${qi}"][data-val="true"]`);
+          const tFalse = container.querySelector(`[data-qi="${qi}"][data-val="false"]`);
+          if(tTrue)  tTrue.classList.toggle("selected",saved===true);
+          if(tFalse) tFalse.classList.toggle("selected",saved===false);
+        }
+      }
+    });
+  }, 70);
+
+  // Autosave free-response answers as user types
+  setTimeout(()=>{
+    lesson.quiz.forEach((q,qi)=>{
+      if (q.type!=="free") return;
+      const ta = document.getElementById("free-"+qi);
+      if (!ta) return;
+      ta.addEventListener("input", ()=>saveFreeAnswer(qi, ta.value));
+    });
+  }, 100);
+
+  // Event delegation
+  container.addEventListener("click",e=>{
+    const mc=e.target.closest(".mc-opt");
+    const tf=e.target.closest(".tf-btn");
+    if (mc) {
+      const qi=+mc.dataset.qi, oi=+mc.dataset.oi;
+      if (document.getElementById("qcard-"+qi).dataset.graded) return;
+      mcSel[qi]=oi;
+      saveMCSel(qi,oi);
+      container.querySelectorAll(`[data-qi="${qi}"].mc-opt`).forEach((el,i)=>el.classList.toggle("selected",i===oi));
+    }
+    if (tf) {
+      const qi=+tf.dataset.qi, val=tf.dataset.val==="true";
+      if (document.getElementById("qcard-"+qi).dataset.graded) return;
+      tfSel[qi]=val;
+      saveTFSel(qi,val);
+      container.querySelector(`[data-qi="${qi}"][data-val="true"]`).classList.toggle("selected",val===true);
+      container.querySelector(`[data-qi="${qi}"][data-val="false"]`).classList.toggle("selected",val===false);
+    }
+  });
+
+  setTimeout(()=>{
+    gsap.to(container.querySelectorAll(".q-card"),{opacity:1,y:0,duration:.35,stagger:.07,ease:"power2.out"});
+    renderKatex(container);
+  },60);
+}
+
+function submitQuiz() {
+  let correct=0, gradeable=0;
+  lesson.quiz.forEach((q,qi)=>{
+    const card=document.getElementById("qcard-"+qi);
+    card.dataset.graded="1";
+    const fb=document.getElementById("fb-"+qi);
+
+    if (q.type==="mc") {
+      gradeable++;
+      const sel=mcSel[qi];
+      if (sel===undefined){fb.className="q-feedback bad";fb.textContent="No answer selected.";return;}
+      const ok=sel===q.answer;
+      if(ok)correct++;
+      document.querySelectorAll(`[data-qi="${qi}"].mc-opt`).forEach((el,i)=>{
+        if(i===sel) el.classList.add(ok?"correct":"wrong");
+        if(!ok&&i===q.answer) el.classList.add("correct");
+      });
+      fb.className="q-feedback "+(ok?"ok":"bad");
+      fb.innerHTML=(ok?"✓ ":"✗ ")+q.feedback;
+      renderKatex(fb);
+      setResultBadge(qi, ok?"ok":"bad", ok?"✓ Correct":"✗ Incorrect");
+    }
+    if (q.type==="tf") {
+      gradeable++;
+      const sel=tfSel[qi];
+      if (sel===undefined){fb.className="q-feedback bad";fb.textContent="No answer selected.";return;}
+      const ok=sel===q.answer;
+      if(ok)correct++;
+      const trueBtn=document.querySelector(`[data-qi="${qi}"][data-val="true"]`);
+      const falseBtn=document.querySelector(`[data-qi="${qi}"][data-val="false"]`);
+      (sel?trueBtn:falseBtn).classList.add(ok?"correct":"wrong");
+      if(!ok)(q.answer?trueBtn:falseBtn).classList.add("correct");
+      fb.className="q-feedback "+(ok?"ok":"bad");
+      fb.innerHTML=(ok?"✓ ":"✗ ")+q.feedback;
+      renderKatex(fb);
+      setResultBadge(qi, ok?"ok":"bad", ok?"✓ Correct":"✗ Incorrect");
+    }
+    if (q.type==="math") {
+      gradeable++;
+      const mf=document.getElementById("mf-"+qi);
+      const latex=mf?.value.trim()||"";
+      if(!latex){fb.className="q-feedback bad";fb.textContent="No answer entered.";mf?.classList.add("wrong");return;}
+      const ok=gradeMath(latex,q);
+      if(ok)correct++;
+      mf?.classList.add(ok?"correct":"wrong");
+      if(mf) mf.readOnly=true;
+      fb.className="q-feedback "+(ok?"ok":"bad");
+      fb.innerHTML=(ok?"✓ ":"✗ ")+q.feedback;
+      renderKatex(fb);
+      setResultBadge(qi, ok?"ok":"bad", ok?"✓ Correct":"✗ Incorrect");
+      if(!ok){
+        const exp=document.getElementById("exp-"+qi);
+        if(exp){exp.classList.add("show");exp.innerHTML="Expected: \\("+q.answer+"\\)"+(q.hint?" — "+q.hint:"");renderKatex(exp);}
+      }
+    }
+    if (q.type==="free") {
+      const ta=document.getElementById("free-"+qi);
+      if(ta)ta.disabled=true;
+      fb.className="q-feedback note";
+      fb.innerHTML="📝 Recorded for review. "+q.feedback;
+      fb.style.display="block";
+      renderKatex(fb);
+      setResultBadge(qi, "note", "📝 Recorded");
+    }
+  });
+
+  const pct=gradeable?Math.round(correct/gradeable*100):0;
+  document.getElementById("quiz-btns").style.display="none";
+  const sp=document.getElementById("score-panel");
+  sp.classList.add("show");
+  const ring=document.getElementById("score-panel").querySelector(".score-ring");
+  ring.style.setProperty("--pct","0%");
+  document.getElementById("score-num").textContent="—";
+  gsap.fromTo(sp,{opacity:0,y:20},{opacity:1,y:0,duration:.45,ease:"power2.out",onComplete:()=>{
+    gsap.to({p:0},{p:pct,duration:1.1,ease:"power1.inOut",onUpdate:function(){
+      const v=Math.round(this.targets()[0].p);
+      ring.style.setProperty("--pct",v+"%");
+      document.getElementById("score-num").textContent=v+"%";
+    }});
+  }});
+  const grade=pct>=90?"Excellent":pct>=70?"Good":pct>=50?"Fair":"Needs Review";
+  document.getElementById("score-grade").textContent=`${correct}/${gradeable} auto-graded · ${grade}`;
+  document.getElementById("quiz-badge").textContent=pct+"%";
+  // Populate compact bar
+  document.getElementById("compact-pct-text").textContent = pct+"%";
+  document.getElementById("compact-label-text").textContent = `${correct}/${gradeable} correct · ${grade}`;
+  // Persist score
+  const scoreData = { pct, correct, gradeable, grade };
+  saveScore(scoreData);
+  updateScoreChip(scoreData);
+}
+
+function resetQuiz() {
+  quizRendered=false;
+  Object.keys(mcSel).forEach(k=>delete mcSel[k]);
+  Object.keys(tfSel).forEach(k=>delete tfSel[k]);
+  document.getElementById("quiz-questions").innerHTML="";
+  document.getElementById("score-panel").classList.remove("show");
+  document.getElementById("quiz-btns").style.display="flex";
+  document.getElementById("quiz-badge").textContent="—";
+  LS.remove(lsKey("score"));
+  clearQuizState();
+  updateScoreChip(null);
+  renderQuiz();
+}
+
+
+/* ── Editor modal open/close ───────────────── */
+function openEditor() {
+  document.getElementById("editor-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+  // Re-render current section preview now that modal is visible
+  requestAnimationFrame(() => {
+    if (edSecIdx >= 0) editorUpdatePreview();
+  });
+}
+function closeEditor() {
+  document.getElementById("editor-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+/* ══════════════════════════════════════════════
+   LESSON EDITOR ENGINE
+   Storage:
+     ml_user_index         → [{key, title}]
+     ml_user_lesson_{key}  → full lesson JSON
+══════════════════════════════════════════════ */
+
+// ── Editor state ───────────────────────────
+let edLesson = null;       // lesson being edited
+let edSecIdx  = -1;        // selected section index
+let edQIdx    = -1;        // selected question index
+let edPreviewTimer = null; // debounce handle
+let edCurrentKey = null;   // key of lesson being edited
+
+// ── Storage helpers ────────────────────────
+function editorIndex()          { return LS.get("ml_user_index") || []; }
+function editorGetSaved(key)    { return LS.get("ml_user_lesson_"+key); }
+function editorSaveLesson(key, lesson) {
+  LS.set("ml_user_lesson_"+key, lesson);
+  const idx = editorIndex().filter(e=>e.key!==key);
+  idx.push({ key, title: lesson.title || "Untitled" });
+  LS.set("ml_user_index", idx);
+}
+function editorDeleteLesson(key) {
+  LS.remove("ml_user_lesson_"+key);
+  LS.set("ml_user_index", editorIndex().filter(e=>e.key!==key));
+}
+function editorNewKey() { return "user_" + Date.now(); }
+
+// ── Refresh dropdown with user lessons ─────
+function editorRefreshDropdown() {
+  const sel   = document.getElementById("lesson-select");
+  const saved = document.getElementById("ed-saved-select");
+  // Remove old user entries from main dropdown
+  sel.querySelectorAll("[data-user]").forEach(o=>o.remove());
+  saved.innerHTML = "<option value=''>Load saved…</option>";
+  editorIndex().forEach(({key, title})=>{
+    const o1 = document.createElement("option");
+    o1.value = key; o1.textContent = "★ " + title; o1.dataset.user = "1";
+    sel.insertBefore(o1, sel.options[0]);  // prepend
+    const o2 = document.createElement("option");
+    o2.value = key; o2.textContent = title;
+    saved.appendChild(o2);
+  });
+}
+
+// ── Bootstrap the editor UI ────────────────
+function editorInit() {
+  // Toolbar
+  document.getElementById("ed-new-btn").addEventListener("click", editorNew);
+  document.getElementById("ed-save-btn").addEventListener("click", editorSave);
+  document.getElementById("ed-load-btn").addEventListener("click", editorLoadPreview);
+  document.getElementById("ed-saved-select").addEventListener("change", e=>{
+    if (e.target.value) editorOpenSaved(e.target.value);
+  });
+  document.getElementById("ed-title").addEventListener("input", e=>{
+    if (edLesson) edLesson.title = e.target.value;
+  });
+  // Tabs
+  document.querySelectorAll(".ed-tab").forEach(btn=>{
+    btn.addEventListener("click", ()=>editorSwitchTab(btn.dataset.tab));
+  });
+  // Content tab
+  document.getElementById("ed-add-sec").addEventListener("click", editorAddSection);
+  document.getElementById("ed-sec-label").addEventListener("input", e=>{
+    if (edLesson && edSecIdx>=0) {
+      edLesson.sections[edSecIdx].label = e.target.value;
+      editorRenderSecList();
+    }
+  });
+  document.getElementById("ed-sec-content").addEventListener("input", e=>{
+    if (edLesson && edSecIdx>=0) {
+      edLesson.sections[edSecIdx].content = e.target.value;
+      clearTimeout(edPreviewTimer);
+      edPreviewTimer = setTimeout(editorUpdatePreview, 350);
+    }
+  });
+  // Quiz tab
+  document.getElementById("ed-add-q").addEventListener("click", editorAddQuestion);
+  document.getElementById("ed-q-type").addEventListener("change", ()=>{
+    editorSyncQFromUI(); editorShowQFields();
+  });
+  ["ed-q-stem","ed-q-feedback","ed-math-answer","ed-math-hint",
+   "ed-opt-0","ed-opt-1","ed-opt-2","ed-opt-3"].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("input", editorSyncQFromUI);
+  });
+  document.getElementById("ed-math-numeric").addEventListener("change", editorSyncQFromUI);
+  document.getElementById("ed-tf-answer").addEventListener("change", editorSyncQFromUI);
+  document.querySelectorAll("input[name='ed-correct']").forEach(r=>{
+    r.addEventListener("change", editorSyncQFromUI);
+  });
+  // Settings tab
+  document.getElementById("ed-audio-src").addEventListener("input", e=>{
+    if (edLesson) edLesson.audio.src = e.target.value;
+  });
+  document.getElementById("ed-audio-label").addEventListener("input", e=>{
+    if (edLesson) edLesson.audio.label = e.target.value;
+  });
+  document.getElementById("ed-delete-btn").addEventListener("click", editorDelete);
+  document.getElementById("ed-export-btn").addEventListener("click", editorExport);
+  document.getElementById("ed-import-input").addEventListener("change", editorImport);
+  // Start blank
+  editorNew();
+}
+
+// ── Tab switching ──────────────────────────
+function editorSwitchTab(tab) {
+  document.querySelectorAll(".ed-tab").forEach(b=>b.classList.toggle("active", b.dataset.tab===tab));
+  document.querySelectorAll(".ed-tab-panel").forEach(p=>p.classList.toggle("active", p.id==="ed-tab-"+tab));
+}
+
+// ── Export lesson as JSON ──────────────────
+function editorExport() {
+  if (!edLesson || !edCurrentKey) { editorStatus("Save first."); return; }
+  const data = JSON.stringify(edLesson, null, 2);
+  const blob = new Blob([data], {type:"application/json"});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = (edLesson.title||"lesson").replace(/[^a-z0-9]/gi,"_") + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+  editorStatus("Exported ✓");
+}
+
+// ── Import lesson from JSON ────────────────
+function editorImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => {
+    try {
+      const parsed = JSON.parse(evt.target.result);
+      if (!parsed.sections || !parsed.quiz) throw new Error("Invalid lesson JSON");
+      edCurrentKey = editorNewKey();
+      edLesson = parsed;
+      edLesson.audio = edLesson.audio || {src:"", label:"Narration"};
+      document.getElementById("ed-title").value = edLesson.title || "";
+      document.getElementById("ed-audio-src").value   = edLesson.audio.src   || "";
+      document.getElementById("ed-audio-label").value = edLesson.audio.label || "Narration";
+      edSecIdx=-1; edQIdx=-1;
+      document.getElementById("ed-sec-editor").style.display="none";
+      document.getElementById("ed-q-editor").style.display="none";
+      editorRenderSecList();
+      editorRenderQList();
+      editorSave();
+      editorStatus("Imported ✓");
+    } catch(err) {
+      alert("Could not import: " + err.message);
+    }
+    e.target.value = ""; // reset file input
+  };
+  reader.readAsText(file);
+}
+
+// ── New blank lesson ───────────────────────
+function editorNew() {
+  edCurrentKey = null;
+  edSecIdx = -1; edQIdx = -1;
+  edLesson = {
+    title: "", audio: { src:"", label:"Narration" },
+    sections: [], quiz: [], plots:{}, tables:{}
+  };
+  editorPopulateFields();
+  editorRenderSecList();
+  editorRenderQList();
+}
+
+function editorPopulateFields() {
+  document.getElementById("ed-title").value         = edLesson.title || "";
+  document.getElementById("ed-audio-src").value     = edLesson.audio?.src   || "";
+  document.getElementById("ed-audio-label").value   = edLesson.audio?.label || "Narration";
+  document.getElementById("ed-saved-select").value  = edCurrentKey || "";
+  document.getElementById("ed-sec-editor").style.display = "none";
+  document.getElementById("ed-q-editor").style.display   = "none";
+  document.getElementById("ed-preview").innerHTML =
+    "<span style='color:var(--muted);font-size:.82rem;'>Add or select a section to preview.</span>";
+}
+
+// ── Open a saved lesson into editor ───────
+function editorOpenSaved(key) {
+  const saved = editorGetSaved(key);
+  if (!saved) return;
+  edCurrentKey = key;
+  edLesson = JSON.parse(JSON.stringify(saved)); // deep copy
+  edSecIdx = -1; edQIdx = -1;
+  editorPopulateFields();
+  editorRenderSecList();
+  editorRenderQList();
+  editorStatus("Loaded.");
+}
+
+// ── Save ───────────────────────────────────
+function editorSave() {
+  if (!edLesson) return;
+  edLesson.title = document.getElementById("ed-title").value.trim() || "Untitled";
+  if (!edCurrentKey) edCurrentKey = editorNewKey();
+  // Ensure all sections have unique ids
+  edLesson.sections.forEach((s,i)=>{
+    if (!s.id) s.id = edCurrentKey + "_s" + i;
+  });
+  editorSaveLesson(edCurrentKey, edLesson);
+  editorRefreshDropdown();
+  document.getElementById("ed-saved-select").value = edCurrentKey;
+  editorStatus("Saved ✓");
+}
+
+// ── Load into main app ─────────────────────
+function editorLoadPreview() {
+  editorSave();
+  if (!edCurrentKey) return;
+  document.getElementById("lesson-select").value = edCurrentKey;
+  boot(edCurrentKey);   // navigates to first section internally
+  closeEditor();        // close modal so the lesson is visible
+}
+
+// ── Delete ─────────────────────────────────
+function editorDelete() {
+  if (!edCurrentKey) return;
+  if (!confirm(`Delete "${edLesson.title||'Untitled'}"? This cannot be undone.`)) return;
+  editorDeleteLesson(edCurrentKey);
+  editorRefreshDropdown();
+  editorNew();
+  editorStatus("Deleted.");
+}
+
+// ── Status flash ───────────────────────────
+function editorStatus(msg) {
+  const el = document.getElementById("ed-status");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"), 2200);
+}
+
+// ── Section list ───────────────────────────
+function editorRenderSecList() {
+  const list = document.getElementById("ed-sec-list");
+  list.innerHTML = "";
+  if (!edLesson || edLesson.sections.length === 0) {
+    list.innerHTML = "<div style='font-size:.78rem;color:var(--muted);padding:.3rem 0;'>No sections yet.</div>";
+    return;
+  }
+  edLesson.sections.forEach((s,i)=>{
+    const item = document.createElement("div");
+    item.className = "ed-list-item" + (i===edSecIdx?" active":"");
+    item.innerHTML = `
+      <span class="ed-item-label">${escapeHTML(s.label||"Untitled section")}</span>
+      <button class="ed-item-btn" data-action="up"   title="Move up">↑</button>
+      <button class="ed-item-btn" data-action="down" title="Move down">↓</button>
+      <button class="ed-item-btn del-btn" data-action="del" title="Delete">✕</button>`;
+    item.addEventListener("click", e=>{
+      const action = e.target.dataset.action;
+      if (action==="up")  { editorMoveSection(i,-1); return; }
+      if (action==="down"){ editorMoveSection(i, 1); return; }
+      if (action==="del") { editorDeleteSection(i);  return; }
+      editorSelectSection(i);
+    });
+    list.appendChild(item);
+  });
+}
+
+function editorSelectSection(i) {
+  edSecIdx = i;
+  const s = edLesson.sections[i];
+  document.getElementById("ed-sec-editor").style.display = "block";
+  document.getElementById("ed-sec-label").value = s.label || "";
+  document.getElementById("ed-sec-content").value = s.content || "";
+  editorRenderSecList();
+  editorUpdatePreview();
+}
+
+function editorAddSection() {
+  if (!edLesson) return;
+  const n = edLesson.sections.length + 1;
+  edLesson.sections.push({ id:"", label:"\u00a7"+n+"  New Section", content:"<h1>New Section</h1><p>Write your content here. Use \\( math \\) for inline and \\[ display \\] for block math.</p>" });
+  editorRenderSecList();
+  editorSelectSection(edLesson.sections.length-1);
+}
+
+function editorDeleteSection(i) {
+  edLesson.sections.splice(i,1);
+  edSecIdx = Math.min(edSecIdx, edLesson.sections.length-1);
+  editorRenderSecList();
+  if (edLesson.sections.length===0) {
+    document.getElementById("ed-sec-editor").style.display="none";
+    document.getElementById("ed-preview").innerHTML="<span style='color:var(--muted);font-size:.82rem;'>No sections.</span>";
+  } else {
+    editorSelectSection(Math.max(0, i-1));
+  }
+}
+
+function editorMoveSection(i, dir) {
+  const j = i+dir;
+  if (j<0 || j>=edLesson.sections.length) return;
+  [edLesson.sections[i], edLesson.sections[j]] = [edLesson.sections[j], edLesson.sections[i]];
+  edSecIdx = j;
+  editorRenderSecList();
+  editorSelectSection(j);
+}
+
+function editorUpdatePreview() {
+  if (edSecIdx<0 || !edLesson) return;
+  const content = edLesson.sections[edSecIdx].content || "";
+  const pane = document.getElementById("ed-preview");
+  pane.innerHTML = content;
+  // Use rAF so the browser paints the modal before KaTeX walks the DOM —
+  // renderMathInElement skips text nodes inside display:none containers.
+  requestAnimationFrame(() => renderKatex(pane));
+}
+
+// ── Question list ──────────────────────────
+function editorRenderQList() {
+  const list = document.getElementById("ed-q-list");
+  list.innerHTML = "";
+  if (!edLesson || edLesson.quiz.length===0) {
+    list.innerHTML = "<div style='font-size:.78rem;color:var(--muted);padding:.3rem 0;'>No questions yet.</div>";
+    return;
+  }
+  const typeLabel = {mc:"MC",tf:"T/F",math:"Math",free:"Free"};
+  edLesson.quiz.forEach((q,i)=>{
+    const item = document.createElement("div");
+    item.className = "ed-list-item" + (i===edQIdx?" active":"");
+    item.innerHTML = `
+      <span class="q-type q-type-${q.type==="math"?"fill":q.type}" style="font-size:.6rem;padding:.1rem .4rem;flex-shrink:0;">${typeLabel[q.type]||q.type}</span>
+      <span class="ed-item-label">${escapeHTML((q.stem||"").substring(0,50))}${(q.stem||"").length>50?"…":""}</span>
+      <button class="ed-item-btn" data-action="up"   title="Move up">↑</button>
+      <button class="ed-item-btn" data-action="down" title="Move down">↓</button>
+      <button class="ed-item-btn del-btn" data-action="del" title="Delete">✕</button>`;
+    item.addEventListener("click", e=>{
+      const action = e.target.dataset.action;
+      if (action==="up")  { editorMoveQ(i,-1); return; }
+      if (action==="down"){ editorMoveQ(i, 1); return; }
+      if (action==="del") { editorDeleteQ(i);  return; }
+      editorSelectQ(i);
+    });
+    list.appendChild(item);
+  });
+}
+
+function editorSelectQ(i) {
+  edQIdx = i;
+  const q = edLesson.quiz[i];
+  document.getElementById("ed-q-editor").style.display = "block";
+  document.getElementById("ed-q-type").value     = q.type || "mc";
+  document.getElementById("ed-q-stem").value     = q.stem || "";
+  document.getElementById("ed-q-feedback").value = q.feedback || "";
+  // MC
+  (q.options||[]).forEach((opt,oi)=>{
+    const el = document.getElementById("ed-opt-"+oi);
+    if (el) el.value = opt;
+  });
+  const radios = document.querySelectorAll("input[name='ed-correct']");
+  radios.forEach(r=>{ r.checked = (+r.value === (q.answer||0)); });
+  // TF
+  document.getElementById("ed-tf-answer").value = String(q.answer ?? true);
+  // Math
+  document.getElementById("ed-math-answer").value  = q.answer || "";
+  document.getElementById("ed-math-numeric").checked = !!q.numeric;
+  document.getElementById("ed-math-hint").value    = q.hint || "";
+  editorRenderQList();
+  editorShowQFields();
+}
+
+function editorShowQFields() {
+  const type = document.getElementById("ed-q-type").value;
+  document.getElementById("ed-mc-fields").style.display   = type==="mc"   ? "block":"none";
+  document.getElementById("ed-tf-fields").style.display   = type==="tf"   ? "block":"none";
+  document.getElementById("ed-math-fields").style.display = type==="math" ? "block":"none";
+}
+
+function editorSyncQFromUI() {
+  if (!edLesson || edQIdx<0) return;
+  const type = document.getElementById("ed-q-type").value;
+  const q = edLesson.quiz[edQIdx];
+  q.type     = type;
+  q.stem     = document.getElementById("ed-q-stem").value;
+  q.feedback = document.getElementById("ed-q-feedback").value;
+  if (type==="mc") {
+    q.options = [0,1,2,3].map(i=>document.getElementById("ed-opt-"+i).value);
+    const checked = document.querySelector("input[name='ed-correct']:checked");
+    q.answer = checked ? +checked.value : 0;
+  } else if (type==="tf") {
+    q.answer = document.getElementById("ed-tf-answer").value === "true";
+  } else if (type==="math") {
+    q.answer  = document.getElementById("ed-math-answer").value;
+    q.numeric = document.getElementById("ed-math-numeric").checked;
+    q.hint    = document.getElementById("ed-math-hint").value;
+  }
+  editorRenderQList();
+}
+
+function editorAddQuestion() {
+  if (!edLesson) return;
+  edLesson.quiz.push({ type:"mc", stem:"", options:["","","",""], answer:0, feedback:"" });
+  editorRenderQList();
+  editorSelectQ(edLesson.quiz.length-1);
+}
+
+function editorDeleteQ(i) {
+  edLesson.quiz.splice(i,1);
+  edQIdx = Math.min(edQIdx, edLesson.quiz.length-1);
+  editorRenderQList();
+  if (edLesson.quiz.length===0) document.getElementById("ed-q-editor").style.display="none";
+  else if (edQIdx>=0) editorSelectQ(Math.max(0,i-1));
+}
+
+function editorMoveQ(i,dir) {
+  const j = i+dir;
+  if (j<0 || j>=edLesson.quiz.length) return;
+  [edLesson.quiz[i], edLesson.quiz[j]] = [edLesson.quiz[j], edLesson.quiz[i]];
+  edQIdx = j;
+  editorRenderQList();
+  editorSelectQ(j);
+}
+
+/* ── Review mode helpers ───────────────────── */
+function setResultBadge(qi, type, label) {
+  const el = document.getElementById("qr-"+qi);
+  if (!el) return;
+  el.className = "q-result show "+type;
+  el.textContent = label;
+}
+
+function enterReviewMode() {
+  const sp = document.getElementById("score-panel");
+  const rb = document.getElementById("review-back");
+  sp.classList.add("compact");
+  rb.style.display = "block";
+  // Smooth scroll to first question card
+  const firstCard = document.querySelector("#quiz-questions .q-card");
+  if (firstCard) firstCard.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+function exitReviewMode() {
+  const sp = document.getElementById("score-panel");
+  const rb = document.getElementById("review-back");
+  sp.classList.remove("compact");
+  rb.style.display = "none";
+  sp.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+/* ── Score chip helper ─────────────────────── */
+function updateScoreChip(data) {
+  const badge = document.getElementById("quiz-badge");
+  if (!data) {
+    badge.textContent = "—";
+    badge.className = "score-chip";
+    return;
+  }
+  badge.textContent = data.pct + "%";
+  badge.className = "score-chip " +
+    (data.pct>=70 ? "good" : data.pct>=50 ? "fair" : "poor");
+}
+
+/* ── Keyboard section navigation ───────────── */
+function navSection(dir) {
+  if (!lesson || !lesson.sections) return;
+  const ids   = lesson.sections.map(s=>s.id);
+  // Find currently active section
+  const active = document.querySelector(".lesson-panel.active");
+  const curId  = active ? active.id.replace("panel-","") : null;
+  const cur    = ids.indexOf(curId);
+  const next   = cur + dir;
+  if (next >= 0 && next < ids.length) goPanel(ids[next]);
+}
+
+/* ── Wire static listeners ─────────────────── */
+document.addEventListener("DOMContentLoaded",()=>{
+  // Static nav items (quiz, guide — always in sidebar)
+  document.querySelectorAll("#sidebar .nav-item[data-panel]").forEach(el=>{
+    el.addEventListener("click",()=>goPanel(el.dataset.panel));
+  });
+
+  // Print button
+  document.getElementById("print-btn").addEventListener("click", ()=>window.print());
+
+  // Keyboard navigation — ← → between sections (not when typing)
+  document.addEventListener("keydown", e=>{
+    const tag = document.activeElement?.tagName;
+    if (["INPUT","TEXTAREA","SELECT"].includes(tag)) return;
+    if (document.activeElement?.closest("math-field")) return;
+    if (document.getElementById("editor-overlay").classList.contains("open")) return;
+    if (e.key==="ArrowRight" || e.key==="ArrowDown")  { e.preventDefault(); navSection(1);  }
+    if (e.key==="ArrowLeft"  || e.key==="ArrowUp")    { e.preventDefault(); navSection(-1); }
+  });
+
+  // Editor modal
+  document.getElementById("nav-editor-btn").addEventListener("click", openEditor);
+  document.getElementById("editor-close-btn").addEventListener("click", closeEditor);
+  document.getElementById("editor-overlay").addEventListener("click", e=>{
+    if (e.target === document.getElementById("editor-overlay")) closeEditor();
+  });
+  document.addEventListener("keydown", e=>{
+    if (e.key === "Escape") closeEditor();
+  });
+
+  // Populate user lessons in dropdown + init editor
+  editorRefreshDropdown();
+  editorInit();
+
+  // Lesson dropdown
+  document.getElementById("lesson-select").addEventListener("change", e=>{
+    if (e.target.value) boot(e.target.value);
+  });
+  document.getElementById("btn-submit").addEventListener("click",submitQuiz);
+  document.getElementById("btn-reset").addEventListener("click",resetQuiz);
+  document.getElementById("btn-retake").addEventListener("click",resetQuiz);
+  document.getElementById("btn-review").addEventListener("click",enterReviewMode);
+  document.getElementById("btn-retake-compact").addEventListener("click",resetQuiz);
+  document.getElementById("review-back-btn").addEventListener("click",exitReviewMode);
+  // Restore last lesson and section from localStorage
+  const lastLesson = LS.get("ml_lesson") || ACTIVE_LESSON;
+  boot(lastLesson);
+  // Restore last section (after boot sets up panels)
+  const lastSection = LS.get("ml_section_" + lastLesson);
+  if (lastSection) {
+    // Small delay so panels are in DOM
+    setTimeout(()=>{ goPanel(lastSection); }, 50);
+  }
+});
+</script>
+</body>
+</html>
