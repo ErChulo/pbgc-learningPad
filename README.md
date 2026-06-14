@@ -1,6 +1,19 @@
 # pbgc-learningPad
 ### Notes tool to enhance the actuarial-mathematical learning.
 
+## v3.4
+
+Every lesson section now has a ▶ My Notes panel at the bottom:
+
+Click to expand — textarea autofocuses
+Types automatically save 400ms after you stop — no save button needed
+Gold dot on the toggle tells you at a glance which sections have notes
+Auto-opens when you return to a section that has saved notes
+Clear button wipes the note with a confirmation
+Prints with your lesson — notes appear inline below each section with a yellow background
+
+Notes are keyed per lesson + per section, so switching lessons never mixes them up.
+
 ## v3.3
 Three patches:
 
