@@ -1,6 +1,19 @@
 # pbgc-learningPad
 ### Notes tool to enhance the actuarial-mathematical learning.
 
+## 3.5
+
+full mobile layout.
+On phone/tablet (≤768px):
+
+☰ button in the top bar opens the sidebar as a slide-in panel
+Tap the dark backdrop or any nav item to close it
+Editor modal slides up from the bottom (sheet style)
+Everything reflows to single column — no horizontal overflow
+Tables scroll horizontally if they're wide
+
+On desktop — nothing changed, hamburger is hidden, layout is identical to v3.4.
+
 ## v3.4
 
 Every lesson section now has a ▶ My Notes panel at the bottom:
