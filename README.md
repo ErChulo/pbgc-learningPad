@@ -1,6 +1,20 @@
 # pbgc-learningPad
-Notes tool to enhance the actuarial-mathematical learning.
----
+### Notes tool to enhance the actuarial-mathematical learning.
+
+## v3.3
+Three patches:
+
+    - Preview: call initExploreWidgets after renderKatex in editorUpdatePreview
+    - 3D performance: throttle draw3d with requestAnimationFrame and a pending flag
+    - MathLive UX: better hint + keyboard shortcut label + auto-focus on field click
+
+Three fixes shipped:
+
+#1 — Explore widgets in preview: Insert a 2D plot or exercise widget in the editor, and the preview pane renders it live — sliders work, Check buttons work, everything. No more seeing raw HTML.
+
+#2 — 3D/2D performance: Both widgets now use a requestAnimationFrame throttle flag. No matter how fast you drag a slider, only one Plotly redraw fires per frame. The 3D surface at high frequencies is now smooth.
+
+#3 — MathLive discoverability: The placeholder now says Type LaTeX e.g. \frac{1}{2} instead of a vague message. The hint bar shows four concrete examples (\frac{a}{b}, \sqrt{x}, x^2, \cos(x)) as styled code chips so users immediately know the syntax.
 
 ## v3.2 — Insert toolbar in the editor's Sections tab.
 
