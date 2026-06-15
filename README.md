@@ -1,6 +1,10 @@
 # pbgc-learningPad
 ### Notes tool to enhance the actuarial-mathematical learning.
 
+## 3.6
+
+section completion marking and lesson table of contents
+
 ## 3.5
 
 full mobile layout.
