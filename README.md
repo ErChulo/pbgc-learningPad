@@ -1,6 +1,26 @@
 # pbgc-learningPad
 ### Notes tool to enhance the actuarial-mathematical learning.
 
+## 3.7.1
+
+Two root causes before touching anything:
+
+TikZJax: Our .tikz-source div approach is wrong. TikZJax’s MutationObserver watches for <script type="text/tikz"> appearing in the live DOM. We should put the script tags directly in the templates — they’re inert inside <template> blocks, then become live when cloned. Our engine then just needs to add a loading indicator and watch for SVG output.
+
+KaTeX: Two issues. First, renderMathInElement is running before Mermaid finishes (Mermaid is async) — if Mermaid node labels contain math they won’t render. Second, Mermaid/JSXGraph SVG output contains text elements that KaTeX tries to parse as math when called again, corrupting them. Fix: add ignoredTags including svg, and call KaTeX a second time after a short delay to catch any async content.
+
+## 3.7
+
+v3.7 — three new libraries, fully integrated with edge cases handled.
+
+Mermaid.js — write diagrams as text in <pre class="mermaid"> blocks. Dark-themed. Error messages appear inline if syntax is wrong. Demo §5 has a Bayesian flowchart and a PBGC case lifecycle sequence diagram.
+
+TikZJax — standard LaTeX TikZ syntax, rendered via WebAssembly. Content goes in .tikz-source divs (not <script> tags — those break inside <template> elements). Loading spinner shows while WASM runs, 30-second timeout with a clear error if it stalls. First load fetches ~6MB binary, cached by browser after that. Demo §5 has the unit circle and a normal PDF.
+
+JSXGraph — interactive geometry with draggable objects. Board functions are registered by name in JSXGRAPH_BOARDS and referenced via data-init attribute. All boards are properly destroyed on lesson switch to prevent memory leaks. Two built-in boards: circle theorem (inscribed angle stays 90° over a diameter) and derivative explorer (drag a point, watch the tangent line and live f’(x) value).
+
+Insert toolbar has three new buttons: ⬡ Mermaid, ∇ TikZ, ⊹ JSXGraph — each inserts a working skeleton.
+
 ## 3.6
 
 section completion marking and lesson table of contents
