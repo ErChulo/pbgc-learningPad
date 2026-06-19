@@ -1,1 +1,15 @@
+## v3.7.5 - chatGPT
 
+Built on top of v3.7.4.
+
+Included:
+
+Draggable lesson editor modal
+Resizable lesson editor modal
+Expanded/fullscreen editor mode
+Reset editor-window button
+Persistent editor size/position
+Larger editing areas
+Mobile-safe editor behavior
+No TikZJax
+JavaScript syntax check passed.
