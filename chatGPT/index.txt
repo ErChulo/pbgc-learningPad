@@ -13,3 +13,14 @@ Larger editing areas
 Mobile-safe editor behavior
 No TikZJax
 JavaScript syntax check passed.
+
+## v3.7.4 - chatGPT
+
+Included:
+
+Collapsible / hidden sidebar
+Wide-content mode
+Persistent layout settings
+Responsive guardrails
+No TikZJax
+JavaScript syntax check passed.
