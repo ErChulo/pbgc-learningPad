@@ -1,3 +1,29 @@
+## v3.7.6.3
+
+Changes made
+Fixed KaTeX readiness issue by adding a post-load renderer safety pass.
+Added repair for JSON-overescaped LaTeX such as \\(...\\) and \\[...\\].
+Kept currency-dollar protection before KaTeX rendering.
+Replaced Mermaid mermaid.run() flow with direct mermaid.render() per diagram.
+Mermaid no longer marks a diagram as completed before successful rendering.
+Mermaid loading spinner now stays only while actually loading/rendering.
+Added retry behavior for Mermaid library loading.
+Added visible Mermaid failure message if the renderer does not load.
+JavaScript syntax check passed.
+No TikZJax.
+Manual tests
+Open the file fresh without navigating away first.
+Go directly to the section with the Bayesian Mermaid loop.
+Confirm the Mermaid spinner appears briefly.
+Confirm the Mermaid diagram renders without needing to switch lessons.
+Go directly to Example — PBGC Valuation.
+Confirm \(...\) and \[...\] do not remain visible.
+Confirm the PBGC equation renders as KaTeX.
+Confirm dollar amounts render as dollar amounts, not raw \$.
+Test a user lesson with JSON-overescaped math like \\(x^2\\).
+Confirm regular math $x^2$, \(...\), and \[...\] still render.
+Check browser console for Mermaid or KaTeX errors.
+
 ## v3.7.6.2
 
 Changes made — v3.7.6.2
