@@ -1,27 +1,3 @@
-## v3.7.6
-
-Changes made:
-
-Re-implemented export model cleanup for v3.7.6.
-Added schemaVersion: "mathlesson.lesson.v1" and exportedFrom: "mathlesson.v3.7.6".
-Added full active-lesson export, including built-in lessons.
-Added blockInventory generation for Plotly, Arquero, Mermaid, JSXGraph, Manim, SVG, and code blocks.
-Omitted empty plots and tables from exported JSON.
-Preserved legacy plots / tables only when populated.
-Added import normalization for exported v3.7.6 JSON.
-Added runtime support for re-imported legacy plot/table function registries.
-Did not add TikZJax.
-Did not modify Mermaid or KaTeX renderer logic.
-Manual tests:
-
-Open mathlesson.v3.7.6.html.
-Export Active Lesson for Framework Demo; confirm JSON includes schemaVersion, exportedFrom, sections[*].content, quiz, and blockInventory.
-Confirm exported JSON does not contain empty plots: {} or tables: {}.
-Re-import exported built-in lesson and preview it.
-Confirm legacy Plotly chart and Arquero table still render after re-import.
-Export a user-created lesson with inline Plotly and Arquero blocks; confirm those appear in blockInventory.
-Confirm Mermaid and KaTeX examples still render.
-
 ## v3.7.5 - chatGPT
 
 Built on top of v3.7.4.
