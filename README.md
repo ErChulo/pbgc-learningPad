@@ -9,6 +9,12 @@ TikZJax: Our .tikz-source div approach is wrong. TikZJax’s MutationObserver wa
 
 KaTeX: Two issues. First, renderMathInElement is running before Mermaid finishes (Mermaid is async) — if Mermaid node labels contain math they won’t render. Second, Mermaid/JSXGraph SVG output contains text elements that KaTeX tries to parse as math when called again, corrupting them. Fix: add ignoredTags including svg, and call KaTeX a second time after a short delay to catch any async content.
 
+(second update)
+
+TikZJax: The engine was creating <script> elements dynamically and hoping TikZJax’s MutationObserver would catch them mid-WASM-load — unreliable. Now TikZ code lives directly in <script type="text/tikz"> inside <template> tags. They’re inert there, become live when the template is cloned into the DOM, and TikZJax catches them reliably. initTikZ() now only manages the loading spinner and a watchForSVG() helper with a 30-second timeout.
+
+KaTeX: Two fixes — added ignoredTags: ['svg', 'script', 'pre', 'code', ...] and ignoredClasses: ['mermaid', 'jxgbox', ...] so KaTeX never touches Mermaid SVG or JSXGraph boards. Added a second KaTeX pass 600ms after the first to catch content added by async engines like Mermaid. Both passes wrapped in try/catch so one bad element never kills the rest.
+
 ## 3.7
 
 v3.7 — three new libraries, fully integrated with edge cases handled.
