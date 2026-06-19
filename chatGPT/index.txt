@@ -1,3 +1,52 @@
+## v3.7.6.1
+
+Fixed:
+
+Bare currency values like $24,000 no longer break KaTeX rendering.
+Added automatic currency-dollar protection before KaTeX render.
+Updated Authoring Guide with currency-dollar rules.
+Updated PBGC valuation example and other dollar-value examples.
+Removed remaining TikZJax residue.
+JavaScript syntax check passed.
+
+Test:
+
+Open Example — PBGC Valuation.
+Confirm the display equation renders.
+Confirm \$24{,}000 and \$159{,}400 display as dollar amounts.
+Test a new lesson section with a bare value like $275,000.
+Confirm normal math like $x^2$ still renders.
+
+## v3.7.6
+
+Built on top of v3.7.5.
+
+Included:
+
+Export active built-in lesson JSON
+Export editor lesson JSON
+Export schema metadata
+blockInventory
+Legacy plots / tables cleanup
+No empty plots: {} / tables: {} in exports
+Legacy function registries exported as source strings
+Import normalization for exported lessons
+JavaScript syntax check passed
+No TikZJax
+
+Test on your end:
+
+Export a built-in lesson as active lesson JSON.
+Confirm JSON has schemaVersion, exportedFrom, sourceKind, sections, quiz, and blockInventory.
+Confirm built-in plots/tables are represented under legacyRegistries, not empty plots / tables.
+Import the exported built-in JSON.
+Save it as a user lesson.
+Preview it and confirm legacy plots/tables still render.
+Export a user-created lesson with inline Plotly/Arquero blocks.
+Confirm no empty plots: {} / tables: {} appear.
+Confirm blockInventory lists inserted Plotly, Arquero, Mermaid, JSXGraph, Manim, or SVG blocks.
+Do a full export → import → save → preview round trip.
+
 ## v3.7.5 - chatGPT
 
 Built on top of v3.7.4.
