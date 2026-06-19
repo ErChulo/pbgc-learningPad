@@ -1,3 +1,51 @@
+## v3.7.6.2
+
+Changes made — v3.7.6.2
+Added KaTeX auto-render retry when renderMathInElement is not ready yet.
+Fixed delayed KaTeX loading that caused raw \(...\) and \[...\] to remain visible.
+Added automatic protection for bare currency dollars before KaTeX runs.
+Updated the Authoring Guide currency-dollar instructions.
+Updated PBGC valuation and other dollar-value examples.
+Added renderer loading feedback CSS:
+spinner
+loading message card
+Added Mermaid loading feedback:
+“Loading Mermaid renderer…”
+“Rendering Mermaid diagram…”
+Added Mermaid retry logic while the external library is still loading.
+Added Mermaid failure message if the CDN/library does not load.
+Removed remaining TikZJax residue.
+
+Manual tests
+Open Example — PBGC Valuation.
+Confirm the sentence does not show raw \( or \[.
+Confirm the display equation renders.
+Confirm dollar amounts display as $24,000 and $159,400, not \$24,000.
+
+Create a test section with bare currency:
+
+<p>Benefit is $275,000 per year.</p>
+
+Confirm it does not break KaTeX.
+
+Create a test section with escaped currency:
+
+<p>Benefit is \$275{,}000 per year.</p>
+
+Confirm it displays correctly.
+
+Confirm normal inline math still works:
+
+$x^2 + y^2 = z^2$
+Confirm \(...\) inline math still works.
+Confirm \[...\] display math still works.
+Open the Bayesian flowchart section.
+Confirm a spinner/message appears while Mermaid loads/renders.
+Confirm the Mermaid diagram eventually renders.
+Confirm no silent blank area appears during Mermaid delay.
+Re-test Plotly, JSXGraph, Arquero, Manim, and SVG sections.
+Check browser console for serious errors.
+
 ## v3.7.6.1
 
 Fixed:
