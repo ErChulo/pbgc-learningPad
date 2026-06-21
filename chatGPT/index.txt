@@ -1,3 +1,41 @@
+## v4.0 - all interim in emails
+
+Changes made:
+
+Implemented v4.0.0 — Structured Mathematical Workbench.
+Used mathlesson.v3.9.12-fix5.html as the confirmed baseline.
+Added Reference → Structured Workbench.
+Added structured section-to-block parsing.
+Added structured block records for:
+headings,
+paragraphs,
+math displays,
+callouts,
+Mermaid blocks,
+tables,
+generic HTML blocks,
+break blocks.
+Added structured block editor:
+block type,
+title / label,
+block body,
+live preview.
+Added structured block actions:
+apply block record,
+rebuild section HTML,
+add paragraph,
+add math,
+delete block,
+save structured draft,
+preview structured draft.
+Added structuredBlocks metadata to JSON export.
+Updated Authoring Guide with the Structured Mathematical Workbench section.
+Updated roadmap to v3.9.12-fix5 → v4.0.0.
+Preserved Author Workspace, Lesson Planner, Reveal Export Planner, Print/PDF Planner, JSON export, Calculator, Statistics, theme, and Reveal export.
+PowerPoint remains deferred until after v4.0.
+Kept TikZJax out.
+JavaScript module syntax check passed.
+
 ## v3.7.5 - chatGPT
 
 Built on top of v3.7.4.
