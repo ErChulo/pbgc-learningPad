@@ -1,0 +1,882 @@
+{
+  "schemaVersion": "mathlesson.lesson.v1",
+  "exportedFrom": "mathlesson.v4.0.0",
+  "exportedAt": "2026-06-21T17:34:49.921Z",
+  "source": "user",
+  "lessonKey": "user_1782056693235",
+  "title": "Planar Curves in Differential Geometry — Clean Import Demo v4 — Structured Draft",
+  "audio": {
+    "src": "",
+    "label": "No audio"
+  },
+  "sections": [
+    {
+      "id": "pc-intro",
+      "label": "§1 Overview",
+      "title": "Overview and lesson map",
+      "content": "<h1>Planar Curves in Differential Geometry</h1>\n\n<p class=\"quiz-meta\">Imported JSON demo lesson · showcases MathLesson renderers, export planners, quiz types, and author controls.</p>\n\n<hr>\n\n<div class=\"callout def avoid-break\">\n  <div class=\"callout-tag\">Lesson objective</div>\n  <p>Understand a planar curve as a parametrized map, compute velocity and speed, form a moving frame, interpret curvature, and test several MathLesson block types from an imported JSON file.</p>\n</div>\n\n<p>A <strong>planar curve</strong> is a map</p>\n\n<div class=\"math-display\">\\[ \\gamma:I\\subset\\mathbb{R}\\to\\mathbb{R}^2,\\qquad t\\mapsto (x(t),y(t)). \\]</div>\n\n<p>The parameter \\(t\\) may represent time, angle, arc length, or just an ordering variable. The same geometric trace may be traversed by different parametrizations.</p>\n\n<table class=\"avoid-break\">\n  <thead><tr><th>Object</th><th>Symbol</th><th>Meaning</th></tr></thead>\n  <tbody>\n    <tr><td>Position</td><td>\\(\\gamma(t)\\)</td><td>Point on the curve</td></tr>\n    <tr><td>Velocity</td><td>\\(\\gamma'(t)\\)</td><td>Direction and speed of travel</td></tr>\n    <tr><td>Speed</td><td>\\(v(t)=\\|\\gamma'(t)\\|\\)</td><td>Magnitude of velocity</td></tr>\n    <tr><td>Unit tangent</td><td>\\(T(t)\\)</td><td>Normalized direction of travel</td></tr>\n    <tr><td>Curvature</td><td>\\(\\kappa(t)\\)</td><td>Turning rate of the tangent direction</td></tr>\n  </tbody>\n</table>\n\n<div class=\"callout rmk\">\n  <div class=\"callout-tag\">Authoring note</div>\n  <p>This sample intentionally includes rich HTML, KaTeX math, callouts, tables, Plotly/Explore widgets, Mermaid, JSXGraph, Arquero, Statistics blocks, SVG, Manim placeholders, inline exercises, and rich quiz stems.</p>\n</div>"
+    },
+    {
+      "id": "pc-velocity",
+      "label": "§2 Velocity",
+      "title": "Velocity, speed, and regularity",
+      "content": "<h1>Velocity and Speed</h1>\n\n<p>Differentiate the coordinate functions to obtain the velocity vector:</p>\n\n<div class=\"math-display\">\\[ \\gamma'(t)=(x'(t),y'(t)). \\]</div>\n\n<p>A curve is called <strong>regular</strong> when \\(\\gamma'(t)\\neq 0\\) for all relevant \\(t\\).</p>\n\n<div class=\"callout def avoid-break\">\n  <div class=\"callout-tag\">Speed</div>\n  <p>The speed of \\(\\gamma(t)=(x(t),y(t))\\) is</p>\n  <div class=\"math-display\">\\[ v(t)=\\|\\gamma'(t)\\|=\\sqrt{(x'(t))^2+(y'(t))^2}. \\]</div>\n</div>\n\n<div class=\"callout ex avoid-break\">\n  <div class=\"callout-tag\">Worked example</div>\n  <p>For \\(\\gamma(t)=(t,t^2)\\),</p>\n  <div class=\"math-display\">\\[ \\gamma'(t)=(1,2t),\\qquad v(t)=\\sqrt{1+4t^2}. \\]</div>\n</div>\n\n<div class=\"callout ex avoid-break\">\n  <div class=\"callout-tag\">Practice check</div>\n  <p>For \\(\\gamma(t)=(t,t^2)\\), compute the speed at \\(t=1\\).</p>\n  <p><strong>Expected answer:</strong> \\(\\sqrt{5}\\). Use the quiz section for interactive checking.</p>\n</div>"
+    },
+    {
+      "id": "pc-frame",
+      "label": "§3 Moving frame",
+      "title": "Tangent and normal directions",
+      "content": "<h1>Tangent and Normal</h1>\n\n<p>The <strong>unit tangent</strong> is the normalized velocity vector:</p>\n\n<div class=\"math-display\">\\[ T(t)=\\frac{\\gamma'(t)}{\\|\\gamma'(t)\\|}. \\]</div>\n\n<p>In the plane, a normal direction can be obtained by rotating \\(T=(a,b)\\) by 90 degrees:</p>\n\n<div class=\"math-display\">\\[ N=(-b,a). \\]</div>\n\n<div class=\"svg-wrap avoid-break\" data-title=\"Tangent-normal sketch\">\n  <svg viewBox=\"0 0 620 280\" role=\"img\" aria-label=\"Planar curve with tangent and normal arrows\">\n    <defs>\n      <marker id=\"arrow-pc-sample\" viewBox=\"0 0 10 10\" refX=\"8\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\">\n        <path d=\"M 0 0 L 10 5 L 0 10 z\" fill=\"currentColor\"></path>\n      </marker>\n    </defs>\n    <rect x=\"0\" y=\"0\" width=\"620\" height=\"280\" fill=\"rgba(255,255,255,0.02)\"></rect>\n    <path d=\"M45,210 C130,55 245,230 330,120 C420,5 510,130 575,70\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"4\" opacity=\"0.75\"></path>\n    <circle cx=\"330\" cy=\"120\" r=\"7\" fill=\"currentColor\"></circle>\n    <line x1=\"330\" y1=\"120\" x2=\"425\" y2=\"82\" stroke=\"currentColor\" stroke-width=\"3\" marker-end=\"url(#arrow-pc-sample)\"></line>\n    <line x1=\"330\" y1=\"120\" x2=\"370\" y2=\"214\" stroke=\"currentColor\" stroke-width=\"3\" marker-end=\"url(#arrow-pc-sample)\" opacity=\"0.65\"></line>\n    <text x=\"435\" y=\"82\" font-size=\"22\" fill=\"currentColor\">T</text>\n    <text x=\"378\" y=\"232\" font-size=\"22\" fill=\"currentColor\">N</text>\n    <text x=\"285\" y=\"108\" font-size=\"16\" fill=\"currentColor\">γ(t)</text>\n  </svg>\n</div>\n\n<div class=\"callout rmk\">\n  <div class=\"callout-tag\">SVG black</div>\n  <p>The diagram above is deterministic SVG, so it is useful for export and print testing my nigger.</p>\n</div>"
+    },
+    {
+      "id": "pc-curvature-plotly",
+      "label": "§4 Curvature + Plotly",
+      "title": "Curvature and interactive graphs",
+      "content": "<h1>Curvature and Interactive Graphs</h1>\n\n<p>For a regular planar curve in $\\R^2$, \\(\\gamma(t)=(x(t),y(t))\\), one common curvature formula is</p>\n\n<div class=\"math-display\">\\[ \\kappa(t)=\\frac{|x'(t)y''(t)-y'(t)x''(t)|}{\\left((x'(t))^2+(y'(t))^2\\right)^{3/2}}, \\text{with} \\left|T'(t)\\right| \\ne 0. \\]</div>\n\n<div class=\"callout thm avoid-break\">\n  <div class=\"callout-tag\">Circle rule</div>\n  <p>A circle of radius \\(R\\) has constant curvature \\(\\kappa=1/R\\).</p>\n</div>\n\n<h2>Plotly / Explore 2D widget</h2>\n\n<p>The widget below is a graph-style planar curve \\(y=a\\sin(bx)\\). It tests imported interactive Plotly/Explore content.</p>\n\n<div class=\"explore-widget print-full-width avoid-break\" data-explore=\"2d\" data-title=\"Planar graph y = a sin(bx)\" data-params=\"[{&quot;id&quot;:&quot;a&quot;,&quot;label&quot;:&quot;amplitude a&quot;,&quot;min&quot;:0.2,&quot;max&quot;:2.0,&quot;step&quot;:0.1,&quot;value&quot;:1.0},{&quot;id&quot;:&quot;b&quot;,&quot;label&quot;:&quot;frequency b&quot;,&quot;min&quot;:0.5,&quot;max&quot;:3.0,&quot;step&quot;:0.1,&quot;value&quot;:1.0}]\" data-fn=\"(x,p)=&gt;p.a*Math.sin(p.b*x)\" data-xrange=\"[-6.283,6.283]\" data-xlabel=\"x\" data-ylabel=\"a sin(bx)\" style=\"height:340px;\"></div>"
+    },
+    {
+      "id": "pc-mermaid-jsx",
+      "label": "§5 Mermaid + JSXGraph",
+      "title": "Diagrams and geometry board",
+      "content": "<h1>Mermaid and JSXGraph</h1>\n\n<p>The following blocks test Mermaid and JSXGraph inside an imported lesson.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Planar curve computation workflow</div><pre class=\"mermaid\">flowchart LR\nA --&gt; B\nB --&gt; C\nC --&gt; D</pre></div>\n\n<table class=\"avoid-break\"><thead><tr><th>Node</th><th>Meaning</th></tr></thead><tbody><tr><td>A</td><td>Curve</td></tr><tr><td>B</td><td>Differentiate</td></tr><tr><td>C</td><td>Velocity</td></tr><tr><td>D</td><td>Speed</td></tr><tr><td>E</td><td>Unit tangent</td></tr><tr><td>F</td><td>Normal</td></tr><tr><td>G</td><td>Curvature</td></tr></tbody></table>\n\n<hr class=\"slide-break\">\n\n<h2>JSXGraph board</h2>\n\n<p>The board below gives draggable control points for a quadratic Bézier-style curve and draws tangent-like helper segments.</p>\n\n<div class=\"jsx-wrap print-full-width avoid-break\" data-jsx=\"planar-curve-board\" data-title=\"JSXGraph — draggable planar curve controls\" style=\"height:360px;\">\n  <script type=\"text/jsxgraph\">\nboard.suspendUpdate();\nboard.setBoundingBox([-5, 4, 5, -4], true);\nconst A = board.create('point', [-3, -1], {name:'A', size:4});\nconst B = board.create('point', [0, 2], {name:'B', size:4});\nconst C = board.create('point', [3, -1], {name:'C', size:4});\nconst curve = board.create('curve', [\n  t => (1-t)*(1-t)*A.X() + 2*(1-t)*t*B.X() + t*t*C.X(),\n  t => (1-t)*(1-t)*A.Y() + 2*(1-t)*t*B.Y() + t*t*C.Y(),\n  0, 1\n], {strokeColor:'#5ecbff', strokeWidth:3});\nboard.create('segment', [A,B], {dash:2, strokeColor:'#a78bfa'});\nboard.create('segment', [B,C], {dash:2, strokeColor:'#a78bfa'});\nboard.create('text', [-4.7, 3.4, 'Drag A, B, C to reshape the planar curve.'], {fontSize:14});\nboard.unsuspendUpdate();\n  </script>\n</div>"
+    },
+    {
+      "id": "pc-stat-arquero",
+      "label": "§6 Statistics + Arquero",
+      "title": "Sample curvature data",
+      "content": "<h1>Statistics and Arquero Blocks</h1>\n<p>This section treats a fake list of curvature measurements as sample data. The values are illustrative, not mathematically derived.</p>\n\n<div class=\"stat-block avoid-break\" data-stat-type=\"summary\" data-stat-title=\"Curvature sample summary\" data-stat-config='{\"op\":\"summary\",\"data\":\"0.18, 0.22, 0.25, 0.31, 0.37, 0.41, 0.44, 0.52, 0.60, 0.74\"}'></div>\n\n<div class=\"aq-wrap avoid-break\" data-title=\"Arquero — grouped curve features\">\n  <script type=\"text/arquero\">\nconst raw = [\n  {curve:'circle', family:'closed', curvature:0.50, examples:4},\n  {curve:'ellipse', family:'closed', curvature:0.72, examples:3},\n  {curve:'parabola', family:'open', curvature:0.31, examples:5},\n  {curve:'spiral', family:'open', curvature:0.44, examples:2}\n];\nconst tbl = aq.from(raw)\n  .groupby('family')\n  .rollup({\n    curves: d => aq.op.count(),\n    avg_curvature: d => aq.op.mean(d.curvature),\n    total_examples: d => aq.op.sum(d.examples)\n  });\nreturn renderAqTable(tbl, 'Grouped curve summary');\n  </script>\n</div>\n\n<div class=\"callout rmk\">\n  <div class=\"callout-tag\">Data note</div>\n  <p>Statistics and Arquero blocks are useful for lessons that mix mathematical theory with tabular or empirical examples.</p>\n</div>"
+    },
+    {
+      "id": "pc-3d-manim",
+      "label": "§7 3D + Manim placeholder",
+      "title": "3D surface and video placeholder",
+      "content": "<h1>3D Plotly Surface and Manim Placeholder</h1>\n<p>Although the topic is planar curves, this section intentionally includes a 3D surface and a Manim placeholder to showcase additional MathLesson block types.</p>\n\n<div class=\"explore-widget print-full-width avoid-break\" data-explore=\"3d\"\n  data-title=\"3D surface — synthetic curvature landscape\"\n  data-params='[{\"id\":\"A\",\"label\":\"amplitude A\",\"min\":0.5,\"max\":3,\"step\":0.5,\"value\":1},{\"id\":\"f\",\"label\":\"frequency f\",\"min\":1,\"max\":5,\"step\":1,\"value\":2}]'\n  data-fn=\"(x,y,p)=>p.A*Math.sin(p.f*x)*Math.cos(p.f*y)\"\n  data-xrange=\"[-3,3]\" data-yrange=\"[-3,3]\"\n  style=\"height:370px;\"></div>\n\n<div class=\"manim-slot\">\n  <div class=\"manim-header\">Circle animation</div>\n  <video controls preload=\"none\" src=\"circle.mp4\"></video>\n</div>\n\n\n<div class=\"callout id\">\n  <div class=\"callout-tag\">Calculator prompt</div>\n  <p>Open the Calculator panel and simplify <code>(x^2 - 1)/(x - 1)</code>. Then insert the result into a saved lesson section.</p>\n</div>"
+    },
+    {
+      "id": "pc-export-controls",
+      "label": "§8 Export controls",
+      "title": "Slide, page, and print controls",
+      "content": "<h1>Export and Print Controls</h1>\n<p>This final section deliberately includes author controls used by the Reveal and Print/PDF planners.</p>\n\n<div class=\"callout ex avoid-break\">\n  <div class=\"callout-tag\">Reveal break</div>\n  <p>The comment below asks the Reveal exporter to split content into a new slide.</p>\n</div>\n\n<!-- slide -->\n\n<div class=\"callout ex print-compact avoid-break\">\n  <div class=\"callout-tag\">Print compact block</div>\n  <p>This block uses <code>print-compact</code> and <code>avoid-break</code>. Use it for small summaries that should stay together in PDF output.</p>\n</div>\n\n<hr class=\"page-break\">\n\n<div class=\"callout rmk allow-break\">\n  <div class=\"callout-tag\">Long-block rule</div>\n  <p>This block uses <code>allow-break</code>. Use it for content that is naturally taller than a page, such as long tables or long derivations. Do not force a very tall object to remain unbroken.</p>\n  <ol>\n    <li>Use <code>avoid-break</code> for compact atomic blocks.</li>\n    <li>Use <code>allow-break</code> for long tables.</li>\n    <li>Use <code>print-full-width</code> for wide graphs.</li>\n    <li>Use <code>print-graph-page</code> when a graph deserves its own PDF page.</li>\n  </ol>\n</div>"
+    }
+  ],
+  "quiz": [
+    {
+      "type": "mc",
+      "stem": "A planar curve is usually modeled as a map into which space?",
+      "options": [
+        "\\(\\mathbb{R}\\)",
+        "\\(\\mathbb{R}^2\\)",
+        "\\(\\mathbb{R}^3\\)",
+        "A spreadsheet only"
+      ],
+      "answer": 1,
+      "feedback": "A planar curve has two coordinate functions, so it maps into \\(\\mathbb{R}^2\\)."
+    },
+    {
+      "type": "tf",
+      "stem": "For the unit circle \\(\\gamma(t)=(\\cos t,\\sin t)\\), the speed is constantly 1.",
+      "answer": true,
+      "feedback": "Differentiate to get \\(\\gamma'(t)=(-\\sin t,\\cos t)\\), whose norm is 1."
+    },
+    {
+      "type": "math",
+      "stem": "For a circle of radius \\(R=4\\), enter the curvature \\(\\kappa=1/R\\).",
+      "answer": "0.25",
+      "numeric": true,
+      "hint": "Use \\(\\kappa=1/R\\).",
+      "feedback": "For \\(R=4\\), the curvature is \\(1/4=0.25\\)."
+    },
+    {
+      "type": "math",
+      "stem": "For \\(\\gamma(t)=(t,t^2)\\), compute the speed at \\(t=0\\).",
+      "answer": "1",
+      "numeric": true,
+      "hint": "Use \\(\\gamma'(t)=(1,2t)\\).",
+      "feedback": "At \\(t=0\\), the velocity is \\(1,0\\), so speed is 1."
+    },
+    {
+      "type": "tf",
+      "richStem": true,
+      "stem": "<p>The formula below defines the unit tangent whenever the curve is regular.</p><div class=\"math-display\">\\[T(t)=\\frac{\\gamma'(t)}{\\|\\gamma'(t)\\|}\\]</div>",
+      "answer": true,
+      "feedback": "Correct. The velocity must be nonzero before it can be normalized."
+    },
+    {
+      "type": "mc",
+      "richStem": true,
+      "stem": "<p>Inspect the mini Mermaid workflow.</p><div class=\"mermaid-wrap\"><div class=\"mermaid-label\">Quiz workflow</div><pre class=\"mermaid\">flowchart LR\nA --> B\nB --> C\nC --> D</pre></div><p>Use the legend A=Curve, B=Velocity, C=Speed, D=Curvature. Which object comes immediately after velocity?</p>",
+      "options": [
+        "Speed",
+        "Area",
+        "Expected value",
+        "Pension liability"
+      ],
+      "answer": 0,
+      "feedback": "The workflow sends velocity to speed, then speed/frame information to curvature."
+    },
+    {
+      "type": "tf",
+      "richStem": true,
+      "stem": "<p>The Plotly widget below is included only to test rich quiz rendering.</p><div class=\"explore-widget\" data-explore=\"2d\" data-title=\"Quiz sine widget\" data-params='[{\"id\":\"a\",\"label\":\"a\",\"min\":0.5,\"max\":2,\"step\":0.1,\"value\":1}]' data-fn=\"(x,p)=>p.a*Math.sin(x)\" data-xrange=\"[-6.283,6.283]\" style=\"height:230px;\"></div><p>The slider changes the amplitude.</p>",
+      "answer": true,
+      "feedback": "The slider parameter multiplies \\(\\sin x\\), so it changes amplitude."
+    },
+    {
+      "type": "free",
+      "stem": "In one or two sentences, explain the geometric meaning of curvature for a planar curve.",
+      "feedback": "Curvature measures how quickly the tangent direction turns. Larger curvature means tighter bending."
+    }
+  ],
+  "helpers": {
+    "plotLayout": {
+      "paper_bgcolor": "rgba(0,0,0,0)",
+      "plot_bgcolor": "rgba(0,0,0,0)",
+      "font": {
+        "color": "#e2e8f0",
+        "family": "Segoe UI,system-ui,sans-serif",
+        "size": 12
+      },
+      "margin": {
+        "t": 10,
+        "b": 48,
+        "l": 48,
+        "r": 16
+      },
+      "xaxis": {
+        "gridcolor": "#252836",
+        "zerolinecolor": "#252836",
+        "color": "#64748b",
+        "linecolor": "#252836"
+      },
+      "yaxis": {
+        "gridcolor": "#252836",
+        "zerolinecolor": "#252836",
+        "color": "#64748b",
+        "linecolor": "#252836"
+      },
+      "legend": {
+        "bgcolor": "rgba(0, 0, 0, 0)",
+        "bordercolor": "#252836",
+        "font": {
+          "color": "#e2e8f0"
+        }
+      }
+    },
+    "renderAqTable": "Uses MathLesson built-in renderAqTable(tbl, caption) at runtime."
+  },
+  "blockInventory": [
+    {
+      "id": "tangent-normal-sketch",
+      "type": "svg",
+      "sectionIndex": 2,
+      "sectionLabel": "§3 Moving frame",
+      "storage": "sections[2].content",
+      "source": "inline-svg-block",
+      "label": "Tangent-normal sketch"
+    },
+    {
+      "id": "planar-graph-y-a-sin-bx",
+      "type": "plotly",
+      "sectionIndex": 3,
+      "sectionLabel": "§4 Curvature + Plotly",
+      "storage": "sections[3].content",
+      "source": "inline-explore-widget",
+      "label": "Planar graph y = a sin(bx)"
+    },
+    {
+      "id": "planar-curve-computation-workflow",
+      "type": "mermaid",
+      "sectionIndex": 4,
+      "sectionLabel": "§5 Mermaid + JSXGraph",
+      "storage": "sections[4].content",
+      "source": "inline-mermaid-block",
+      "label": "Planar curve computation workflow"
+    },
+    {
+      "id": "planar-curve-board",
+      "type": "jsxgraph",
+      "sectionIndex": 4,
+      "sectionLabel": "§5 Mermaid + JSXGraph",
+      "storage": "sections[4].content",
+      "source": "inline-jsxgraph-block",
+      "label": "JSXGraph — draggable planar curve controls"
+    },
+    {
+      "id": "arquero-grouped-curve-features",
+      "type": "arquero",
+      "sectionIndex": 5,
+      "sectionLabel": "§6 Statistics + Arquero",
+      "storage": "sections[5].content",
+      "source": "inline-arquero-block",
+      "label": "Arquero — grouped curve features"
+    },
+    {
+      "id": "curvature-sample-summary",
+      "type": "summary",
+      "sectionIndex": 5,
+      "sectionLabel": "§6 Statistics + Arquero",
+      "storage": "sections[5].content",
+      "source": "inline-statistics-block",
+      "label": "Curvature sample summary"
+    },
+    {
+      "id": "3d-surface-synthetic-curvature-landscape",
+      "type": "plotly",
+      "sectionIndex": 6,
+      "sectionLabel": "§7 3D + Manim placeholder",
+      "storage": "sections[6].content",
+      "source": "inline-explore-widget",
+      "label": "3D surface — synthetic curvature landscape"
+    },
+    {
+      "id": "circle-animation",
+      "type": "manim-video",
+      "sectionIndex": 6,
+      "sectionLabel": "§7 3D + Manim placeholder",
+      "storage": "sections[6].content",
+      "source": "inline-manim-block",
+      "label": "Circle animation"
+    },
+    {
+      "id": "mermaid-quiz-6-1",
+      "type": "mermaid",
+      "questionIndex": 5,
+      "sectionLabel": "Quiz Q6",
+      "storage": "quiz[5].stem",
+      "source": "quiz-inline-mermaid-block",
+      "label": "Quiz Mermaid diagram 1"
+    },
+    {
+      "id": "Quiz sine widget",
+      "type": "plotly",
+      "questionIndex": 6,
+      "sectionLabel": "Quiz Q7",
+      "storage": "quiz[6].stem",
+      "source": "quiz-inline-explore-widget",
+      "label": "Quiz sine widget"
+    }
+  ],
+  "toolAdapters": {
+    "registryVersion": "mathlesson.tool-adapters.v1",
+    "adapters": [
+      {
+        "id": "katex",
+        "label": "KaTeX",
+        "category": "math",
+        "count": 7,
+        "sections": [
+          {
+            "index": 0,
+            "label": "§1 Overview",
+            "count": 1
+          },
+          {
+            "index": 1,
+            "label": "§2 Velocity",
+            "count": 3
+          },
+          {
+            "index": 2,
+            "label": "§3 Moving frame",
+            "count": 2
+          },
+          {
+            "index": 3,
+            "label": "§4 Curvature + Plotly",
+            "count": 1
+          }
+        ],
+        "dependencies": [
+          {
+            "name": "katex",
+            "ready": true
+          },
+          {
+            "name": "renderMathInElement",
+            "ready": true
+          }
+        ],
+        "ready": true,
+        "editor": "HTML/LaTeX",
+        "export": "native HTML + KaTeX",
+        "reveal": "rendered in deck",
+        "print": "avoid-break for displays"
+      },
+      {
+        "id": "plotly",
+        "label": "Plotly / Explore",
+        "category": "visual",
+        "count": 2,
+        "sections": [
+          {
+            "index": 3,
+            "label": "§4 Curvature + Plotly",
+            "count": 1
+          },
+          {
+            "index": 6,
+            "label": "§7 3D + Manim placeholder",
+            "count": 1
+          }
+        ],
+        "dependencies": [
+          {
+            "name": "Plotly",
+            "ready": true
+          }
+        ],
+        "ready": true,
+        "editor": "HTML widget",
+        "export": "interactive in Reveal",
+        "reveal": "dedicated slide recommended",
+        "print": "avoid-break"
+      },
+      {
+        "id": "arquero",
+        "label": "Arquero",
+        "category": "data",
+        "count": 1,
+        "sections": [
+          {
+            "index": 5,
+            "label": "§6 Statistics + Arquero",
+            "count": 1
+          }
+        ],
+        "dependencies": [
+          {
+            "name": "aq",
+            "ready": true
+          }
+        ],
+        "ready": true,
+        "editor": "HTML widget",
+        "export": "rendered table",
+        "reveal": "split large tables",
+        "print": "allow-break for long tables"
+      },
+      {
+        "id": "mermaid",
+        "label": "Mermaid",
+        "category": "diagram",
+        "count": 2,
+        "sections": [
+          {
+            "index": 4,
+            "label": "§5 Mermaid + JSXGraph",
+            "count": 2
+          }
+        ],
+        "dependencies": [
+          {
+            "name": "mermaid",
+            "ready": true
+          }
+        ],
+        "ready": true,
+        "editor": "HTML code block",
+        "export": "rendered diagram",
+        "reveal": "dedicated slide recommended",
+        "print": "avoid-break"
+      },
+      {
+        "id": "jsxgraph",
+        "label": "JSXGraph",
+        "category": "geometry",
+        "count": 1,
+        "sections": [
+          {
+            "index": 4,
+            "label": "§5 Mermaid + JSXGraph",
+            "count": 1
+          }
+        ],
+        "dependencies": [
+          {
+            "name": "JXG",
+            "ready": true
+          }
+        ],
+        "ready": true,
+        "editor": "HTML widget",
+        "export": "interactive where supported",
+        "reveal": "dedicated slide recommended",
+        "print": "avoid-break"
+      },
+      {
+        "id": "statistics",
+        "label": "Statistics / Probability",
+        "category": "calculation",
+        "count": 1,
+        "sections": [
+          {
+            "index": 5,
+            "label": "§6 Statistics + Arquero",
+            "count": 1
+          }
+        ],
+        "dependencies": [
+          {
+            "name": "ss",
+            "ready": true
+          },
+          {
+            "name": "jStat",
+            "ready": true
+          }
+        ],
+        "ready": true,
+        "editor": "panel + reusable block",
+        "export": "rendered block",
+        "reveal": "split dense outputs",
+        "print": "avoid-break"
+      },
+      {
+        "id": "calculator",
+        "label": "Calculator",
+        "category": "calculation",
+        "count": 0,
+        "sections": [],
+        "dependencies": [
+          {
+            "name": "math",
+            "ready": true
+          },
+          {
+            "name": "nerdamer",
+            "ready": true
+          },
+          {
+            "name": "MathfieldElement",
+            "ready": true
+          }
+        ],
+        "ready": true,
+        "editor": "panel + inserted math",
+        "export": "static math/exercise",
+        "reveal": "split derivations",
+        "print": "avoid-break"
+      },
+      {
+        "id": "manim",
+        "label": "Manim Video",
+        "category": "media",
+        "count": 2,
+        "sections": [
+          {
+            "index": 6,
+            "label": "§7 3D + Manim placeholder",
+            "count": 2
+          }
+        ],
+        "dependencies": [],
+        "ready": true,
+        "editor": "HTML media slot",
+        "export": "embedded media reference",
+        "reveal": "dedicated slide recommended",
+        "print": "static placeholder"
+      },
+      {
+        "id": "svg",
+        "label": "SVG",
+        "category": "diagram",
+        "count": 2,
+        "sections": [
+          {
+            "index": 2,
+            "label": "§3 Moving frame",
+            "count": 2
+          }
+        ],
+        "dependencies": [],
+        "ready": true,
+        "editor": "inline SVG",
+        "export": "inline SVG",
+        "reveal": "dedicated slide recommended",
+        "print": "avoid-break"
+      }
+    ]
+  },
+  "structuredBlocks": [
+    {
+      "sectionIndex": 0,
+      "sectionLabel": "§1 Overview",
+      "blockCount": 9,
+      "blocks": [
+        {
+          "index": 0,
+          "type": "heading",
+          "title": "h1",
+          "className": ""
+        },
+        {
+          "index": 1,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": "quiz-meta"
+        },
+        {
+          "index": 2,
+          "type": "break",
+          "title": "break",
+          "className": ""
+        },
+        {
+          "index": 3,
+          "type": "callout",
+          "title": "Lesson objective",
+          "className": "callout def avoid-break"
+        },
+        {
+          "index": 4,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 5,
+          "type": "math",
+          "title": "math display",
+          "className": "math-display"
+        },
+        {
+          "index": 6,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 7,
+          "type": "table",
+          "title": "table",
+          "className": "avoid-break"
+        },
+        {
+          "index": 8,
+          "type": "callout",
+          "title": "Authoring note",
+          "className": "callout rmk"
+        }
+      ]
+    },
+    {
+      "sectionIndex": 1,
+      "sectionLabel": "§2 Velocity",
+      "blockCount": 7,
+      "blocks": [
+        {
+          "index": 0,
+          "type": "heading",
+          "title": "h1",
+          "className": ""
+        },
+        {
+          "index": 1,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 2,
+          "type": "math",
+          "title": "math display",
+          "className": "math-display"
+        },
+        {
+          "index": 3,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 4,
+          "type": "callout",
+          "title": "Speed",
+          "className": "callout def avoid-break"
+        },
+        {
+          "index": 5,
+          "type": "callout",
+          "title": "Worked example",
+          "className": "callout ex avoid-break"
+        },
+        {
+          "index": 6,
+          "type": "callout",
+          "title": "Practice check",
+          "className": "callout ex avoid-break"
+        }
+      ]
+    },
+    {
+      "sectionIndex": 2,
+      "sectionLabel": "§3 Moving frame",
+      "blockCount": 7,
+      "blocks": [
+        {
+          "index": 0,
+          "type": "heading",
+          "title": "h1",
+          "className": ""
+        },
+        {
+          "index": 1,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 2,
+          "type": "math",
+          "title": "math display",
+          "className": "math-display"
+        },
+        {
+          "index": 3,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 4,
+          "type": "math",
+          "title": "math display",
+          "className": "math-display"
+        },
+        {
+          "index": 5,
+          "type": "html",
+          "title": "div .svg-wrap",
+          "className": "svg-wrap avoid-break"
+        },
+        {
+          "index": 6,
+          "type": "callout",
+          "title": "SVG black",
+          "className": "callout rmk"
+        }
+      ]
+    },
+    {
+      "sectionIndex": 3,
+      "sectionLabel": "§4 Curvature + Plotly",
+      "blockCount": 7,
+      "blocks": [
+        {
+          "index": 0,
+          "type": "heading",
+          "title": "h1",
+          "className": ""
+        },
+        {
+          "index": 1,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 2,
+          "type": "math",
+          "title": "math display",
+          "className": "math-display"
+        },
+        {
+          "index": 3,
+          "type": "callout",
+          "title": "Circle rule",
+          "className": "callout thm avoid-break"
+        },
+        {
+          "index": 4,
+          "type": "heading",
+          "title": "h2",
+          "className": ""
+        },
+        {
+          "index": 5,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 6,
+          "type": "html",
+          "title": "div .explore-widget",
+          "className": "explore-widget print-full-width avoid-break"
+        }
+      ]
+    },
+    {
+      "sectionIndex": 4,
+      "sectionLabel": "§5 Mermaid + JSXGraph",
+      "blockCount": 8,
+      "blocks": [
+        {
+          "index": 0,
+          "type": "heading",
+          "title": "h1",
+          "className": ""
+        },
+        {
+          "index": 1,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 2,
+          "type": "mermaid",
+          "title": "Planar curve computation workflow",
+          "className": "mermaid-wrap avoid-break"
+        },
+        {
+          "index": 3,
+          "type": "table",
+          "title": "table",
+          "className": "avoid-break"
+        },
+        {
+          "index": 4,
+          "type": "break",
+          "title": "slide-break",
+          "className": "slide-break"
+        },
+        {
+          "index": 5,
+          "type": "heading",
+          "title": "h2",
+          "className": ""
+        },
+        {
+          "index": 6,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 7,
+          "type": "html",
+          "title": "div .jsx-wrap",
+          "className": "jsx-wrap print-full-width avoid-break"
+        }
+      ]
+    },
+    {
+      "sectionIndex": 5,
+      "sectionLabel": "§6 Statistics + Arquero",
+      "blockCount": 5,
+      "blocks": [
+        {
+          "index": 0,
+          "type": "heading",
+          "title": "h1",
+          "className": ""
+        },
+        {
+          "index": 1,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 2,
+          "type": "html",
+          "title": "div .stat-block",
+          "className": "stat-block avoid-break"
+        },
+        {
+          "index": 3,
+          "type": "html",
+          "title": "div .aq-wrap",
+          "className": "aq-wrap avoid-break"
+        },
+        {
+          "index": 4,
+          "type": "callout",
+          "title": "Data note",
+          "className": "callout rmk"
+        }
+      ]
+    },
+    {
+      "sectionIndex": 6,
+      "sectionLabel": "§7 3D + Manim placeholder",
+      "blockCount": 5,
+      "blocks": [
+        {
+          "index": 0,
+          "type": "heading",
+          "title": "h1",
+          "className": ""
+        },
+        {
+          "index": 1,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 2,
+          "type": "html",
+          "title": "div .explore-widget",
+          "className": "explore-widget print-full-width avoid-break"
+        },
+        {
+          "index": 3,
+          "type": "html",
+          "title": "div .manim-slot",
+          "className": "manim-slot"
+        },
+        {
+          "index": 4,
+          "type": "callout",
+          "title": "Calculator prompt",
+          "className": "callout id"
+        }
+      ]
+    },
+    {
+      "sectionIndex": 7,
+      "sectionLabel": "§8 Export controls",
+      "blockCount": 6,
+      "blocks": [
+        {
+          "index": 0,
+          "type": "heading",
+          "title": "h1",
+          "className": ""
+        },
+        {
+          "index": 1,
+          "type": "paragraph",
+          "title": "paragraph",
+          "className": ""
+        },
+        {
+          "index": 2,
+          "type": "callout",
+          "title": "Reveal break",
+          "className": "callout ex avoid-break"
+        },
+        {
+          "index": 3,
+          "type": "callout",
+          "title": "Print compact block",
+          "className": "callout ex print-compact avoid-break"
+        },
+        {
+          "index": 4,
+          "type": "break",
+          "title": "page-break",
+          "className": "page-break"
+        },
+        {
+          "index": 5,
+          "type": "callout",
+          "title": "Long-block rule",
+          "className": "callout rmk allow-break"
+        }
+      ]
+    }
+  ]
+}
