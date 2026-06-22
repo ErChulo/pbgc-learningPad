@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "mathlesson.lesson.v1",
+  "exportedFrom": "mathlesson.v4.7.1",
+  "source": "generated-training-pack",
+  "blockSchemaVersion": "mathlesson.block.v4.4.0",
+  "schemaRegistryVersion": "mathlesson.schema-registry.v4.4.0",
+  "structuredModelVersion": "4.7.1",
+  "audio": {
+    "src": "",
+    "label": ""
+  },
+  "lessonKey": "training-feature-tour-basic-v1",
+  "title": "MathLesson Training Pack 01 — Basic Feature Tour",
+  "description": "A practical first training lesson for learning the basic MathLesson authoring workflow and testing common content blocks.",
+  "sections": [
+    {
+      "id": "ft-purpose",
+      "label": "Start",
+      "title": "What this lesson tests",
+      "content": "<h1>MathLesson Basic Feature Tour</h1>\n<p>This lesson is a training file for the author. It is designed to be imported, edited, exported as JSON, re-imported, and exported as a student lesson.</p>\n<div class=\"callout rmk\"><div class=\"callout-tag\">What this lesson tests</div>\nThis file tests prose, headings, inline LaTeX, display LaTeX, callouts, grids, tables, SVG, inline exercise widgets, formal quiz items, and basic export layout controls.\n</div>\n<div class=\"callout ex\"><div class=\"callout-tag\">Author task</div>\nAfter importing this lesson, find the Lesson Editor, add one sentence to this section, then export the active lesson as JSON and re-import it.\n</div>\n<p>Inline math test: if $f(x)=x^2+2x+1$, then $f(x)=(x+1)^2$.</p>\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Display math test</div>\n  $$x^2+2x+1=(x+1)^2$$\n</div>\n"
+    },
+    {
+      "id": "ft-callouts",
+      "label": "Blocks",
+      "title": "Prose, math, and callouts",
+      "content": "<h1>Prose, Math, and Callout Blocks</h1>\n<p>A good lesson should not be only formulas. It should combine explanation, named ideas, examples, checkpoints, and short exercises.</p>\n<div class=\"callout def\"><div class=\"callout-tag\">Definition</div>\nA <strong>feature block</strong> is a visible authoring unit that should survive preview, JSON export, student export, and print/export planning.\n</div>\n<div class=\"callout thm\"><div class=\"callout-tag\">Rule of thumb</div>\nOne section should usually have one main instructional purpose. If a section has many graphs, many formulas, and many tables, split it.\n</div>\n<div class=\"callout id\"><div class=\"callout-tag\">Identity</div>\n<div class=\"math-display\">$$a^2-b^2=(a-b)(a+b)$$</div>\n</div>\n<div class=\"callout ex\"><div class=\"callout-tag\">Example</div>\nFor $a=x$ and $b=3$, the identity becomes $x^2-9=(x-3)(x+3)$.\n</div>\n<div class=\"callout prf avoid-break\"><div class=\"callout-tag\">Proof block</div>\nExpand the product: $(a-b)(a+b)=a^2+ab-ab-b^2=a^2-b^2$. This block is marked with <code>avoid-break</code> so it should stay together when possible.\n</div>\n<div class=\"callout exr\"><div class=\"callout-tag\">Mini exercise</div>\nFactor $x^2-16$ before looking at the quiz.\n</div>\n"
+    },
+    {
+      "id": "ft-layout",
+      "label": "Layout",
+      "title": "Grids, tables, and SVG",
+      "content": "<h1>Grids, Tables, and SVG</h1>\n<p>This section tests common layout elements that authors will use before reaching advanced renderers.</p>\n<div class=\"ml-grid grid-3\" data-grid-type=\"grid-3\" data-grid-version=\"1\">\n  <div class=\"ml-grid-cell\"><h3>Explain</h3><p>Use paragraphs and callouts to explain the goal.</p></div>\n  <div class=\"ml-grid-cell\"><h3>Compute</h3><p>Use display math, tables, and examples.</p><div class=\"math-display\">$$2^3=8$$</div></div>\n  <div class=\"ml-grid-cell\"><h3>Check</h3><p>Use exercises and quiz questions to test understanding.</p></div>\n</div>\n<table>\n  <thead><tr><th>Block</th><th>Use</th><th>Export note</th></tr></thead>\n  <tbody>\n    <tr><td>Callout</td><td>Named idea or warning</td><td>Usually keep together</td></tr>\n    <tr><td>Grid</td><td>Compare related ideas</td><td>May need a slide break</td></tr>\n    <tr><td>Table</td><td>Structured information</td><td>Wide tables may need landscape</td></tr>\n  </tbody>\n</table>\n<div class=\"svg-wrap avoid-break\" data-title=\"Simple authoring pipeline SVG\">\n  <svg viewBox=\"0 0 620 170\" width=\"100%\" height=\"220\" role=\"img\" aria-label=\"Authoring pipeline\">\n    <defs><marker id=\"ftArrow\" markerWidth=\"10\" markerHeight=\"10\" refX=\"8\" refY=\"3\" orient=\"auto\"><path d=\"M0,0 L0,6 L9,3 z\" fill=\"currentColor\"></path></marker></defs>\n    <rect x=\"25\" y=\"45\" width=\"130\" height=\"60\" rx=\"12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\"></rect>\n    <rect x=\"245\" y=\"45\" width=\"130\" height=\"60\" rx=\"12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\"></rect>\n    <rect x=\"465\" y=\"45\" width=\"130\" height=\"60\" rx=\"12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\"></rect>\n    <path d=\"M160 75 H235\" stroke=\"currentColor\" stroke-width=\"3\" marker-end=\"url(#ftArrow)\"></path>\n    <path d=\"M380 75 H455\" stroke=\"currentColor\" stroke-width=\"3\" marker-end=\"url(#ftArrow)\"></path>\n    <text x=\"90\" y=\"82\" text-anchor=\"middle\" fill=\"currentColor\">Import</text>\n    <text x=\"310\" y=\"82\" text-anchor=\"middle\" fill=\"currentColor\">Edit</text>\n    <text x=\"530\" y=\"82\" text-anchor=\"middle\" fill=\"currentColor\">Export</text>\n  </svg>\n</div>\n"
+    },
+    {
+      "id": "ft-exercises",
+      "label": "Practice",
+      "title": "Inline exercise widgets",
+      "content": "<h1>Inline Exercise Widgets</h1>\n<p>Inline exercises are local checks inside a lesson section. Formal quiz questions live in the Quiz panel and are exported as a learner assessment.</p>\n<div class=\"exercise-widget\" data-answer=\"x+4\" data-hint=\"Factor the numerator, then cancel x+1.\">\n  <div class=\"exercise-prompt\">Simplify $\\frac{x^2+5x+4}{x+1}$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n<div class=\"exercise-widget\" data-answer=\"8\" data-hint=\"Use 2 cubed.\">\n  <div class=\"exercise-prompt\">Compute $2^3$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n<div class=\"callout rmk\"><div class=\"callout-tag\">UX observation prompt</div>\nWhile testing this lesson, note how long it takes to find where quizzes are edited versus where inline exercises are inserted.\n</div>\n"
+    },
+    {
+      "id": "ft-export",
+      "label": "Export",
+      "title": "Basic export controls",
+      "content": "<h1>Basic Export Controls</h1>\n<p>This section gives simple layout-control examples. It should be checked in Print/PDF preview and Reveal export planning.</p>\n<div class=\"avoid-break\">\n  <div class=\"callout thm\"><div class=\"callout-tag\">Keep together</div>This theorem-like block should avoid splitting across a printed page when possible.</div>\n  <div class=\"math-display\">$$a(b+c)=ab+ac$$</div>\n</div>\n<hr class=\"slide-break\">\n<p>The horizontal rule above is an explicit Reveal slide break.</p>\n<hr class=\"page-break\">\n<p>The horizontal rule above is an explicit Print/PDF page break.</p>\n<div class=\"allow-break\">\n  <p>This paragraph is inside an <code>allow-break</code> wrapper. It is allowed to split if necessary. Use this only for ordinary prose, not for a theorem, table, graph, or diagram that should remain visually intact.</p>\n</div>\n"
+    }
+  ],
+  "plots": {},
+  "quiz": [
+    {
+      "type": "mc",
+      "stem": "Where should formal assessment questions be tested?",
+      "options": [
+        "Only inside prose paragraphs",
+        "In the Quiz panel and student export",
+        "Only inside Mermaid diagrams",
+        "Only inside SVG"
+      ],
+      "answer": 1,
+      "feedback": "Formal assessment belongs in the quiz workflow and should be tested in student export."
+    },
+    {
+      "type": "tf",
+      "stem": "Inline exercise widgets and formal quiz items serve exactly the same purpose.",
+      "answer": false,
+      "feedback": "False. Inline exercises are local practice; quiz items are formal assessment."
+    },
+    {
+      "type": "math",
+      "stem": "Simplify $x^2+2x+1$ by factoring.",
+      "answer": "(x+1)^2",
+      "feedback": "The expression is a perfect square."
+    },
+    {
+      "type": "free",
+      "stem": "Write one sentence identifying the hardest action to find in the app after importing this lesson.",
+      "feedback": "Use this response to inform the later UX/UI redesign."
+    }
+  ]
+}
