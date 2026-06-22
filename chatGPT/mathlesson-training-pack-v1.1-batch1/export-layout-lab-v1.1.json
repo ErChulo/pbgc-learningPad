@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "mathlesson.lesson.v1",
+  "exportedFrom": "mathlesson.v4.7.2",
+  "source": "generated-training-pack-v1.1",
+  "blockSchemaVersion": "mathlesson.block.v4.4.0",
+  "schemaRegistryVersion": "mathlesson.schema-registry.v4.4.0",
+  "structuredModelVersion": "4.7.2",
+  "audio": {
+    "src": "",
+    "label": ""
+  },
+  "lessonKey": "training-export-layout-lab-v1-1",
+  "title": "MathLesson Training Pack 03 — Export Layout Lab v1.1",
+  "description": "A focused training lesson for Print/PDF controls, Reveal slide breaks, visual block placement, and export preflight workflow.",
+  "sections": [
+    {
+      "id": "el-purpose",
+      "label": "Start",
+      "title": "What this lesson tests",
+      "content": "<h1>Export Layout Lab</h1>\n<p>This lesson teaches the layout controls that help Print/PDF and Reveal exports behave predictably.</p>\n<div class=\"callout rmk\"><div class=\"callout-tag\">What this lesson tests</div>\nThis file tests page breaks, slide breaks, keep-together wrappers, allow-break wrappers, graph page classes, landscape print sections, wide tables, and pre-export review behavior.\n</div>\n<div class=\"callout ex\"><div class=\"callout-tag\">Author task</div>\nImport this lesson, run the Reveal Export Planner, run Print/PDF checks, then export a student lesson and verify that the content remains readable.\n</div>\n"
+    },
+    {
+      "id": "el-breaks",
+      "label": "Breaks",
+      "title": "Page and slide breaks",
+      "content": "<h1>Page and Slide Breaks</h1>\n<p>Print/PDF page breaks and Reveal slide breaks are separate controls.</p>\n<div class=\"callout def\"><div class=\"callout-tag\">Print/PDF page break</div>\nUse <code>&lt;hr class=\"page-break\"&gt;</code> where a printed/PDF page should start cleanly.\n</div>\n<hr class=\"page-break\">\n<p>This paragraph starts after an explicit Print/PDF page break.</p>\n<div class=\"callout def\"><div class=\"callout-tag\">Reveal slide break</div>\nUse <code>&lt;hr class=\"slide-break\"&gt;</code> or <code>&lt;!-- slide --&gt;</code> where a Reveal slide should split.</div>\n<hr class=\"slide-break\">\n<p>This paragraph starts after an explicit Reveal slide break.</p>\n<pre><code>Alternative Reveal split marker:\n&lt;!-- slide --&gt;</code></pre>\n"
+    },
+    {
+      "id": "el-keep",
+      "label": "Keep",
+      "title": "Keep-together and allow-break wrappers",
+      "content": "<h1>Keep-Together and Allow-Break Wrappers</h1>\n<div class=\"avoid-break\">\n  <div class=\"callout thm\"><div class=\"callout-tag\">Keep together</div>\n  This block is wrapped in <code>avoid-break</code>. The theorem statement and formula should stay together when possible.\n  <div class=\"math-display\">$$\\int_a^b f'(x)\\,dx=f(b)-f(a)$$</div>\n  </div>\n</div>\n<div class=\"allow-break\">\n  <p>This ordinary prose block is wrapped in <code>allow-break</code>. It may split if needed. Use this for long explanations that do not need to remain visually intact. Do not use it for diagrams, graphs, proofs, or tightly coupled equations unless you are comfortable with a split.</p>\n</div>\n<div class=\"callout rmk\"><div class=\"callout-tag\">UX observation prompt</div>\nNote whether these controls are easy to insert from the current UI. If not, this becomes a redesign requirement.</div>\n"
+    },
+    {
+      "id": "el-visuals",
+      "label": "Visuals",
+      "title": "Graphs and visual blocks on their own page",
+      "content": "<h1>Graphs and Visual Blocks</h1>\n<p>Large visuals usually need their own page or slide.</p>\n<div class=\"explore-widget print-graph-page print-full-width\" data-explore=\"2d\"\n  data-title=\"Export sizing test curve\"\n  data-params='[{\"id\":\"a\",\"label\":\"amplitude\",\"min\":0.5,\"max\":3,\"step\":0.25,\"value\":1}]'\n  data-fn=\"(x,p)=>p.a*Math.sin(x)\"\n  data-xrange=\"[-6.283,6.283]\"\n  data-xlabel=\"x\" data-ylabel=\"a sin x\"\n  style=\"height:360px;\"></div>\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Visual export decision</div><pre class=\"mermaid\">flowchart LR\n  A[\"Visual block\"] --> B[\"Own slide\"]\n  A --> C[\"Own page\"]\n  B --> D[\"Less crowding\"]\n  C --> D\n</pre></div>\n<p>Use the export planners to decide whether this visual should remain with nearby explanation or be isolated.</p>\n"
+    },
+    {
+      "id": "el-wide",
+      "label": "Wide",
+      "title": "Wide table and landscape print section",
+      "content": "<h1>Wide Table and Landscape Section</h1>\n<p>Wide tables are a common source of ugly PDF output. This example is intentionally wide.</p>\n<div class=\"print-landscape avoid-break\">\n<table>\n  <thead><tr><th>Block type</th><th>Author concern</th><th>Print concern</th><th>Reveal concern</th><th>Student concern</th><th>Recommended action</th></tr></thead>\n  <tbody>\n    <tr><td>Mermaid</td><td>Syntax safety</td><td>Keep together</td><td>Own slide</td><td>Rendered diagram</td><td>Use quoted labels</td></tr>\n    <tr><td>JSXGraph</td><td>Board size</td><td>Static fallback risk</td><td>Own slide</td><td>Interactive board</td><td>Check student export</td></tr>\n    <tr><td>Plotly</td><td>Slider ranges</td><td>Graph page</td><td>Own slide</td><td>Responsive plot</td><td>Use preflight checks</td></tr>\n    <tr><td>Table</td><td>Width</td><td>Landscape section</td><td>May overflow</td><td>Scroll risk</td><td>Split columns</td></tr>\n  </tbody>\n</table>\n</div>\n"
+    },
+    {
+      "id": "el-preflight",
+      "label": "Preflight",
+      "title": "Pre-export workflow",
+      "content": "<h1>Pre-Export Workflow</h1>\n<ol>\n  <li>Import or open the lesson.</li>\n  <li>Render every section once.</li>\n  <li>Run Prototype Audit.</li>\n  <li>Run Reveal Export Planner if slides are needed.</li>\n  <li>Run Print/PDF preview if printed output is needed.</li>\n  <li>Add only the layout controls the planner or preview actually justifies.</li>\n  <li>Export student lesson and test quizzes, exercises, and major visuals.</li>\n</ol>\n<div class=\"callout ex\"><div class=\"callout-tag\">Author task</div>\nAfter testing this file, write down the first three actions that were hard to find in the current UI.</div>\n"
+    }
+  ],
+  "plots": {},
+  "quiz": [
+    {
+      "type": "mc",
+      "stem": "Which marker starts a new Print/PDF page?",
+      "options": [
+        "<hr class=\"page-break\">",
+        "<hr class=\"slide-break\">",
+        "<div class=\"exercise-widget\">",
+        "<pre class=\"mermaid\">"
+      ],
+      "answer": 0,
+      "feedback": "The page-break class is for Print/PDF page control."
+    },
+    {
+      "type": "mc",
+      "stem": "Which marker is intended for Reveal slide splitting?",
+      "options": [
+        "<hr class=\"page-break\">",
+        "<hr class=\"slide-break\">",
+        "<table>",
+        "<math-field>"
+      ],
+      "answer": 1,
+      "feedback": "The slide-break class is used for Reveal slide splitting."
+    },
+    {
+      "type": "tf",
+      "stem": "Every graph-heavy section should be checked with export planners before final delivery.",
+      "answer": true,
+      "feedback": "True. Graph-heavy sections are common overflow risks."
+    },
+    {
+      "type": "free",
+      "stem": "Record one layout action that should be easier to find in the redesigned UI.",
+      "feedback": "This response feeds directly into the UX/UI redesign requirements."
+    }
+  ]
+}

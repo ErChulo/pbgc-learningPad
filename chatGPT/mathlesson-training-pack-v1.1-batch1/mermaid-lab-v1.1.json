@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "mathlesson.lesson.v1",
+  "exportedFrom": "mathlesson.v4.7.2",
+  "source": "generated-training-pack-v1.1",
+  "blockSchemaVersion": "mathlesson.block.v4.4.0",
+  "schemaRegistryVersion": "mathlesson.schema-registry.v4.4.0",
+  "structuredModelVersion": "4.7.2",
+  "audio": {
+    "src": "",
+    "label": ""
+  },
+  "lessonKey": "training-mermaid-lab-v1-1",
+  "title": "MathLesson Training Pack 02 — Mermaid Syntax Lab v1.1",
+  "description": "A focused training lesson for safe Mermaid diagrams, common mistakes, and import/version checks.",
+  "sections": [
+    {
+      "id": "ml-purpose",
+      "label": "Start",
+      "title": "What this lesson tests",
+      "content": "<h1>Mermaid Syntax Lab</h1>\n<p>This lesson teaches a safe subset of Mermaid that works reliably inside MathLesson.</p>\n<div class=\"callout rmk\"><div class=\"callout-tag\">What this lesson tests</div>\nThis file tests live Mermaid rendering, safe node labels, safe import/version verification, escaped bad examples, and student export behavior.\n</div>\n<div class=\"callout ex\"><div class=\"callout-tag\">Author task</div>\nImport this file, verify that the title says <strong>Mermaid Syntax Lab</strong>, then scan every live Mermaid block. No live Mermaid block should produce a parse error.\n</div>\n"
+    },
+    {
+      "id": "ml-rules",
+      "label": "Rules",
+      "title": "Mermaid syntax safety rules",
+      "content": "<h1>Mermaid Syntax Safety Rules</h1>\n<div class=\"callout def\"><div class=\"callout-tag\">Safe Mermaid rule</div>\nUse simple node IDs and quoted labels. Avoid raw LaTeX, commas, parentheses, brackets, braces, and punctuation-heavy labels inside live Mermaid labels.\n</div>\n<table>\n<thead><tr><th>Practice</th><th>Safe?</th><th>Reason</th></tr></thead>\n<tbody>\n<tr><td><code>A[Parametrization X(u,v)]</code></td><td>No</td><td>Parentheses and comma can confuse parsing.</td></tr>\n<tr><td><code>A[\"Parametrization\"]</code></td><td>Yes</td><td>Simple quoted label.</td></tr>\n<tr><td><code>B[\"First form\"]</code></td><td>Yes</td><td>Short technical label without math notation.</td></tr>\n<tr><td><code>C[\"Qd equals Qs\"]</code></td><td>Yes</td><td>Use words instead of symbols.</td></tr>\n</tbody>\n</table>\n<pre><code>Unsafe example shown as text only:\nflowchart LR\n  A[Parametrization X(u,v)] --&gt; B[Metric g_{ij}]\n\nSafe live equivalent:\nflowchart LR\n  A[\"Parametrization\"] --&gt; B[\"Metric\"]</code></pre>\n"
+    },
+    {
+      "id": "ml-flowchart",
+      "label": "Flowchart",
+      "title": "Safe flowchart templates",
+      "content": "<h1>Safe Flowchart Templates</h1>\n<p>This is the safest Mermaid style for MathLesson training files.</p>\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Safe authoring flow</div><pre class=\"mermaid\">flowchart LR\n  A[\"Idea\"] --> B[\"Draft section\"]\n  B --> C[\"Insert block\"]\n  C --> D[\"Run audit\"]\n  D --> E[\"Export lesson\"]\n</pre></div>\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Safe math workflow</div><pre class=\"mermaid\">flowchart TD\n  A[\"Definition\"] --> B[\"Example\"]\n  B --> C[\"Exercise\"]\n  C --> D[\"Feedback\"]\n  D --> E[\"Quiz\"]\n</pre></div>\n<div class=\"callout rmk\"><div class=\"callout-tag\">UX observation prompt</div>\nWhen editing this lesson, note whether Mermaid blocks are easy to locate and edit inside the current app.\n</div>\n"
+    },
+    {
+      "id": "ml-sequence",
+      "label": "Sequence",
+      "title": "Safe sequence diagram",
+      "content": "<h1>Safe Sequence Diagram</h1>\n<p>Sequence diagrams are useful for workflows. Keep participants and messages short.</p>\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Import and export workflow</div><pre class=\"mermaid\">sequenceDiagram\n  participant A as Author\n  participant M as MathLesson\n  participant S as Student\n  A->>M: Import JSON\n  M-->>A: Render lesson\n  A->>M: Run audit\n  A->>S: Export student file\n</pre></div>\n<div class=\"callout rmk\"><div class=\"callout-tag\">Safe wording</div>\nUse words like <em>Import JSON</em> instead of punctuation-heavy labels or formulas.\n</div>\n"
+    },
+    {
+      "id": "ml-import",
+      "label": "Import",
+      "title": "Confirm corrected imports",
+      "content": "<h1>Confirm Corrected Imports</h1>\n<p>When replacing a bad lesson with a corrected lesson, do not assume the app has switched to the new file just because you selected a file.</p>\n<div class=\"callout ex\"><div class=\"callout-tag\">Checklist</div>\n<ol>\n  <li>Import the corrected JSON file.</li>\n  <li>Read the lesson title at the top of the app.</li>\n  <li>Confirm the title/version is visibly different from the old bad lesson.</li>\n  <li>For Mermaid stress files, prefer titles containing <strong>Mermaid-Safe v2</strong> or a similarly explicit label.</li>\n  <li>Run Prototype Audit.</li>\n  <li>Open the console only after the visible render test passes.</li>\n</ol>\n</div>\n<div class=\"callout rmk\"><div class=\"callout-tag\">Why this matters</div>\nA Mermaid parse error may come from an old imported lesson still loaded in app state, not from the corrected JSON file.\n</div>\n"
+    }
+  ],
+  "plots": {},
+  "quiz": [
+    {
+      "type": "mc",
+      "stem": "Which live Mermaid label style is safest?",
+      "options": [
+        "A[Parametrization X(u,v)]",
+        "A[Metric g_{ij}]",
+        "A[\"Parametrization\"]",
+        "A[$x^2+1$]"
+      ],
+      "answer": 2,
+      "feedback": "Use simple node IDs and quoted text labels."
+    },
+    {
+      "type": "tf",
+      "stem": "Intentionally broken Mermaid examples should appear as live Mermaid blocks so the app can fail visibly.",
+      "answer": false,
+      "feedback": "False. Bad examples should be escaped code examples, not live broken render blocks."
+    },
+    {
+      "type": "free",
+      "stem": "Describe one Mermaid syntax rule you would want the app to remind you about while editing.",
+      "feedback": "This answer can inform the later UX/UI redesign."
+    }
+  ]
+}
