@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "mathlesson.lesson.v1",
+  "exportedFrom": "mathlesson.v4.6.5",
+  "source": "generated-stress-test",
+  "lessonKey": "microeconomics-mathematical-models-mermaid-safe-v2",
+  "blockSchemaVersion": "mathlesson.block.v4.4.0",
+  "schemaRegistryVersion": "mathlesson.schema-registry.v4.4.0",
+  "structuredModelVersion": "4.6.5",
+  "title": "Microeconomics with Mathematical Models — Mermaid-Safe v2",
+  "description": "A rich microeconomics lesson for testing MathLesson rendering, export, quiz, and interactive blocks.",
+  "audio": {
+    "src": "",
+    "label": "No audio"
+  },
+  "sections": [
+    {
+      "id": "sec-micro-overview",
+      "label": "§1 Model Thinking",
+      "title": "Model Thinking",
+      "content": "\n<h1>Microeconomics with Mathematical Models</h1>\n<p>This lesson is a stress-test lesson. It uses microeconomic ideas to test prose, LaTeX, callouts, graphs, tables, grids, Mermaid, JSXGraph, exercises, quiz items, and exports.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Definition</div>\nA microeconomic model is a simplified mathematical description of individual choices, markets, firms, or strategic interaction.\n</div>\n\n<div class=\"callout id\"><div class=\"callout-tag\">Generic optimization form</div>\nMany microeconomic problems have the form\n<div class=\"math-display\">$$\\max_{x\\in X} f(x)\\quad\\text{subject to}\\quad g_i(x)\\leq b_i.$$</div>\nThe function $f$ is the objective and the inequalities are constraints.\n</div>\n\n<div class=\"ml-grid grid-3\" data-grid-type=\"grid-3\" data-grid-version=\"1\">\n  <div class=\"ml-grid-cell\">\n    <h3>Consumers</h3>\n    <p>Choose goods to maximize utility under a budget constraint.</p>\n    <div class=\"math-display\">$$\\max U(x,y)$$</div>\n  </div>\n  <div class=\"ml-grid-cell\">\n    <h3>Firms</h3>\n    <p>Choose output or inputs to maximize profit.</p>\n    <div class=\"math-display\">$$\\max \\pi(q)=R(q)-C(q)$$</div>\n  </div>\n  <div class=\"ml-grid-cell\">\n    <h3>Markets</h3>\n    <p>Prices coordinate demand and supply.</p>\n    <div class=\"math-display\">$$Q_d(P)=Q_s(P)$$</div>\n  </div>\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Testing note</div>\nThe equations are intentionally simple. The purpose is to verify that the app handles a mathematically rich lesson consistently across author view, student export, JSON export/import, Reveal export, and Print/PDF planning.\n</div>\n"
+    },
+    {
+      "id": "sec-supply-demand",
+      "label": "§2 Supply and Demand",
+      "title": "Supply and Demand",
+      "content": "\n<h1>Supply and Demand</h1>\n<p>A competitive market model compares the quantity buyers want with the quantity sellers want at each price.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Linear demand and supply</div>\nLet price be $P$. A simple model is\n<div class=\"math-display\">$$Q_d(P)=a-bP,\\qquad Q_s(P)=c+dP,$$</div>\nwhere $b>0$ and $d>0$.\n</div>\n\n<div class=\"callout thm\"><div class=\"callout-tag\">Equilibrium formula</div>\nThe competitive equilibrium satisfies $Q_d(P^*)=Q_s(P^*)$. Thus\n<div class=\"math-display\">$$P^*=\\frac{a-c}{b+d},\\qquad Q^*=a-bP^*.$$</div>\n</div>\n\n<div class=\"plot\" data-plot=\"supplyDemandPlot\" style=\"height:380px;min-height:380px;\"></div>\n\n<div class=\"explore-widget\" data-explore=\"2d\"\n  data-title=\"Demand curve Qd(P) = a - bP\"\n  data-params='[{\"id\":\"a\",\"label\":\"intercept a\",\"min\":20,\"max\":120,\"step\":5,\"value\":80},{\"id\":\"b\",\"label\":\"slope b\",\"min\":1,\"max\":10,\"step\":0.5,\"value\":4}]'\n  data-fn=\"(P,p)=>p.a-p.b*P\"\n  data-xrange=\"[0,20]\"\n  data-xlabel=\"price P\" data-ylabel=\"quantity demanded\"\n  style=\"height:340px;\"></div>\n\n<div class=\"exercise-widget\" data-answer=\"10\" data-hint=\"Set 80-4P=20+2P, so 60=6P.\">\n  <div class=\"exercise-prompt\">If $Q_d=80-4P$ and $Q_s=20+2P$, enter the equilibrium price $P^*$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n"
+    },
+    {
+      "id": "sec-consumer-choice",
+      "label": "§3 Consumer Choice",
+      "title": "Consumer Choice",
+      "content": "\n<h1>Consumer Choice</h1>\n<p>Consumer theory models a household as choosing a bundle $(x,y)$ subject to a budget constraint.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Budget set</div>\nIf income is $m$ and prices are $p_x,p_y$, then affordable bundles satisfy\n<div class=\"math-display\">$$p_xx+p_yy\\leq m.$$</div>\nThe budget line is $p_xx+p_yy=m$.\n</div>\n\n<div class=\"callout id\"><div class=\"callout-tag\">Cobb-Douglas utility</div>\nA common utility model is\n<div class=\"math-display\">$$U(x,y)=x^\\alpha y^{1-\\alpha},\\qquad 0<\\alpha<1.$$</div>\nThe marginal rate of substitution is\n<div class=\"math-display\">$$MRS=\\frac{MU_x}{MU_y}=\\frac{\\alpha}{1-\\alpha}\\frac{y}{x}.$$</div>\n</div>\n\n<div class=\"jsx-wrap\" data-jsx=\"inline-board\" data-title=\"Budget line and chosen bundle\" data-init=\"inline\" style=\"height:360px;\">\n  <script type=\"text/jsxgraph\">\nboard.suspendUpdate();\nconst B = board.create('point', [8,0], {name:'m/px', fixed:true, size:3});\nconst A = board.create('point', [0,6], {name:'m/py', fixed:true, size:3});\nconst O = board.create('point', [0,0], {name:'0', fixed:true, size:2});\nboard.create('polygon', [O,B,A], {fillColor:'#5ecbff', fillOpacity:0.10, borders:{strokeColor:'#5ecbff'}});\nboard.create('line', [A,B], {strokeColor:'#fbbf24', strokeWidth:3});\nconst C = board.create('point', [3.2,3.6], {name:'choice', size:4, strokeColor:'#34d399', fillColor:'#34d399'});\nboard.create('text', [0.4,5.4,'budget line: p_x x + p_y y = m'], {fontSize:14});\nboard.create('text', [0.4,-0.7,'Drag the green point as a chosen bundle inside the budget set.'], {fontSize:14});\nboard.unsuspendUpdate();\n  </script>\n</div>\n\n<div class=\"ml-grid comparison-grid\" data-grid-type=\"comparison-grid\" data-grid-version=\"1\">\n  <div class=\"ml-grid-cell\"><h3>Primal problem</h3><p>Maximize utility subject to income.</p><div class=\"math-display\">$$\\max U(x,y)\\quad\\text{s.t.}\\quad p_xx+p_yy=m.$$</div></div>\n  <div class=\"ml-grid-cell\"><h3>Result for Cobb-Douglas</h3><p>The expenditure shares are fixed by $\\alpha$.</p><div class=\"math-display\">$$x^*=\\frac{\\alpha m}{p_x},\\qquad y^*=\\frac{(1-\\alpha)m}{p_y}.$$</div></div>\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"\\frac{\\alpha m}{p_x}\" data-hint=\"Cobb-Douglas spends share alpha of income on good x.\">\n  <div class=\"exercise-prompt\">For Cobb-Douglas utility, enter the Marshallian demand $x^*$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n"
+    },
+    {
+      "id": "sec-firm-production",
+      "label": "§4 Firm and Production",
+      "title": "Firm and Production",
+      "content": "\n<h1>Firm and Production</h1>\n<p>A firm transforms inputs into output. A production function maps capital and labor into quantity produced.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Production function</div>\nA Cobb-Douglas production function is\n<div class=\"math-display\">$$q=A K^\\alpha L^{1-\\alpha}.$$</div>\nHere $K$ is capital, $L$ is labor, $A$ is productivity, and $0<\\alpha<1$.\n</div>\n\n<div class=\"explore-widget\" data-explore=\"3d\"\n  data-title=\"Cobb-Douglas production surface\"\n  data-params='[{\"id\":\"A\",\"label\":\"productivity A\",\"min\":0.5,\"max\":2,\"step\":0.1,\"value\":1},{\"id\":\"alpha\",\"label\":\"capital share alpha\",\"min\":0.2,\"max\":0.8,\"step\":0.05,\"value\":0.4}]'\n  data-fn=\"(K,L,p)=>p.A*Math.pow(Math.max(K,0.01),p.alpha)*Math.pow(Math.max(L,0.01),1-p.alpha)\"\n  data-xrange=\"[0.1,10]\" data-yrange=\"[0.1,10]\"\n  style=\"height:390px;\"></div>\n\n<div class=\"callout id\"><div class=\"callout-tag\">Profit maximization</div>\nIf output price is $p$ and cost is $C(q)$, profit is\n<div class=\"math-display\">$$\\pi(q)=pq-C(q).$$</div>\nAn interior optimum satisfies\n<div class=\"math-display\">$$MR(q)=MC(q).$$</div>\nFor a price-taking firm, $MR(q)=p$.\n</div>\n\n<table>\n<thead><tr><th>Concept</th><th>Symbol</th><th>Simple formula</th><th>Interpretation</th></tr></thead>\n<tbody>\n<tr><td>Total revenue</td><td>$R(q)$</td><td>$pq$</td><td>money from sales</td></tr>\n<tr><td>Total cost</td><td>$C(q)$</td><td>$F+cq+dq^2$</td><td>fixed plus variable cost</td></tr>\n<tr><td>Marginal cost</td><td>$MC(q)$</td><td>$C'(q)$</td><td>cost of one more unit</td></tr>\n<tr><td>Profit</td><td>$\\pi(q)$</td><td>$R(q)-C(q)$</td><td>firm objective</td></tr>\n</tbody>\n</table>\n"
+    },
+    {
+      "id": "sec-elasticity",
+      "label": "§5 Elasticity",
+      "title": "Elasticity",
+      "content": "\n<h1>Elasticity</h1>\n<p>Elasticity measures proportional sensitivity. It converts a slope into a unit-free response measure.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Price elasticity of demand</div>\nThe point elasticity of demand is\n<div class=\"math-display\">$$\\varepsilon(P)=\\frac{dQ_d}{dP}\\frac{P}{Q_d(P)}.$$</div>\nFor $Q_d=a-bP$,\n<div class=\"math-display\">$$\\varepsilon(P)=-b\\frac{P}{a-bP}.$$</div>\n</div>\n\n<div class=\"plot\" data-plot=\"elasticityPlot\" style=\"height:360px;min-height:360px;\"></div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Interpretation</div>\nIf $|\\varepsilon|>1$, demand is elastic. If $|\\varepsilon|<1$, demand is inelastic. The sign is usually negative for ordinary downward-sloping demand.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"-1\" data-hint=\"For Q=100-5P, epsilon=-5P/(100-5P). At P=10, this is -50/50.\">\n  <div class=\"exercise-prompt\">For $Q=100-5P$, enter elasticity at $P=10$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n\n<div class=\"stat-block\" data-stat-type=\"regression\" data-stat-config='{\"x\":[1,2,3,4,5],\"y\":[9,8,6,5,3]}'>\n  <div class=\"stat-block-title\">Mock regression block</div>\n  <p>This placeholder block represents estimating a demand curve from price and quantity data.</p>\n</div>\n"
+    },
+    {
+      "id": "sec-game-theory-and-flow",
+      "label": "§6 Strategic Interaction",
+      "title": "Strategic Interaction",
+      "content": "\n<h1>Strategic Interaction</h1>\n<p>Microeconomics also studies situations where one person’s payoff depends on another person’s action.</p>\n\n<div class=\"mermaid-wrap\"><pre class=\"mermaid\">graph LR\n  A[\"Output choice\"] --> B[\"Market signal\"]\n  B --> C[\"Quantity choice\"]\n  C --> D[\"Price rule\"]\n  D --> E[\"Payoff\"]\n</pre></div>\n\n<table>\n<thead><tr><th></th><th>Firm B: Low</th><th>Firm B: High</th></tr></thead>\n<tbody>\n<tr><th>Firm A: Low</th><td>3, 3</td><td>1, 4</td></tr>\n<tr><th>Firm A: High</th><td>4, 1</td><td>2, 2</td></tr>\n</tbody>\n</table>\n\n<div class=\"svg-wrap\">\n<svg width=\"680\" height=\"260\" viewBox=\"0 0 680 260\" role=\"img\" aria-label=\"Simple microeconomic cycle\">\n  <defs><marker id=\"microArrow\" markerWidth=\"10\" markerHeight=\"10\" refX=\"8\" refY=\"3\" orient=\"auto\"><path d=\"M0,0 L0,6 L9,3 z\" fill=\"currentColor\"></path></marker></defs>\n  <circle cx=\"130\" cy=\"130\" r=\"62\" fill=\"currentColor\" opacity=\"0.08\" stroke=\"currentColor\"></circle>\n  <circle cx=\"340\" cy=\"130\" r=\"62\" fill=\"currentColor\" opacity=\"0.08\" stroke=\"currentColor\"></circle>\n  <circle cx=\"550\" cy=\"130\" r=\"62\" fill=\"currentColor\" opacity=\"0.08\" stroke=\"currentColor\"></circle>\n  <text x=\"92\" y=\"135\" fill=\"currentColor\">choices</text>\n  <text x=\"298\" y=\"135\" fill=\"currentColor\">prices</text>\n  <text x=\"512\" y=\"135\" fill=\"currentColor\">payoffs</text>\n  <path d=\"M195 130 H270\" stroke=\"currentColor\" stroke-width=\"3\" marker-end=\"url(#microArrow)\"></path>\n  <path d=\"M405 130 H480\" stroke=\"currentColor\" stroke-width=\"3\" marker-end=\"url(#microArrow)\"></path>\n</svg>\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Testing note</div>\nThis section tests Mermaid-safe quoted labels, ordinary tables, and SVG rendering in the same section.\n</div>\n"
+    },
+    {
+      "id": "sec-export-and-quiz-practice",
+      "label": "§7 Export Layout and Practice",
+      "title": "Export Layout and Practice",
+      "content": "\n<h1>Export Layout and Practice</h1>\n<p>This section includes layout controls and inline exercises for export testing.</p>\n\n<div class=\"avoid-break\">\n  <div class=\"callout thm\"><div class=\"callout-tag\">Keep together</div>\n  Equilibrium is the price-quantity pair where planned buying equals planned selling.\n  <div class=\"math-display\">$$Q_d(P^*)=Q_s(P^*).$$</div>\n  </div>\n</div>\n\n<!-- slide -->\n<p>The comment above is a Reveal slide split marker.</p>\n\n<div class=\"allow-break\">\n<p>This paragraph is inside an allow-break block. Repeat testing words: demand, supply, elasticity, utility, budget, production, profit, marginal cost, equilibrium, game, payoff, constraint, optimization.</p>\n</div>\n\n<hr class=\"page-break\">\n<p>This paragraph follows a forced Print/PDF page break.</p>\n\n<div class=\"print-landscape\">\n<table>\n<thead><tr><th>Model</th><th>Choice variable</th><th>Objective</th><th>Constraint</th><th>First-order condition</th></tr></thead>\n<tbody>\n<tr><td>Consumer</td><td>$x,y$</td><td>$U(x,y)$</td><td>$p_xx+p_yy=m$</td><td>$MRS=p_x/p_y$</td></tr>\n<tr><td>Firm</td><td>$q$</td><td>$pq-C(q)$</td><td>technology</td><td>$MR=MC$</td></tr>\n<tr><td>Market</td><td>$P$</td><td>clearing</td><td>demand/supply</td><td>$Q_d=Q_s$</td></tr>\n</tbody>\n</table>\n</div>\n\n<div class=\"print-graph-page print-full-width\">\n  <div class=\"plot\" data-plot=\"costCurvesPlot\" style=\"height:360px;min-height:360px;\"></div>\n</div>\n\n<div class=\"callout exr\"><div class=\"callout-tag\">Final prompt</div>\nAfter import, run Prototype Audit, Student export, JSON export/import, Reveal export, and Print/PDF Planner.\n</div>\n"
+    }
+  ],
+  "plots": {
+    "supplyDemandPlot": "(layout,target)=>{const P=Array.from({length:81},(_,i)=>i*0.25);const Qd=P.map(p=>80-4*p);const Qs=P.map(p=>20+2*p);const pe=10, qe=40;Plotly.newPlot(target,[{x:Qd,y:P,mode:'lines',name:'Demand Qd=80-4P'},{x:Qs,y:P,mode:'lines',name:'Supply Qs=20+2P'},{x:[qe],y:[pe],mode:'markers+text',text:['Equilibrium'],textposition:'top right',name:'E'}],{...layout,title:'Supply and demand stress-test plot',xaxis:{title:'quantity'},yaxis:{title:'price'},margin:{t:45,b:52,l:52,r:20}},{displayModeBar:false,responsive:true});}",
+    "elasticityPlot": "(layout,target)=>{const P=Array.from({length:91},(_,i)=>1+i*0.2);const eps=P.map(p=>-5*p/(100-5*p));Plotly.newPlot(target,[{x:P,y:eps,mode:'lines',name:'elasticity'}],{...layout,title:'Elasticity for Q=100-5P',xaxis:{title:'price P'},yaxis:{title:'epsilon(P)'},margin:{t:45,b:52,l:52,r:20}},{displayModeBar:false,responsive:true});}",
+    "costCurvesPlot": "(layout,target)=>{const q=Array.from({length:101},(_,i)=>i*0.5);const mc=q.map(x=>2+0.4*x);const ac=q.map(x=>x===0?null:20/x+2+0.2*x);Plotly.newPlot(target,[{x:q,y:mc,mode:'lines',name:'MC'},{x:q,y:ac,mode:'lines',name:'AC'}],{...layout,title:'Mock cost curves',xaxis:{title:'output q'},yaxis:{title:'cost per unit'},margin:{t:45,b:52,l:52,r:20}},{displayModeBar:false,responsive:true});}"
+  },
+  "quiz": [
+    {
+      "type": "mc",
+      "stem": "In a supply-demand model, equilibrium means:",
+      "options": [
+        "Quantity demanded equals quantity supplied",
+        "Utility is always zero",
+        "Cost is undefined",
+        "No one buys anything"
+      ],
+      "answer": 0,
+      "feedback": "Equilibrium clears the market: Qd equals Qs."
+    },
+    {
+      "type": "tf",
+      "stem": "For Qd(P)=a-bP with b>0, demand slopes downward.",
+      "answer": true,
+      "feedback": "As price rises, quantity demanded falls."
+    },
+    {
+      "type": "math",
+      "stem": "If Qd=80-4P and Qs=20+2P, enter P*.",
+      "answer": "10",
+      "numeric": true,
+      "hint": "Set 80-4P=20+2P."
+    },
+    {
+      "type": "math",
+      "stem": "For U(x,y)=x^alpha y^(1-alpha), enter x*.",
+      "answer": "\\frac{\\alpha m}{p_x}",
+      "hint": "Good x receives alpha share of income."
+    },
+    {
+      "type": "tf",
+      "stemHtml": "<p>The condition $MR=MC$ is a firm optimization condition.</p>",
+      "answer": true,
+      "feedback": "It is the usual interior optimum condition."
+    },
+    {
+      "type": "mc",
+      "stem": "Elasticity is useful because it is:",
+      "options": [
+        "Unit-free",
+        "Always positive",
+        "A table format",
+        "The same as revenue"
+      ],
+      "answer": 0,
+      "feedback": "Elasticity measures proportional response and is unit-free."
+    },
+    {
+      "type": "math",
+      "stem": "For Q=100-5P, enter epsilon at P=10.",
+      "answer": "-1",
+      "numeric": true,
+      "hint": "Use epsilon=-5P/(100-5P)."
+    },
+    {
+      "type": "free",
+      "stem": "Describe one model in the lesson and what its constraint represents.",
+      "feedback": "A reasonable answer may discuss budget, technology, or market clearing constraints."
+    }
+  ]
+}

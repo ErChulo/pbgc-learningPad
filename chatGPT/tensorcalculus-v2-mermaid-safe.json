@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "mathlesson.lesson.v1",
+  "exportedFrom": "mathlesson.v4.6.5",
+  "source": "generated-sample",
+  "lessonKey": "tensor-calculus-curves-surfaces-forms-mermaid-safe-v2",
+  "blockSchemaVersion": "mathlesson.block.v4.4.0",
+  "schemaRegistryVersion": "mathlesson.schema-registry.v4.4.0",
+  "structuredModelVersion": "4.6.5",
+  "title": "Tensor Calculus of Curves and Surfaces — Mermaid-Safe v2",
+  "description": "Beginner lesson on parametrized curves, parametrized surfaces, the first fundamental form, and the second fundamental form.",
+  "audio": {
+    "src": "",
+    "label": "No audio"
+  },
+  "sections": [
+    {
+      "id": "sec-curves-to-surfaces",
+      "label": "§1 Curves to Surfaces",
+      "title": "Curves to Surfaces",
+      "content": "\n<h1>Curves to Surfaces</h1>\n<p>A curve has one parameter. A surface has two parameters. Tensor calculus begins when we stop thinking only about points and start asking how measurements change when parameters change.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Definition</div>\nA parametrized curve is a map\n<div class=\"math-display\">$$\\gamma:I\\subset\\mathbb{R}\\to\\mathbb{R}^3,\\qquad t\\mapsto \\gamma(t).$$</div>\nThe velocity vector is $\\gamma'(t)$, and the speed is $\\|\\gamma'(t)\\|$.\n</div>\n\n<div class=\"callout id\"><div class=\"callout-tag\">Curve metric</div>\nFor a curve, the infinitesimal squared length is\n<div class=\"math-display\">$$ds^2=\\langle \\gamma'(t),\\gamma'(t)\\rangle\\,dt^2.$$</div>\nThis is the one-dimensional version of the first fundamental form.\n</div>\n\n<div class=\"ml-grid grid-2\" data-grid-type=\"grid-2\" data-grid-version=\"1\">\n  <div class=\"ml-grid-cell\">\n    <h3>Curve idea</h3>\n    <p>A curve has one direction of motion. A tiny parameter change $dt$ produces the tiny displacement $d\\gamma=\\gamma'(t)dt$.</p>\n    <div class=\"math-display\">$$\\|d\\gamma\\|^2=\\langle \\gamma',\\gamma'\\rangle dt^2.$$</div>\n  </div>\n  <div class=\"ml-grid-cell\">\n    <h3>Surface idea</h3>\n    <p>A surface has two coordinate directions. A tiny parameter change $(du,dv)$ produces the tiny displacement $dX=X_u\\,du+X_v\\,dv$.</p>\n    <div class=\"math-display\">$$\\|dX\\|^2=\\langle dX,dX\\rangle.$$</div>\n  </div>\n</div>\n\n<div class=\"explore-widget\" data-explore=\"2d\"\n  data-title=\"Speed of a plane curve\"\n  data-params='[{\"id\":\"a\",\"label\":\"vertical scale\",\"min\":0.25,\"max\":2.5,\"step\":0.25,\"value\":1}]'\n  data-fn=\"(t,p)=>Math.sqrt(1+p.a*p.a*Math.cos(t)*Math.cos(t))\"\n  data-xrange=\"[-6.283,6.283]\"\n  data-xlabel=\"t\" data-ylabel=\"speed\"\n  style=\"height:340px;\"></div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Reader checkpoint</div>\nIf a formula contains a dot product, it is probably measuring length or angle. The first fundamental form is built out of dot products of tangent vectors.\n</div>\n"
+    },
+    {
+      "id": "sec-parametric-surface",
+      "label": "§2 Parametric Surfaces",
+      "title": "Parametric Surfaces",
+      "content": "\n<h1>Parametric Surfaces</h1>\n<p>A parametrized surface is a map with two parameters. We write it as $X(u,v)$, where $(u,v)$ are coordinates on the parameter plane.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Definition</div>\nA parametrized surface is\n<div class=\"math-display\">$$X:U\\subset\\mathbb{R}^2\\to\\mathbb{R}^3,\\qquad (u,v)\\mapsto X(u,v).$$</div>\nThe two coordinate tangent vectors are\n<div class=\"math-display\">$$X_u=\\frac{\\partial X}{\\partial u},\\qquad X_v=\\frac{\\partial X}{\\partial v}.$$</div>\n</div>\n\n<div class=\"callout thm\"><div class=\"callout-tag\">Regular surface test</div>\nThe parametrization is regular at a point if\n<div class=\"math-display\">$$X_u\\times X_v\\neq 0.$$</div>\nThis means the two tangent directions do not collapse into a single line.\n</div>\n\n<div class=\"svg-wrap\">\n<svg width=\"680\" height=\"280\" viewBox=\"0 0 680 280\" role=\"img\" aria-label=\"Parameter grid mapped to surface patch\">\n  <defs>\n    <marker id=\"arrowTensor\" markerWidth=\"10\" markerHeight=\"10\" refX=\"8\" refY=\"3\" orient=\"auto\" markerUnits=\"strokeWidth\">\n      <path d=\"M0,0 L0,6 L9,3 z\" fill=\"currentColor\"></path>\n    </marker>\n  </defs>\n  <rect x=\"25\" y=\"35\" width=\"220\" height=\"190\" rx=\"12\" fill=\"none\" stroke=\"currentColor\" opacity=\"0.35\"></rect>\n  <path d=\"M60 70 H210 M60 110 H210 M60 150 H210 M60 190 H210\" stroke=\"currentColor\" opacity=\"0.35\"></path>\n  <path d=\"M70 55 V210 M115 55 V210 M160 55 V210 M205 55 V210\" stroke=\"currentColor\" opacity=\"0.35\"></path>\n  <circle cx=\"150\" cy=\"135\" r=\"5\" fill=\"currentColor\"></circle>\n  <text x=\"82\" y=\"247\" fill=\"currentColor\">parameter domain U with coordinates (u,v)</text>\n  <path d=\"M280 130 C330 90, 360 90, 410 130\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" marker-end=\"url(#arrowTensor)\"></path>\n  <text x=\"318\" y=\"88\" fill=\"currentColor\">X(u,v)</text>\n  <path d=\"M470 70 C540 25,620 55,635 115 C648 175,590 225,500 210 C430 198,395 150,420 105 C430 88,445 78,470 70Z\" fill=\"currentColor\" opacity=\"0.08\" stroke=\"currentColor\" stroke-width=\"2\"></path>\n  <path d=\"M438 125 C490 82,575 85,620 125\" fill=\"none\" stroke=\"currentColor\" opacity=\"0.55\"></path>\n  <path d=\"M435 165 C490 128,575 130,622 165\" fill=\"none\" stroke=\"currentColor\" opacity=\"0.55\"></path>\n  <path d=\"M480 72 C470 120,470 170,500 212\" fill=\"none\" stroke=\"currentColor\" opacity=\"0.55\"></path>\n  <path d=\"M548 55 C530 112,530 170,565 220\" fill=\"none\" stroke=\"currentColor\" opacity=\"0.55\"></path>\n  <circle cx=\"525\" cy=\"145\" r=\"5\" fill=\"currentColor\"></circle>\n  <text x=\"460\" y=\"250\" fill=\"currentColor\">surface patch in R³</text>\n</svg>\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Example</div>\nThe graph of $z=f(u,v)$ has parametrization\n<div class=\"math-display\">$$X(u,v)=(u,v,f(u,v)).$$</div>\nThen\n<div class=\"math-display\">$$X_u=(1,0,f_u),\\qquad X_v=(0,1,f_v).$$</div>\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"(1,0,2u)\" data-hint=\"Differentiate each component of X(u,v)=(u,v,u^2+v^2) with respect to u.\">\n  <div class=\"exercise-prompt\">For $X(u,v)=(u,v,u^2+v^2)$, enter $X_u$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n"
+    },
+    {
+      "id": "sec-first-form",
+      "label": "§3 First Fundamental Form",
+      "title": "First Fundamental Form",
+      "content": "\n<h1>The First Fundamental Form</h1>\n<p>The first fundamental form is the rule that computes lengths, angles, and areas on a surface by using the dot products of $X_u$ and $X_v$.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Definition</div>\nThe coefficients of the first fundamental form are\n<div class=\"math-display\">$$E=\\langle X_u,X_u\\rangle,\\qquad F=\\langle X_u,X_v\\rangle,\\qquad G=\\langle X_v,X_v\\rangle.$$</div>\nThe quadratic form is\n<div class=\"math-display\">$$I=ds^2=E\\,du^2+2F\\,du\\,dv+G\\,dv^2.$$</div>\n</div>\n\n<div class=\"callout id\"><div class=\"callout-tag\">Matrix form</div>\nWith $d\\mathbf{u}=\\begin{bmatrix}du\\\\dv\\end{bmatrix}$, the same object is\n<div class=\"math-display\">$$ds^2=d\\mathbf{u}^{T}\\begin{bmatrix}E&F\\\\F&G\\end{bmatrix}d\\mathbf{u}.$$</div>\nThe matrix $g_{ij}=\\langle X_i,X_j\\rangle$ is the metric tensor in these coordinates.\n</div>\n\n<table>\n<thead><tr><th>Quantity</th><th>Formula</th><th>Meaning</th></tr></thead>\n<tbody>\n<tr><td>$E$</td><td>$X_u\\cdot X_u$</td><td>length-squared of the $u$ coordinate direction</td></tr>\n<tr><td>$F$</td><td>$X_u\\cdot X_v$</td><td>angle interaction between the two coordinate directions</td></tr>\n<tr><td>$G$</td><td>$X_v\\cdot X_v$</td><td>length-squared of the $v$ coordinate direction</td></tr>\n<tr><td>$EG-F^2$</td><td>$\\|X_u\\times X_v\\|^2$</td><td>area scaling squared</td></tr>\n</tbody>\n</table>\n\n<div class=\"explore-widget\" data-explore=\"3d\"\n  data-title=\"Surface z = a(u²+v²)\"\n  data-params='[{\"id\":\"a\",\"label\":\"curvature scale a\",\"min\":0,\"max\":1.5,\"step\":0.1,\"value\":0.4}]'\n  data-fn=\"(u,v,p)=>p.a*(u*u+v*v)\"\n  data-xrange=\"[-2.5,2.5]\" data-yrange=\"[-2.5,2.5]\"\n  style=\"height:390px;\"></div>\n\n<div class=\"ml-grid definition-example-grid\" data-grid-type=\"definition-example-grid\" data-grid-version=\"1\">\n  <div class=\"ml-grid-cell\">\n    <h3>Formula for a graph</h3>\n    <p>For $X(u,v)=(u,v,f(u,v))$:</p>\n    <div class=\"math-display\">$$E=1+f_u^2,\\quad F=f_u f_v,\\quad G=1+f_v^2.$$</div>\n  </div>\n  <div class=\"ml-grid-cell\">\n    <h3>Paraboloid example</h3>\n    <p>If $f(u,v)=a(u^2+v^2)$, then</p>\n    <div class=\"math-display\">$$E=1+4a^2u^2,\\quad F=4a^2uv,\\quad G=1+4a^2v^2.$$</div>\n  </div>\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"1+4a^2u^2\" data-hint=\"For f=a(u^2+v^2), f_u=2au and E=1+f_u^2.\">\n  <div class=\"exercise-prompt\">For $X(u,v)=(u,v,a(u^2+v^2))$, enter $E$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n"
+    },
+    {
+      "id": "sec-second-form",
+      "label": "§4 Second Fundamental Form",
+      "title": "Second Fundamental Form",
+      "content": "\n<h1>The Second Fundamental Form</h1>\n<p>The first fundamental form measures inside the tangent plane. The second fundamental form measures how the surface bends away from that tangent plane.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Unit normal</div>\nFor a regular parametrized surface, define the unit normal vector by\n<div class=\"math-display\">$$N=\\frac{X_u\\times X_v}{\\|X_u\\times X_v\\|}.$$</div>\nThe normal vector points perpendicular to the tangent plane.\n</div>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Second fundamental form</div>\nThe coefficients of the second fundamental form are\n<div class=\"math-display\">$$e=\\langle X_{uu},N\\rangle,\\qquad f=\\langle X_{uv},N\\rangle,\\qquad g=\\langle X_{vv},N\\rangle.$$</div>\nThe quadratic form is\n<div class=\"math-display\">$$II=e\\,du^2+2f\\,du\\,dv+g\\,dv^2.$$</div>\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Interpretation</div>\nThe first form says how a short vector appears to someone living on the surface. The second form says how much the surface bends in the normal direction when moving along that short vector.\n</div>\n\n<div class=\"mermaid-wrap\"><pre class=\"mermaid\">flowchart LR\n  A[\"Parametrization\"] --> B[\"Tangent vectors\"]\n  B --> C[\"First form\"]\n  B --> D[\"Normal vector\"]\n  D --> E[\"Second derivatives\"]\n  E --> F[\"Second form\"]\n  C --> G[\"Length and angle\"]\n  F --> H[\"Bending\"]\n</pre></div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Graph surface formula</div>\nFor $X(u,v)=(u,v,f(u,v))$,\n<div class=\"math-display\">$$N=\\frac{(-f_u,-f_v,1)}{\\sqrt{1+f_u^2+f_v^2}}.$$</div>\nTherefore\n<div class=\"math-display\">$$e=\\frac{f_{uu}}{\\sqrt{1+f_u^2+f_v^2}},\\qquad f=\\frac{f_{uv}}{\\sqrt{1+f_u^2+f_v^2}},\\qquad g=\\frac{f_{vv}}{\\sqrt{1+f_u^2+f_v^2}}.$$</div>\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"2a\" data-hint=\"At the origin, f_u=f_v=0 and f_uu=2a.\">\n  <div class=\"exercise-prompt\">For $f(u,v)=a(u^2+v^2)$, enter $e$ at $(u,v)=(0,0)$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n"
+    },
+    {
+      "id": "sec-shape-operator",
+      "label": "§5 Shape Operator and Curvature",
+      "title": "Shape Operator and Curvature",
+      "content": "\n<h1>Shape Operator and Curvature</h1>\n<p>The first and second forms are often combined. Their ratio in a tangent direction gives normal curvature.</p>\n\n<div class=\"callout thm\"><div class=\"callout-tag\">Normal curvature</div>\nFor a tangent displacement $w=(du,dv)$, the normal curvature in that direction is\n<div class=\"math-display\">$$k_n(w)=\\frac{II(w,w)}{I(w,w)}=\\frac{e\\,du^2+2f\\,du\\,dv+g\\,dv^2}{E\\,du^2+2F\\,du\\,dv+G\\,dv^2}.$$</div>\n</div>\n\n<div class=\"callout id\"><div class=\"callout-tag\">Tensor notation</div>\nUsing indices $i,j\\in\\{1,2\\}$, write\n<div class=\"math-display\">$$I=g_{ij}\\,du^i du^j,\\qquad II=b_{ij}\\,du^i du^j.$$</div>\nHere $g_{ij}=X_i\\cdot X_j$ and $b_{ij}=X_{ij}\\cdot N$.\n</div>\n\n<div class=\"jsx-wrap\" data-jsx=\"inline-board\" data-title=\"Tangent basis and metric coefficients\" data-init=\"inline\" style=\"height:360px;\">\n  <script type=\"text/jsxgraph\">\nboard.suspendUpdate();\nconst O = board.create('point', [0,0], {name:'O', fixed:true, size:3});\nconst U = board.create('point', [3,1], {name:'X_u', size:4});\nconst V = board.create('point', [1,2.5], {name:'X_v', size:4});\nboard.create('arrow', [O,U], {strokeColor:'#5ecbff', strokeWidth:3});\nboard.create('arrow', [O,V], {strokeColor:'#fbbf24', strokeWidth:3});\nconst P = board.create('point', [() => U.X()+V.X(), () => U.Y()+V.Y()], {name:'', visible:false});\nboard.create('polygon', [O,U,P,V], {borders:{strokeColor:'#a78bfa'}, fillColor:'#a78bfa', fillOpacity:0.10});\nboard.create('text', [-4.4,4.1, () => 'E = X_u·X_u = ' + (U.X()*U.X()+U.Y()*U.Y()).toFixed(2)], {fontSize:14});\nboard.create('text', [-4.4,3.7, () => 'F = X_u·X_v = ' + (U.X()*V.X()+U.Y()*V.Y()).toFixed(2)], {fontSize:14});\nboard.create('text', [-4.4,3.3, () => 'G = X_v·X_v = ' + (V.X()*V.X()+V.Y()*V.Y()).toFixed(2)], {fontSize:14});\nboard.create('text', [-4.4,-4.3,'Drag X_u and X_v. The first form changes with their dot products.'], {fontSize:14});\nboard.unsuspendUpdate();\n  </script>\n</div>\n\n<div class=\"callout prf\"><div class=\"callout-tag\">Proof sketch</div>\nSince $dX=X_u\\,du+X_v\\,dv$, taking the dot product with itself gives\n<div class=\"math-display\">$$dX\\cdot dX=(X_u\\cdot X_u)du^2+2(X_u\\cdot X_v)dudv+(X_v\\cdot X_v)dv^2.$$</div>\nThis is exactly the first fundamental form.\n</div>\n"
+    },
+    {
+      "id": "sec-examples-and-tables",
+      "label": "§6 Examples and Tables",
+      "title": "Examples and Tables",
+      "content": "\n<h1>Examples and Tables</h1>\n<p>This section compares a plane, a sphere, and a graph surface. The formulas are simplified to make the structural pattern visible.</p>\n\n<table>\n<thead><tr><th>Surface</th><th>Parametrization</th><th>First form idea</th><th>Second form idea</th></tr></thead>\n<tbody>\n<tr><td>Plane</td><td>$X(u,v)=(u,v,0)$</td><td>$E=G=1$, $F=0$</td><td>$e=f=g=0$</td></tr>\n<tr><td>Sphere</td><td>$X(\\theta,\\phi)$</td><td>depends on radius and latitude</td><td>nonzero bending everywhere</td></tr>\n<tr><td>Graph</td><td>$X(u,v)=(u,v,f(u,v))$</td><td>depends on $f_u,f_v$</td><td>depends on $f_{uu},f_{uv},f_{vv}$</td></tr>\n</tbody>\n</table>\n\n<div class=\"aq-wrap\" data-aq-title=\"Mock coefficient table\">\n  <div class=\"aq-header\">Mock coefficient table</div>\n  <div class=\"aq-body\">\n    <table>\n      <thead><tr><th>Point</th><th>E</th><th>F</th><th>G</th><th>e</th><th>f</th><th>g</th></tr></thead>\n      <tbody>\n        <tr><td>origin on paraboloid</td><td>1</td><td>0</td><td>1</td><td>2a</td><td>0</td><td>2a</td></tr>\n        <tr><td>plane</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>\n        <tr><td>tilted graph</td><td>$1+p^2$</td><td>$pq$</td><td>$1+q^2$</td><td>varies</td><td>varies</td><td>varies</td></tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n\n<div class=\"stat-block\" data-stat-type=\"normal\" data-stat-config='{\"distribution\":\"normal\",\"mean\":0,\"sd\":1,\"sampleSize\":300}'>\n  <div class=\"stat-block-title\">Mock statistics block</div>\n  <p>This is not needed for differential geometry, but it tests that statistics blocks survive import and export. Think of it as a sample of random tangent directions.</p>\n  <div class=\"stat-small\">Distribution: standard normal tangent-coordinate samples.</div>\n</div>\n\n<div class=\"plot\" data-plot=\"curvatureProfile\" style=\"height:360px;min-height:360px;\"></div>\n\n<div class=\"manim-slot\"><div class=\"manim-header\">Manim placeholder — rotating tangent plane animation</div><div class=\"manim-placeholder\">Place <code>tangent-plane.mp4</code> beside the HTML file to replace this placeholder.</div></div>\n"
+    },
+    {
+      "id": "sec-layout-and-review",
+      "label": "§7 Export Layout and Review",
+      "title": "Export Layout and Review",
+      "content": "\n<h1>Export Layout and Review</h1>\n<p>This section includes explicit layout controls so that Print/PDF and Reveal export can be tested.</p>\n\n<div class=\"avoid-break\">\n  <div class=\"callout ex\"><div class=\"callout-tag\">Keep together</div>\n  This example block should stay together in Print/PDF when possible.\n  <div class=\"math-display\">$$I=E\\,du^2+2F\\,du\\,dv+G\\,dv^2.$$</div>\n  </div>\n</div>\n\n<!-- slide -->\n<p>The comment above is a Reveal slide split marker.</p>\n\n<div class=\"allow-break\">\n<p>This paragraph is inside an allow-break block. It is intentionally verbose: first fundamental form, metric tensor, tangent basis, coordinate grid, second fundamental form, normal vector, curvature, shape operator, and normal curvature. This is a safe place to permit a page break if the printed output needs one.</p>\n</div>\n\n<hr class=\"page-break\">\n<p>This paragraph follows a forced Print/PDF page break.</p>\n\n<div class=\"print-landscape\">\n  <table>\n    <thead><tr><th>Object</th><th>Input</th><th>Output</th><th>Used for</th><th>Beginner interpretation</th></tr></thead>\n    <tbody>\n      <tr><td>$I$</td><td>$X_u,X_v$</td><td>$E,F,G$</td><td>length/angle/area</td><td>intrinsic measuring rule</td></tr>\n      <tr><td>$II$</td><td>$X_{uu},X_{uv},X_{vv},N$</td><td>$e,f,g$</td><td>bending</td><td>normal direction bending rule</td></tr>\n      <tr><td>$k_n$</td><td>$I,II,w$</td><td>number</td><td>directional curvature</td><td>bending along one direction</td></tr>\n    </tbody>\n  </table>\n</div>\n\n<div class=\"print-graph-page print-full-width\">\n  <div class=\"explore-widget\" data-explore=\"2d\"\n    data-title=\"Normal curvature ratio mock-up\"\n    data-params='[{\"id\":\"k1\",\"label\":\"k1\",\"min\":-2,\"max\":2,\"step\":0.25,\"value\":1},{\"id\":\"k2\",\"label\":\"k2\",\"min\":-2,\"max\":2,\"step\":0.25,\"value\":0.25}]'\n    data-fn=\"(t,p)=>p.k1*Math.cos(t)*Math.cos(t)+p.k2*Math.sin(t)*Math.sin(t)\"\n    data-xrange=\"[-3.1416,3.1416]\"\n    data-xlabel=\"direction angle\" data-ylabel=\"normal curvature\"\n    style=\"height:340px;\"></div>\n</div>\n\n<div class=\"callout exr\"><div class=\"callout-tag\">Study task</div>\nExplain in one sentence why the first fundamental form can measure lengths without leaving the surface.\n</div>\n"
+    }
+  ],
+  "plots": {
+    "curvatureProfile": "(layout,target)=>{const xs=Array.from({length:121},(_,i)=>-3+i*0.05);const ys=xs.map(x=>0.6+0.4*Math.cos(2*x));Plotly.newPlot(target,[{x:xs,y:ys,mode:'lines',name:'mock normal curvature'}],{...layout,title:'Mock curvature profile k_n(t)',margin:{t:40,b:44,l:44,r:10}},{displayModeBar:false,responsive:true});}"
+  },
+  "quiz": [
+    {
+      "type": "mc",
+      "stem": "What does the first fundamental form primarily measure?",
+      "options": [
+        "Length and angle on the surface",
+        "Volume inside the surface",
+        "Only color changes",
+        "Only time evolution"
+      ],
+      "answer": 0,
+      "explanation": "The first form is the metric rule on the surface."
+    },
+    {
+      "type": "tf",
+      "stem": "The coefficient F is the dot product X_u · X_v.",
+      "answer": true,
+      "explanation": "By definition, F = <X_u, X_v>."
+    },
+    {
+      "type": "math",
+      "stem": "Enter the first fundamental form matrix using E,F,G.",
+      "answer": "\\begin{bmatrix}E&F\\\\F&G\\end{bmatrix}",
+      "hint": "Put E and G on the diagonal and F off the diagonal."
+    },
+    {
+      "type": "math",
+      "stem": "For the plane X(u,v)=(u,v,0), enter E.",
+      "answer": "1",
+      "numeric": true,
+      "hint": "X_u=(1,0,0)."
+    },
+    {
+      "type": "mc",
+      "stem": "What does the second fundamental form measure?",
+      "options": [
+        "Bending relative to the normal vector",
+        "The number of coordinates",
+        "Only the area element",
+        "The color of the surface"
+      ],
+      "answer": 0,
+      "explanation": "The second form uses second derivatives and the unit normal."
+    },
+    {
+      "type": "tf",
+      "stemHtml": "<p>For a graph surface $X(u,v)=(u,v,f(u,v))$, the normal vector depends on $f_u$ and $f_v$.</p>",
+      "answer": true,
+      "explanation": "The unit normal is proportional to (-f_u,-f_v,1)."
+    },
+    {
+      "type": "math",
+      "stem": "For f(u,v)=a(u^2+v^2), enter f_uv.",
+      "answer": "0",
+      "numeric": true,
+      "hint": "Differentiate first with respect to u, then v."
+    },
+    {
+      "type": "free",
+      "stem": "In your own words, distinguish I from II.",
+      "sampleAnswer": "I measures lengths and angles in the tangent plane; II measures bending in the normal direction."
+    }
+  ]
+}
