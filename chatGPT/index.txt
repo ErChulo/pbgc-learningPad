@@ -1,3 +1,24 @@
+## leccion: coeficiente de ajuste
+
+Changes made
+Created the Spanish MathLesson JSON lesson from the uploaded adjustment-coefficient booklet.  
+Added 16 gradual sections for a bachelor-level student.
+Covered the classical ruin model, $U(t)=u+ct-S(t)$, compound Poisson claims, safety loading, the defining equation for $R$, Lundberg’s bound, equivalent premium equations, martingale interpretation, asymptotics, bounded-claim lower bound, exponential-claim special case, and the discrete-time version.
+Added Mermaid-safe diagrams, an SVG-style explanatory figure, tables, callouts, inline exercises, and a Plotly Explore widget for $e^{-Ru}$.
+Added a comprehensive 24-question quiz in Spanish.
+JSON syntax validation passed.
+Manual testing checklist
+Open mathlesson.v4.7.4.html.
+Import coeficiente-ajuste.json.
+Confirm the title is Coeficiente de ajuste en teoría de ruina.
+Confirm all 16 sections render.
+Confirm formulas render correctly.
+Confirm Mermaid diagrams render without parse errors.
+Test the inline exercises.
+Open the quiz and test Submit / Recheck.
+Run Prototype Audit.
+Export Student Lesson + Quiz and test the exported file.
+
 ## v4.7.4
 
 Changes made
