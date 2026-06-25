@@ -1,3 +1,31 @@
+## v4.7.5
+
+Changes made
+Added Prompt Library: JSON Lesson Generator Prompt v1.0 under the app’s Authoring Guide.
+Embedded the full prompt text inside the app.
+Added a Copy Prompt v1.0 button.
+Created version-controlled prompt artifact:
+prompt-for-JSON-lesson-v1.0.txt
+Added prompt version metadata:
+prompt version v1.0
+app baseline mathlesson.v4.7.5
+rule that future substantive prompt changes require a new version.
+Updated the roadmap to include the Prompt Library as a first-class authoring workstream.
+Added future onboarding item:
+onboarding-08-generate-lesson-from-external-material.json
+Bumped app version to mathlesson.v4.7.5.
+Main JavaScript syntax check passed.
+Manual testing checklist
+Open mathlesson.v4.7.5.html.
+Confirm the top bar shows v4.7.5.
+Open Advanced / Reference → Authoring Guide.
+Find Prompt Library: JSON Lesson Generator Prompt v1.0.
+Open the full prompt text.
+Click Copy Prompt v1.0.
+Paste into a text editor and confirm the prompt copied.
+Confirm the prompt metadata says prompt-for-JSON-lesson-v1.0.txt.
+Confirm the roadmap includes the Prompt Library and version-control rule.
+
 ## prompt para crear lecciones
 
 Changes made
