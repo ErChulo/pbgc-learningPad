@@ -1,0 +1,333 @@
+{
+  "schemaVersion": "mathlesson.lesson.v1",
+  "exportedFrom": "mathlesson.v4.7.4",
+  "source": "uploaded-adjustment-coefficient-pdf",
+  "lessonKey": "coeficiente-ajuste-v1",
+  "blockSchemaVersion": "mathlesson.block.v4.4.0",
+  "schemaRegistryVersion": "mathlesson.schema-registry.v4.4.0",
+  "structuredModelVersion": "4.7.4",
+  "audio": {
+    "src": "",
+    "label": ""
+  },
+  "title": "Coeficiente de ajuste en teoría de ruina",
+  "description": "Lección gradual en español basada en el folleto sobre el adjustment coefficient. Diseñada para estudiantes de bachillerato universitario/primeros cursos de actuaría, con secciones progresivas y quiz integral.",
+  "sections": [
+    {
+      "id": "ca-start",
+      "label": "Inicio",
+      "title": "Qué vas a entender",
+      "content": "<h1>Coeficiente de ajuste: una lección paso a paso</h1>\n<p>Esta lección explica el <strong>coeficiente de ajuste</strong>, denotado por $R$, dentro del modelo clásico de ruina de Cramér-Lundberg. La idea central es sencilla: $R$ mide qué tan rápido disminuye una cota exponencial para la probabilidad de ruina cuando aumenta el capital inicial.</p>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Objetivo pedagógico</div>\nAl final debes poder leer la ecuación que define $R$, interpretar el papel de la prima, de la frecuencia de siniestros y de la distribución de severidad, y explicar por qué aparece la cota de Lundberg $e^{-Ru}$.\n</div>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Mapa de la lección</div><pre class=\"mermaid\">flowchart LR\n  A[\"Modelo\"] --> B[\"Superavit\"]\n  B --> C[\"Riesgo de ruina\"]\n  C --> D[\"Ecuacion de R\"]\n  D --> E[\"Cota exponencial\"]\n  E --> F[\"Interpretacion actuarial\"]\n  F --> G[\"Quiz\"]\n</pre></div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Cómo estudiar</div>\nNo intentes memorizar todas las fórmulas al principio. Primero identifica qué representa cada símbolo: capital inicial, prima, número de siniestros, monto de siniestros y probabilidad de ruina.\n</div>"
+    },
+    {
+      "id": "ca-intuition",
+      "label": "1",
+      "title": "Intuición: por qué importa R",
+      "content": "<h1>1. La intuición de $R$</h1>\n<p>El coeficiente de ajuste $R$ es un número positivo asociado con un modelo clásico de ruina. Su uso más famoso es producir una cota exponencial para la probabilidad de ruina:</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Cota superior de Lundberg</div>\n  $$\\psi(u)\\leq e^{-Ru}.$$\n</div>\n\n<p>Aquí $u$ es el capital inicial y $\\psi(u)$ es la probabilidad de que, en algún momento futuro, el superávit de la aseguradora sea negativo.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Lectura conceptual</div>\nSi $R$ es grande, la expresión $e^{-Ru}$ cae rápido cuando $u$ aumenta. Eso indica una posición más estable. Si $R$ es pequeño, la cota cae lentamente y la estabilidad es menor.\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Regla de bolsillo</div>\nPara capital inicial grande, aumentar $u$ en una unidad reduce la probabilidad de ruina aproximadamente por un factor $e^{-R}$, siempre que la aproximación exponencial sea razonable.\n</div>\n\n<div class=\"explore-widget\" data-explore=\"2d\"\n  data-title=\"Cota exponencial de ruina: exp(-R u)\"\n  data-params='[{\"id\":\"R\",\"label\":\"coeficiente R\",\"min\":0.01,\"max\":0.20,\"step\":0.01,\"value\":0.05}]'\n  data-fn=\"(u,p)=>Math.exp(-p.R*u)\"\n  data-xrange=\"[0,100]\"\n  data-xlabel=\"capital inicial u\" data-ylabel=\"cota exp(-Ru)\"\n  style=\"height:340px;\"></div>\n\n<div class=\"exercise-widget\" data-answer=\"e^{-R}\" data-hint=\"Compara e^{-R(u+1)} con e^{-Ru} y divide.\">\n  <div class=\"exercise-prompt\">Si la probabilidad se aproxima por $C e^{-Ru}$, ¿por qué factor se multiplica aproximadamente al aumentar $u$ en 1?</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Tu respuesta…\"></math-field><button class=\"exercise-check-btn\">Revisar</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "ca-model",
+      "label": "2",
+      "title": "El modelo clásico de ruina",
+      "content": "<h1>2. El modelo clásico de ruina</h1>\n<p>El modelo describe el capital o superávit de una aseguradora en el tiempo. El superávit aumenta por primas cobradas y disminuye por siniestros pagados.</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Proceso de superávit</div>\n  $$U(t)=u+ct-S(t),\\qquad t\\geq 0.$$\n</div>\n\n<table>\n<thead><tr><th>Símbolo</th><th>Significado</th><th>Unidad mental</th></tr></thead>\n<tbody>\n<tr><td>$U(t)$</td><td>superávit en el tiempo $t$</td><td>dinero</td></tr>\n<tr><td>$u$</td><td>capital inicial</td><td>dinero al tiempo 0</td></tr>\n<tr><td>$c$</td><td>prima cobrada por unidad de tiempo</td><td>dinero por año, mes, etc.</td></tr>\n<tr><td>$S(t)$</td><td>siniestros agregados hasta $t$</td><td>dinero acumulado</td></tr>\n</tbody>\n</table>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Interpretación</div>\nEl término $u+ct$ es lo que la aseguradora tendría si no hubiera siniestros. El término $S(t)$ resta los siniestros acumulados. La ruina ocurre cuando $U(t)<0$ en algún momento.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"70\" data-hint=\"Usa U(t)=u+ct-S(t). Sustituye u=50, c=10, t=3, S(t)=10.\">\n  <div class=\"exercise-prompt\">Si $u=50$, $c=10$, $t=3$ y $S(t)=10$, calcula $U(t)$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Tu respuesta…\"></math-field><button class=\"exercise-check-btn\">Revisar</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "ca-claims",
+      "label": "3",
+      "title": "Siniestros compuestos: frecuencia y severidad",
+      "content": "<h1>3. Siniestros compuestos: frecuencia y severidad</h1>\n<p>En el modelo clásico, los siniestros agregados son una suma aleatoria:</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Siniestros agregados</div>\n  $$S(t)=X_1+X_2+\\cdots+X_{N(t)}.$$\n</div>\n\n<p>El número $N(t)$ de siniestros hasta el tiempo $t$ se modela como un proceso de Poisson. Su parámetro por unidad de tiempo es $\\lambda$. Las variables $X_1,X_2,\\ldots$ representan los montos individuales de los siniestros.</p>\n\n<div class=\"ml-grid comparison-grid\" data-grid-type=\"comparison-grid\" data-grid-version=\"1\">\n  <div class=\"ml-grid-cell\">\n    <h3>Frecuencia</h3>\n    <p>$N(t)$ cuenta cuántos siniestros ocurren.</p>\n    <div class=\"math-display\">$$E[N(t)]=\\lambda t.$$</div>\n  </div>\n  <div class=\"ml-grid-cell\">\n    <h3>Severidad</h3>\n    <p>$X$ representa el tamaño de un siniestro individual.</p>\n    <div class=\"math-display\">$$\\mu=E[X].$$</div>\n  </div>\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Separación útil</div>\nLa frecuencia responde: “¿cuántos siniestros llegan?”. La severidad responde: “¿de qué tamaño son?”. El proceso $S(t)$ combina ambas cosas.\n</div>"
+    },
+    {
+      "id": "ca-ruin",
+      "label": "4",
+      "title": "Probabilidad de ruina",
+      "content": "<h1>4. Probabilidad de ruina</h1>\n<p>La probabilidad de ruina se define como la probabilidad de que el superávit sea negativo alguna vez:</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Probabilidad de ruina</div>\n  $$\\psi(u)=\\Pr\\{U(t)<0\\text{ para algún }t\\geq 0\\}.$$\n</div>\n\n<p>Observa que $\\psi(u)$ depende del capital inicial $u$. Si $u$ aumenta, esperamos que la ruina sea menos probable. Pero la forma exacta de $\\psi(u)$ puede ser difícil de calcular.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Por qué usamos cotas</div>\nEn muchos modelos, calcular $\\psi(u)$ exactamente es complicado. El coeficiente de ajuste permite usar una cota simple, $e^{-Ru}$, que captura la disminución exponencial de la probabilidad de ruina.\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Pregunta conceptual</div>\nSi dos aseguradoras tienen el mismo capital inicial $u$, pero una tiene un $R$ mayor, la cota de Lundberg indica que esa aseguradora tiene una cota de ruina menor.\n</div>"
+    },
+    {
+      "id": "ca-loading",
+      "label": "5",
+      "title": "Prima y margen de seguridad",
+      "content": "<h1>5. Prima y margen de seguridad</h1>\n<p>La prima por unidad de tiempo es $c$. El costo esperado de siniestros por unidad de tiempo es $\\lambda\\mu$. El <strong>recargo de seguridad</strong> o <em>safety loading</em> se define como:</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Safety loading</div>\n  $$\\theta=\\frac{c}{\\lambda\\mu}-1.$$\n</div>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Interpretación de $\\theta$</div>\nSi $\\theta>0$, la prima esperada excede el costo esperado de siniestros. Si $\\theta=0$, la prima apenas cubre el costo esperado. Si $\\theta<0$, el negocio cobra menos que el costo esperado y la ruina se vuelve inevitable en el modelo clásico.\n</div>\n\n<table>\n<thead><tr><th>Situación</th><th>Condición</th><th>Lectura actuarial</th></tr></thead>\n<tbody>\n<tr><td>Prima suficiente</td><td>$c>\\lambda\\mu$</td><td>$\\theta>0$</td></tr>\n<tr><td>Prima neta</td><td>$c=\\lambda\\mu$</td><td>$\\theta=0$</td></tr>\n<tr><td>Prima insuficiente</td><td>$c<\\lambda\\mu$</td><td>$\\theta<0$</td></tr>\n</tbody>\n</table>\n\n<div class=\"exercise-widget\" data-answer=\"0.25\" data-hint=\"Calcula c/(lambda mu)-1 = 125/100 - 1.\">\n  <div class=\"exercise-prompt\">Si $c=125$ y $\\lambda\\mu=100$, calcula $\\theta$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Tu respuesta…\"></math-field><button class=\"exercise-check-btn\">Revisar</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "ca-equation",
+      "label": "6",
+      "title": "La ecuación que define R",
+      "content": "<h1>6. La ecuación que define $R$</h1>\n<p>El coeficiente de ajuste $R$ se define como la solución positiva de una ecuación que compara una recta con la función generadora de momentos de la severidad.</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Ecuación de ajuste</div>\n  $$1+(1+\\theta)\\mu R=m_X(R).$$\n</div>\n\n<p>Aquí $m_X(r)=E[e^{rX}]$ es la función generadora de momentos del tamaño de siniestro $X$.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Lectura gráfica</div>\nEl valor $R$ se encuentra donde la curva $m_X(r)$ vuelve a cruzar la recta $1+(1+\\theta)\\mu r$ para $r>0$. El cruce en $r=0$ siempre está presente; el coeficiente de ajuste es el cruce positivo.\n</div>\n\n<div class=\"svg-wrap avoid-break\">\n<svg width=\"720\" height=\"320\" viewBox=\"0 0 720 320\" role=\"img\" aria-label=\"Esquema del coeficiente de ajuste\">\n  <rect x=\"0\" y=\"0\" width=\"720\" height=\"320\" rx=\"12\" fill=\"none\" stroke=\"currentColor\" opacity=\"0.18\"></rect>\n  <line x1=\"70\" y1=\"260\" x2=\"650\" y2=\"260\" stroke=\"currentColor\" stroke-width=\"2\" opacity=\"0.7\"></line>\n  <line x1=\"70\" y1=\"260\" x2=\"70\" y2=\"40\" stroke=\"currentColor\" stroke-width=\"2\" opacity=\"0.7\"></line>\n  <path d=\"M70 240 C165 234,240 222,320 198 C390 176,455 130,515 60\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"4\"></path>\n  <line x1=\"70\" y1=\"240\" x2=\"610\" y2=\"132\" stroke=\"currentColor\" stroke-width=\"3\" opacity=\"0.65\"></line>\n  <line x1=\"430\" y1=\"260\" x2=\"430\" y2=\"168\" stroke=\"currentColor\" stroke-dasharray=\"8 6\" stroke-width=\"2\"></line>\n  <circle cx=\"430\" cy=\"168\" r=\"6\" fill=\"currentColor\"></circle>\n  <text x=\"100\" y=\"56\" fill=\"currentColor\">m_X(r)</text>\n  <text x=\"420\" y=\"292\" fill=\"currentColor\">R</text>\n  <text x=\"492\" y=\"155\" fill=\"currentColor\">1 + (1+theta) mu r</text>\n  <text x=\"650\" y=\"282\" fill=\"currentColor\">r</text>\n</svg>\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Cuidado</div>\nNo siempre existe una solución positiva. El folleto menciona casos en los que la función generadora de momentos está acotada en su dominio finito y puede no haber solución para ciertos valores altos de $\\theta$.\n</div>"
+    },
+    {
+      "id": "ca-how-r-changes",
+      "label": "7",
+      "title": "Qué hace que R suba o baje",
+      "content": "<h1>7. Qué hace que $R$ suba o baje</h1>\n<p>La ecuación de $R$ permite una lectura actuarial directa.</p>\n\n<div class=\"ml-grid comparison-grid\" data-grid-type=\"comparison-grid\" data-grid-version=\"1\">\n  <div class=\"ml-grid-cell\">\n    <h3>Sube la prima</h3>\n    <p>Si aumenta $\\theta$, el coeficiente $R$ tiende a aumentar.</p>\n    <p><strong>Interpretación:</strong> mayor margen de seguridad produce una cota de ruina más baja.</p>\n  </div>\n  <div class=\"ml-grid-cell\">\n    <h3>Aumenta el riesgo de severidad</h3>\n    <p>Si $m_X(r)$ es mayor para $r>0$, el valor de $R$ tiende a disminuir.</p>\n    <p><strong>Interpretación:</strong> colas más pesadas o riesgos exponencialmente mayores elevan la cota de ruina.</p>\n  </div>\n</div>\n\n<div class=\"callout thm\"><div class=\"callout-tag\">Cota útil para cálculo numérico</div>\nSustituyendo $m_X(R)$ por una expansión cuadrática aproximada se obtiene la cota\n<div class=\"math-display\">$$R<\\frac{2\\theta\\mu}{E[X^2]}.$$</div>\nEsta desigualdad puede servir como referencia inicial al buscar $R$ numéricamente.\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Mensaje práctico</div>\nEn términos de gestión de riesgo, $R$ puede modificarse mediante primas, reaseguro o cambios en la cartera de riesgos. Por eso se llama “coeficiente de ajuste”.\n</div>"
+    },
+    {
+      "id": "ca-exponential",
+      "label": "8",
+      "title": "Caso especial: siniestros exponenciales",
+      "content": "<h1>8. Caso especial: siniestros exponenciales</h1>\n<p>En general, $R$ no tiene una fórmula cerrada simple. Sin embargo, si los tamaños de siniestro son exponenciales con media $\\mu$, el folleto da una expresión explícita:</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Coeficiente para severidad exponencial</div>\n  $$R=\\frac{\\theta}{(1+\\theta)\\mu}.$$\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Ejemplo numérico</div>\nSi $\\theta=0.20$ y $\\mu=1000$, entonces\n<div class=\"math-display\">$$R=\\frac{0.20}{1.20(1000)}=\\frac{1}{6000}\\approx 0.0001667.$$</div>\nSi $u=12000$, la cota es aproximadamente\n<div class=\"math-display\">$$e^{-Ru}=e^{-2}\\approx 0.1353.$$</div>\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"1/6000\" data-hint=\"Usa R = theta / ((1+theta) mu). Con theta=0.20 y mu=1000.\">\n  <div class=\"exercise-prompt\">Para $\\theta=0.20$ y $\\mu=1000$, escribe $R$ como fracción simple.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Tu respuesta…\"></math-field><button class=\"exercise-check-btn\">Revisar</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "ca-premium",
+      "label": "9",
+      "title": "Ecuaciones equivalentes y prima exponencial",
+      "content": "<h1>9. Ecuaciones equivalentes y prima exponencial</h1>\n<p>Sea $S=S(1)$ el total de siniestros en un intervalo de longitud 1. El folleto presenta ecuaciones equivalentes que caracterizan $R$:</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Formas equivalentes</div>\n  $$e^{Rc}=E[e^{RS}]\\quad\\Longleftrightarrow\\quad m_{c-S}(-R)=1\\quad\\Longleftrightarrow\\quad c=\\frac{1}{R}\\log m_S(R).$$\n</div>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Interpretación económica</div>\nLa última ecuación dice que $c$ se puede ver como una prima exponencial con coeficiente de aversión al riesgo $R$.\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Diseñar una cota objetivo</div>\nSi quieres que $e^{-Ru}=\\varepsilon$, entonces eliges\n<div class=\"math-display\">$$R=-\\frac{1}{u}\\log(\\varepsilon).$$</div>\nEste $R$ puede usarse para pensar qué prima $c$ sería necesaria dentro del modelo.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"-\\frac{1}{u}\\log(\\varepsilon)\" data-hint=\"Toma logaritmos en e^{-Ru}=epsilon.\">\n  <div class=\"exercise-prompt\">Resuelve $e^{-Ru}=\\varepsilon$ para $R$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Tu respuesta…\"></math-field><button class=\"exercise-check-btn\">Revisar</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "ca-proof",
+      "label": "10",
+      "title": "Idea de la desigualdad de Lundberg",
+      "content": "<h1>10. Idea de la desigualdad de Lundberg</h1>\n<p>La prueba formal usa una probabilidad de ruina truncada: $\\psi_k(u)$ es la probabilidad de ruina en o antes del $k$-ésimo siniestro. Luego se prueba por inducción que</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Paso inductivo buscado</div>\n  $$\\psi_k(u)\\leq e^{-Ru}\\quad\\text{para todo }k.$$\n</div>\n\n<p>La idea es condicionar por el tiempo $t$ y el tamaño $x$ del primer siniestro. Después del primer siniestro, el nuevo capital es $u+ct-x$. Entonces se aplica la hipótesis inductiva a $\\psi_{k-1}(u+ct-x)$.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Estructura de la prueba</div><pre class=\"mermaid\">flowchart TD\n  A[\"Definir ruina truncada\"] --> B[\"Probar caso inicial\"]\n  B --> C[\"Condicionar primer siniestro\"]\n  C --> D[\"Aplicar hipotesis inductiva\"]\n  D --> E[\"Usar ecuacion de R\"]\n  E --> F[\"Obtener cota exponencial\"]\n</pre></div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Lectura para bachillerato universitario</div>\nNo necesitas memorizar la integral doble al primer contacto. Lo importante es ver que la ecuación que define $R$ está escogida exactamente para que el último factor se simplifique a 1.\n</div>"
+    },
+    {
+      "id": "ca-martingale",
+      "label": "11",
+      "title": "La idea de martingala",
+      "content": "<h1>11. La idea de martingala</h1>\n<p>El folleto indica que el proceso $e^{-RU(t)}$ tiene propiedad de martingala. En términos intuitivos, después de transformar el superávit con una exponencial, el valor esperado queda equilibrado.</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Propiedad clave</div>\n  $$E[e^{-RU(t)}]=e^{-Ru}.$$\n</div>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Interpretación</div>\nLa ecuación de $R$ no es decorativa: es la condición que hace que la transformación exponencial del superávit tenga el balance necesario para producir la cota de ruina.\n</div>\n\n<p>También se puede expresar la probabilidad de ruina mediante el tiempo de ruina $T$:</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Expresión general</div>\n  $$\\psi(u)=\\frac{e^{-Ru}}{E[e^{-RU(T)}\\mid T<\\infty]}.$$\n</div>\n\n<p>Como $U(T)<0$ en el momento de ruina, el denominador corrige la cota exponencial según el exceso de siniestro que causó la ruina.</p>"
+    },
+    {
+      "id": "ca-consequences",
+      "label": "12",
+      "title": "Consecuencias importantes",
+      "content": "<h1>12. Consecuencias importantes</h1>\n<p>Del enfoque exponencial se derivan varias consecuencias útiles.</p>\n\n<table>\n<thead><tr><th>Resultado</th><th>Forma</th><th>Interpretación</th></tr></thead>\n<tbody>\n<tr><td>Cota superior</td><td>$\\psi(u)<e^{-Ru}$</td><td>la ruina está controlada por una curva exponencial</td></tr>\n<tr><td>Sin margen</td><td>$\\theta\\downarrow 0 \\Rightarrow R\\downarrow 0$</td><td>la ruina se vuelve más probable</td></tr>\n<tr><td>Margen no positivo</td><td>$\\theta\\leq 0 \\Rightarrow \\psi(u)=1$</td><td>ruina eventual en el modelo</td></tr>\n<tr><td>Siniestros acotados por $b$</td><td>$\\psi(u)\\geq e^{-R(u+b)}$</td><td>también existe una cota inferior exponencial</td></tr>\n<tr><td>Capital grande</td><td>$\\psi(u)\\sim C e^{-Ru}$</td><td>la forma exponencial domina asintóticamente</td></tr>\n</tbody>\n</table>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Idea principal</div>\nEl coeficiente $R$ no da necesariamente la probabilidad exacta de ruina, pero sí controla su escala exponencial.\n</div>"
+    },
+    {
+      "id": "ca-discrete",
+      "label": "13",
+      "title": "Versión discreta",
+      "content": "<h1>13. Versión discreta</h1>\n<p>También puede considerarse un modelo en tiempo discreto, en el que se revisa el superávit solamente en los tiempos $0,1,2,\\ldots$:</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Ruina en tiempo discreto</div>\n  $$\\widetilde{\\psi}(u)=\\Pr\\{U(t)<0\\text{ para algún }t\\in\\{0,1,2,\\ldots\\}\\}.$$\n</div>\n\n<p>En esta versión, los incrementos de siniestros entre periodos se modelan como variables independientes e idénticamente distribuidas, digamos $S$. No tienen que ser necesariamente compound Poisson.</p>\n\n<div class=\"math-display avoid-break\">\n  <div class=\"math-label\">Ecuación de ajuste discreta</div>\n  $$m_{c-S}(-\\widetilde{R})=1.$$\n</div>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Condiciones básicas</div>\nEl folleto señala condiciones como $E[S]<c$ y $\\Pr[S<0]>0$ para esta formulación discreta. La estructura sigue siendo similar: encontrar un coeficiente positivo que produzca una cota exponencial.\n</div>"
+    },
+    {
+      "id": "ca-compute",
+      "label": "14",
+      "title": "Checklist de cálculo",
+      "content": "<h1>14. Checklist para calcular o interpretar $R$</h1>\n<ol>\n  <li>Identifica $c$, $\\lambda$ y $\\mu=E[X]$.</li>\n  <li>Calcula el recargo de seguridad $\\theta=c/(\\lambda\\mu)-1$.</li>\n  <li>Verifica que $\\theta>0$.</li>\n  <li>Escribe o estima la función generadora de momentos $m_X(r)$.</li>\n  <li>Resuelve la ecuación $1+(1+\\theta)\\mu R=m_X(R)$ para $R>0$.</li>\n  <li>Usa $e^{-Ru}$ como cota superior para $\\psi(u)$.</li>\n  <li>Interpreta el resultado: mayor $R$ significa caída más rápida de la cota de ruina.</li>\n</ol>\n\n<div class=\"callout warn\"><div class=\"callout-tag\">Errores frecuentes</div>\n<ul>\n  <li>Confundir $\\lambda$ con $\\mu$.</li>\n  <li>Olvidar que $R$ debe ser positivo.</li>\n  <li>Usar la fórmula exponencial $R=\\theta/((1+\\theta)\\mu)$ fuera del caso de severidad exponencial.</li>\n  <li>Interpretar $e^{-Ru}$ como probabilidad exacta cuando solo se tiene una cota.</li>\n  <li>Ignorar si existe la función generadora de momentos para argumentos positivos.</li>\n</ul>\n</div>"
+    },
+    {
+      "id": "ca-summary",
+      "label": "15",
+      "title": "Resumen final",
+      "content": "<h1>15. Resumen final</h1>\n<div class=\"callout thm\"><div class=\"callout-tag\">Resumen de una frase</div>\nEl coeficiente de ajuste $R$ es el parámetro exponencial que conecta la prima, la frecuencia y severidad de siniestros con una cota práctica para la probabilidad de ruina.\n</div>\n\n<table>\n<thead><tr><th>Concepto</th><th>Fórmula</th><th>Lectura</th></tr></thead>\n<tbody>\n<tr><td>Superávit</td><td>$U(t)=u+ct-S(t)$</td><td>capital más primas menos siniestros</td></tr>\n<tr><td>Siniestros agregados</td><td>$S(t)=X_1+\\cdots+X_{N(t)}$</td><td>suma aleatoria de siniestros</td></tr>\n<tr><td>Ruina</td><td>$\\psi(u)=\\Pr\\{U(t)<0\\text{ alguna vez}\\}$</td><td>evento de déficit futuro</td></tr>\n<tr><td>Safety loading</td><td>$\\theta=c/(\\lambda\\mu)-1$</td><td>margen relativo sobre prima pura</td></tr>\n<tr><td>Coeficiente de ajuste</td><td>$1+(1+\\theta)\\mu R=m_X(R)$</td><td>solución positiva</td></tr>\n<tr><td>Cota de Lundberg</td><td>$\\psi(u)\\leq e^{-Ru}$</td><td>control exponencial de ruina</td></tr>\n</tbody>\n</table>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Última tarea</div>\nExplica en tus propias palabras por qué aumentar el capital inicial reduce la cota de ruina y por qué aumentar el margen de seguridad tiende a aumentar $R$.\n</div>"
+    }
+  ],
+  "plots": {},
+  "quiz": [
+    {
+      "type": "mc",
+      "stem": "¿Qué representa principalmente el coeficiente de ajuste $R$ en esta lección?",
+      "options": [
+        "La media de los siniestros individuales",
+        "El parámetro que controla una cota exponencial de la probabilidad de ruina",
+        "El número esperado de siniestros por año",
+        "El capital inicial de la aseguradora"
+      ],
+      "answer": 1,
+      "feedback": "$R$ controla la cota $e^{-Ru}$ para la probabilidad de ruina."
+    },
+    {
+      "type": "mc",
+      "stem": "En el modelo clásico, ¿cuál es la fórmula del superávit?",
+      "options": [
+        "$U(t)=S(t)-u-ct$",
+        "$U(t)=u+ct-S(t)$",
+        "$U(t)=u+cS(t)-t$",
+        "$U(t)=ct/u-S(t)$"
+      ],
+      "answer": 1,
+      "feedback": "El superávit es capital inicial más primas menos siniestros agregados."
+    },
+    {
+      "type": "tf",
+      "stem": "En el modelo descrito, $S(t)$ es el total de siniestros hasta el tiempo $t$.",
+      "answer": true,
+      "feedback": "Verdadero. $S(t)=X_1+\\cdots+X_{N(t)}$."
+    },
+    {
+      "type": "mc",
+      "stem": "¿Qué modela $N(t)$?",
+      "options": [
+        "El tamaño de un siniestro",
+        "El número de siniestros hasta el tiempo $t$",
+        "La prima cobrada por unidad de tiempo",
+        "El capital inicial"
+      ],
+      "answer": 1,
+      "feedback": "$N(t)$ cuenta los siniestros ocurridos hasta $t$."
+    },
+    {
+      "type": "mc",
+      "stem": "¿Cuál es la definición de $\\theta$?",
+      "options": [
+        "$\\theta=c-\\lambda\\mu$",
+        "$\\theta=\\lambda\\mu/c$",
+        "$\\theta=c/(\\lambda\\mu)-1$",
+        "$\\theta=R/u$"
+      ],
+      "answer": 2,
+      "feedback": "El safety loading relativo es $c/(\\lambda\\mu)-1$."
+    },
+    {
+      "type": "tf",
+      "stem": "Si $\\theta\\leq 0$, el modelo clásico indica ruina eventual con probabilidad 1.",
+      "answer": true,
+      "feedback": "Verdadero, de acuerdo con las consecuencias indicadas en el folleto."
+    },
+    {
+      "type": "mc",
+      "stem": "¿Qué es $m_X(r)$?",
+      "options": [
+        "La función generadora de momentos de $X$",
+        "La función de distribución de $N(t)$",
+        "El capital al tiempo $r$",
+        "La probabilidad exacta de ruina"
+      ],
+      "answer": 0,
+      "feedback": "$m_X(r)=E[e^{rX}]$."
+    },
+    {
+      "type": "mc",
+      "stem": "¿Cuál ecuación define $R$ en el modelo clásico?",
+      "options": [
+        "$R=\\lambda\\mu/c$",
+        "$1+(1+\\theta)\\mu R=m_X(R)$",
+        "$\\psi(u)=R/u$",
+        "$m_X(R)=0$"
+      ],
+      "answer": 1,
+      "feedback": "$R$ es la solución positiva de esa ecuación."
+    },
+    {
+      "type": "tf",
+      "stem": "El cruce $r=0$ de la ecuación de $R$ es el coeficiente de ajuste buscado.",
+      "answer": false,
+      "feedback": "Falso. El coeficiente de ajuste es el cruce positivo distinto de cero."
+    },
+    {
+      "type": "mc",
+      "stem": "Si aumenta $\\theta$, ¿qué suele ocurrir con $R$?",
+      "options": [
+        "Tiende a aumentar",
+        "Siempre se vuelve cero",
+        "No puede cambiar",
+        "Tiende a ser negativo"
+      ],
+      "answer": 0,
+      "feedback": "Mayor safety loading tiende a aumentar $R$."
+    },
+    {
+      "type": "mc",
+      "stem": "Si la severidad se reemplaza por otra con mayor función generadora de momentos en argumentos positivos, ¿qué suele ocurrir con $R$?",
+      "options": [
+        "Aumenta siempre",
+        "Disminuye, elevando la cota de ruina",
+        "Se vuelve infinito",
+        "No existe $\\psi(u)$"
+      ],
+      "answer": 1,
+      "feedback": "Una mgf mayor corresponde a un riesgo exponencialmente mayor y reduce $R$."
+    },
+    {
+      "type": "tf",
+      "stem": "La cota de Lundberg dice que $\\psi(u)\\leq e^{-Ru}$.",
+      "answer": true,
+      "feedback": "Verdadero."
+    },
+    {
+      "type": "math",
+      "stem": "Para severidad exponencial, escribe la fórmula de $R$ en términos de $\\theta$ y $\\mu$.",
+      "answer": "\\frac{\\theta}{(1+\\theta)\\mu}",
+      "hint": "Es la fórmula especial del caso exponencial.",
+      "feedback": "Para siniestros exponenciales, $R=\\theta/((1+\\theta)\\mu)$."
+    },
+    {
+      "type": "math",
+      "stem": "Si $\\theta=0.20$ y $\\mu=1000$, escribe $R$ como fracción simple.",
+      "answer": "1/6000",
+      "hint": "Calcula 0.20/(1.20*1000).",
+      "feedback": "$R=0.20/1200=1/6000$."
+    },
+    {
+      "type": "mc",
+      "stem": "¿Qué significa $e^{-Ru}$ dentro de la lección?",
+      "options": [
+        "Una cota superior de la probabilidad de ruina",
+        "El número exacto de siniestros",
+        "La prima por unidad de tiempo",
+        "La función de distribución de $X$"
+      ],
+      "answer": 0,
+      "feedback": "Se usa como cota exponencial superior."
+    },
+    {
+      "type": "tf",
+      "stem": "Si los siniestros están acotados por $b$, aparece una cota inferior de la forma $e^{-R(u+b)}$.",
+      "answer": true,
+      "feedback": "Verdadero."
+    },
+    {
+      "type": "mc",
+      "stem": "La ecuación $c=(1/R)\\log m_S(R)$ interpreta $c$ como:",
+      "options": [
+        "prima exponencial con coeficiente de aversión al riesgo $R$",
+        "capital inicial mínimo",
+        "media de los siniestros",
+        "probabilidad exacta de ruina"
+      ],
+      "answer": 0,
+      "feedback": "Esa es la interpretación económica presentada."
+    },
+    {
+      "type": "math",
+      "stem": "Resuelve $e^{-Ru}=\\varepsilon$ para $R$.",
+      "answer": "-\\frac{1}{u}\\log(\\varepsilon)",
+      "hint": "Toma logaritmos a ambos lados.",
+      "feedback": "$R=-(1/u)\\log(\\varepsilon)$."
+    },
+    {
+      "type": "tf",
+      "stem": "La propiedad de martingala indicada es que $e^{-RU(t)}$ queda equilibrado en esperanza bajo la elección correcta de $R$.",
+      "answer": true,
+      "feedback": "Verdadero. La ecuación de $R$ hace funcionar esa transformación exponencial."
+    },
+    {
+      "type": "mc",
+      "stem": "¿Qué función cumple la prueba por inducción con $\\psi_k(u)$?",
+      "options": [
+        "Evitar definir la ruina",
+        "Probar la cota primero para ruina hasta $k$ siniestros y luego pasar al límite",
+        "Calcular la prima neta exacta",
+        "Demostrar que no existen siniestros grandes"
+      ],
+      "answer": 1,
+      "feedback": "Se prueba la cota para ruina hasta el k-ésimo siniestro y luego se toma el límite."
+    },
+    {
+      "type": "tf",
+      "stem": "En general, $R$ siempre tiene una fórmula explícita cerrada.",
+      "answer": false,
+      "feedback": "Falso. En general debe calcularse numéricamente; el caso exponencial es especial."
+    },
+    {
+      "type": "mc",
+      "stem": "En tiempo discreto, ¿qué ecuación caracteriza el coeficiente de ajuste?",
+      "options": [
+        "$m_{c-S}(-\\widetilde R)=1$",
+        "$U(t)=0$",
+        "$\\widetilde R=u/c$",
+        "$m_X(0)=0$"
+      ],
+      "answer": 0,
+      "feedback": "La versión discreta usa $m_{c-S}(-\\widetilde R)=1$."
+    },
+    {
+      "type": "free",
+      "stem": "Explica con tus palabras por qué un $R$ más grande es favorable para la estabilidad de una aseguradora.",
+      "feedback": "Una buena respuesta debe mencionar que la cota $e^{-Ru}$ disminuye más rápido cuando $R$ es mayor."
+    },
+    {
+      "type": "free",
+      "stem": "Describe una medida práctica que podría aumentar el coeficiente de ajuste o mejorar la estabilidad del modelo.",
+      "feedback": "Respuestas razonables: subir primas, usar reaseguro, cambiar la cartera, reducir exposición a siniestros severos."
+    }
+  ]
+}
