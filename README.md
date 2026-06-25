@@ -1,6 +1,62 @@
 # pbgc-learningPad
 ### Notes tool to enhance the actuarial-mathematical learning.
 
+## v3.8
+
+Continuing — sidebar collapse, maximize, example lessons, exampleBoard, downloadLessonJSON, then authoring guide rewrite.
+
+TikZJax fully purged. Now Patch 8: Sidebar collapse button + CSS:
+
+Now add the expand button to the DOM (next to hamburger in topbar):
+
+Patch 9: Editor maximize button + CSS
+
+Now add CSS for the maximize button and the maximized state:
+
+Patch 10: exampleBoard in JSXGRAPH_BOARDS
+
+Patch 11: downloadLessonJSON function + example lessons list in sidebar
+
+First find where user lessons / lesson select lives:
+
+Add CSS for the example lesson items:
+
+Patch 12: downloadLessonJSON function — find where LESSONS are defined to understand the data structure:
+
+The LESSONS object has JS functions (plots, tables) — it can’t be trivially serialized to JSON. The download should serialize only the serializable parts (title, sections labels, quiz). Let me find the boot() function and the editor’s export approach to match the expected JSON format:
+
+Good — the JSON format needs {title, sections:[{id,label,content}], quiz:[...], audio:{...}}. For built-in lessons the sections have contentId (template refs) not inline content. I’ll serialize the template content into the JSON for download:
+
+Patch 13: Wire all DOMContentLoaded listeners (collapse, expand, maximize, download buttons):
+
+Patch 14: Rewrite the Authoring Guide for beginners
+
+Now I have the full guide panel. Replace it wholesale with the beginner-friendly rewrite:
+
+Now verify everything looks clean and write the CHANGELOG:
+
+Zero tikz references. Now sanity-check the other patches:
+
+All patches confirmed. Write the CHANGELOG and deploy:
+
+v3.8 deployed. Here’s what was applied:
+
+TikZJax — fully gone: CDN links, CSS, initTikZ()/watchForSVG() engine, insert button, skeleton, guide callout, demo section, KaTeX ignore list entries. Zero occurrences remain.
+
+New features:
+
+Sidebar collapse (◀ button in logo bar → hidden sidebar; ▶ fixed button to restore)
+
+Editor maximize (⤢/⤡ toggle → full-screen modal)
+
+Examples section in sidebar with ⬇ per-lesson download buttons wired to downloadLessonJSON()
+
+exampleBoard JSXGraph board (draggable A–B segment + live midpoint M)
+
+Demo diagrams section now shows two interactive explore widgets (sine sweep, Normal PDF with μ/σ) replacing the TikZ blocks
+
+Authoring Guide — rewritten from scratch, numbered 1–13, beginner-first: quick start walkthrough, copy-paste code blocks for every widget type, tables for callouts/quiz types/localStorage keys.
+
 ## 3.7.1
 
 Two root causes before touching anything:
