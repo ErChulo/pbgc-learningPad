@@ -1,3 +1,20 @@
+## prompt para crear lecciones
+
+Changes made
+Created a reusable prompt for generating MathLesson-compatible JSON lessons from externally supplied material.
+Included a systematic granularity decision rule.
+Included the MathLesson JSON output contract.
+Included section, Mermaid, table, SVG, LaTeX, quiz, and JSON escaping rules.
+Added quality-control checks to reduce confusing imports and schema issues.
+Manual testing checklist
+Open the .txt file.
+Paste it into an LLM together with source material.
+Ask for one JSON lesson file.
+Save the returned JSON.
+Import it into mathlesson.v4.7.4.html.
+Run Prototype Audit.
+Test quiz Submit / Recheck.
+
 ## leccion: coeficiente de ajuste
 
 Changes made
