@@ -1,1 +1,30 @@
+Stress test files
 
+Changes made
+Updated the roadmap to use mathlesson.v4.7.3.html as the current usability baseline.
+Reclassified earlier lab files as stress-test / diagnostic files, not beginner onboarding material.
+Added the future Guided Onboarding Pack workstream.
+Added the future UX/UI redesign workstream.
+Kept Vite migration deferred until after stress testing, onboarding, and UX redesign requirements.
+Created Stress Test Pack v1.0.
+Added extreme formula and matrix stress file.
+Added large Mermaid diagram stress file.
+Added wide Arquero/static table stress file.
+Added layout overflow / Print / Reveal stress file.
+Added integrated all-feature stress file.
+All JSON files were syntax-validated.
+No intentionally broken live Mermaid blocks were included.
+Required baseline: mathlesson.v4.7.3.html.
+
+Manual testing checklist
+Open mathlesson.v4.7.3.html.
+Import each stress-test JSON file using the top-bar Import JSON button.
+Confirm each lesson loads immediately.
+Confirm no confusing schema notification appears.
+Run Prototype Audit on each file.
+Open DevTools Console and record any errors.
+Export Active Lesson JSON and re-import it.
+Export Student Lesson + Quiz where applicable.
+Test quiz and inline exercise behavior where applicable.
+Test Reveal export for Mermaid-heavy and layout-heavy files.
+Test Print/PDF preview for formula-heavy, table-heavy, and layout-heavy files.
