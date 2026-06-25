@@ -1,3 +1,36 @@
+## v4.7.4
+
+Changes made
+Built mathlesson.v4.7.4.html from mathlesson.v4.7.3.html.
+Added a new sidebar panel: Stress Test Runner.
+Added recommended test order for Stress Test Pack v1.0:
+stress-long-formulas-matrices.json
+stress-big-mermaid-diagrams.json
+stress-wide-arquero-tables.json
+stress-layout-overflow-print-reveal.json
+stress-integrated-heavy-lesson.json
+Added a per-file testing checklist inside the app.
+Added a browser-local bug/friction log.
+Added Copy log and Clear log controls.
+Preserved top-bar Import JSON.
+Preserved visible app version badge.
+Preserved quieter import notifications.
+Preserved Clear imported lessons/state.
+Main JavaScript syntax check passed.
+Manual testing checklist
+Open mathlesson.v4.7.4.html.
+Confirm the top bar shows v4.7.4.
+Open the sidebar.
+Confirm Stress Test Runner appears.
+Open Stress Test Runner.
+Confirm the five stress-test files are listed in order.
+Type a note in the bug/friction log.
+Refresh the page and confirm the note persists.
+Use Copy log.
+Use Clear log.
+Import each stress-test JSON using top-bar Import JSON.
+Record bugs or confusing workflows in the Stress Test Runner log.
+
 ## v4.0 - all interim in emails
 
 Changes made:
