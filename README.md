@@ -1,6 +1,22 @@
 # pbgc-learningPad
 ### Notes tool to enhance the actuarial-mathematical learning.
 
+## usage-tracker-specifications
+
+The spec is written to be dropped verbatim into any LLM conversation. It covers:
+
+What to track — clicks, transitions, panels, sessions, event log
+
+What to compute — Markov matrix, salience tiers, all five derived insights
+
+What to build — the exact dashboard tab structure and footer actions
+
+Implementation rules — IIFE, localStorage namespacing, error isolation, no app interference
+
+The feedback loop — explicit instructions telling the LLM what to do when you paste the JSON back
+
+The last section is the key one — it tells the receiving LLM that the JSON is ground truth and that its job is to produce concrete, data-justified proposals, not intuitions. That closes the loop between usage data and restructuring decisions.
+
 ## v3.8
 
 Continuing — sidebar collapse, maximize, example lessons, exampleBoard, downloadLessonJSON, then authoring guide rewrite.
