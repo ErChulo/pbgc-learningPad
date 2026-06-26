@@ -1,0 +1,209 @@
+USAGE STATS FEATURE SPECIFICATION
+==================================
+For: any single-file or client-side web application
+Purpose: inject a self-contained UX telemetry layer to support
+         data-driven restructuring decisions in collaboration with an LLM.
+
+─────────────────────────────────────────────────────────────────────────────
+INTENT
+─────────────────────────────────────────────────────────────────────────────
+I want you to add a usage tracking and reporting feature to this app.
+The purpose is NOT analytics for production users. The purpose is for ME
+— the developer — to use the app normally, then report the collected
+statistics back to you (the LLM) so you can make structurally grounded
+UX/UI recommendations: layout changes, color salience assignments,
+element groupings, and removal candidates.
+
+This feature must be completely self-contained. No server, no external
+service, no API calls for tracking. All data lives in localStorage.
+
+─────────────────────────────────────────────────────────────────────────────
+WHAT TO TRACK
+─────────────────────────────────────────────────────────────────────────────
+1. CLICK FREQUENCY
+   Every interactive element that has an id gets its click count
+   incremented in a localStorage key-value store.
+   Key: element id. Value: integer count.
+
+2. TRANSITION SEQUENCES (co-occurrence)
+   Every time element A is interacted with and then element B is
+   interacted with next, record the pair "A→B" and increment its count.
+   This builds a co-occurrence map of what follows what in real usage.
+
+3. PANEL / VIEW NAVIGATION
+   If the app has a panel system, section router, or view switcher,
+   intercept those navigation functions at the JS level (wrap them)
+   so that every view transition is recorded with its origin and
+   destination. Do not rely solely on click capture for this.
+
+4. SESSION METADATA
+   On page unload, save a session record containing:
+   - ISO timestamp of session start and end
+   - Total duration in seconds
+   - Total event count for the session
+   - Last panel/view visited
+
+5. RAW EVENT LOG
+   A capped ring buffer (max 2000 entries) of individual events,
+   each with: ISO timestamp, event type, element id, optional metadata.
+   Types include: click, panel, quiz, lesson-switch, or any domain-
+   specific interaction type relevant to this app.
+
+─────────────────────────────────────────────────────────────────────────────
+MARKOV TRANSITION MATRIX
+─────────────────────────────────────────────────────────────────────────────
+From the co-occurrence data, compute a Markov transition matrix over
+the top N most-used elements (N = 12 recommended for readability).
+
+Each cell M[a][b] = P(next interaction is b | current interaction is a).
+Computed by row-normalizing the raw co-occurrence counts.
+Diagonal is zeroed (suppress self-transitions).
+
+From this matrix, derive and display:
+
+- STRONG COUPLINGS: pairs where P(a→b) >= 0.4. These elements should
+  be spatially fused in the UI — placed adjacent or grouped visually.
+
+- BEHAVIORAL CLUSTERS: greedy affinity grouping using symmetric score
+  S(a,b) = P(a→b) + P(b→a). Threshold at 0.15. Elements with high
+  mutual affinity belong in the same visual zone.
+
+- DEAD ENDS: rows where the maximum outgoing probability to any other
+  element is below 0.10. Users leave the app from these states.
+  They need an exit affordance added.
+
+- BOTTLENECKS: elements that receive high inbound flow from 3 or more
+  distinct sources. These need to be visually dominant and reachable
+  from anywhere in the layout.
+
+- ORPHANS: elements with zero inbound probability AND below 3% of
+  total click share. Candidates for removal or deeper nesting.
+
+─────────────────────────────────────────────────────────────────────────────
+SALIENCE TIERS
+─────────────────────────────────────────────────────────────────────────────
+From the frequency distribution, assign every tracked element to one
+of four tiers based on its count relative to the maximum count:
+
+  T1 — >= 60% of max  →  dominant: primary color, maximum contrast
+  T2 — >= 30% of max  →  frequent: secondary accent color
+  T3 — >= 10% of max  →  moderate: neutral, visible but not prominent
+  T4 —  < 10% of max  →  rare: muted, ghost, or hidden until needed
+
+Display these tier assignments in the dashboard. They are the input
+for any color or visual weight redesign discussion.
+
+─────────────────────────────────────────────────────────────────────────────
+DASHBOARD UI REQUIREMENTS
+─────────────────────────────────────────────────────────────────────────────
+The dashboard must be a modal overlay, triggered by:
+  - Keyboard shortcut: Shift+T (not inside text inputs)
+  - A small persistent floating pill/button fixed to the screen corner
+    (small, unobtrusive, does not interfere with app UI)
+
+Shift+T toggles: opens if closed, closes if open.
+
+The dashboard must be TABBED with at minimum these views:
+
+  Tab 1 — FREQUENCY
+    Ranked bar chart of all tracked elements by click count.
+    Salience tier groupings displayed alongside.
+
+  Tab 2 — TRANSITIONS
+    Ranked list of co-occurrence pairs (A → B : count).
+
+  Tab 3 — MARKOV MATRIX
+    Visual heat-map table of transition probabilities.
+    Color-coded cells: dark = low probability, bright = high.
+    Hover tooltip showing exact P value.
+    Row labels = FROM, column labels = TO.
+
+  Tab 4 — INSIGHTS
+    Derived structural recommendations:
+    Strong couplings, behavioral clusters, dead ends,
+    bottlenecks, orphans. Each category clearly labeled
+    with a brief plain-language description of what action
+    it implies for the UI.
+
+  Tab 5 — RECENT EVENTS
+    Last N events in reverse chronological order.
+
+  Tab 6 — SESSIONS
+    History of past sessions with start time, duration, event count,
+    and last panel visited.
+
+Dashboard footer must include:
+  - "Clear all data" button (with confirmation prompt)
+  - "Copy JSON" button that copies the full dataset to clipboard
+    in the format: { counts, seq, events, sessions }
+    This JSON is what I paste back to the LLM for analysis.
+
+─────────────────────────────────────────────────────────────────────────────
+SEMANTIC LABELING
+─────────────────────────────────────────────────────────────────────────────
+Every element id should be mapped to a human-readable label for display
+in the dashboard. Examine the app's existing element ids and construct
+a LABELS object that maps id strings to short descriptive names.
+
+For any id not in the map, fall back to:
+  - If id starts with "panel-": display as "📄 <panel-name>"
+  - Otherwise: display the raw id
+
+─────────────────────────────────────────────────────────────────────────────
+IMPLEMENTATION RULES
+─────────────────────────────────────────────────────────────────────────────
+1. Inject as a single self-contained <script> block placed just before
+   </body>. Do not modify any existing app code except to wrap
+   navigation/panel functions at runtime (not by editing them).
+
+2. Use an IIFE (immediately invoked function expression) to avoid
+   polluting the global namespace. Only expose window._mlTab (or
+   equivalent tab switcher) and window.buildDashboard if needed for
+   inline onclick handlers.
+
+3. All localStorage keys must be namespaced with a short app-specific
+   prefix to avoid collisions (e.g. "ml_tracker_" for MathLesson,
+   or "app_tracker_" generically).
+
+4. The raw event log is capped at 2000 entries (ring buffer: when
+   full, drop the oldest entries).
+
+5. Session history is capped at 100 entries.
+
+6. The tracker must not throw errors or interfere with the app if
+   localStorage is unavailable. Wrap all storage ops in try/catch.
+
+7. Skip tracking on purely structural wrapper elements (body, main,
+   app root, content wrappers). Only track meaningfully interactive
+   elements.
+
+8. The dashboard styling must be fully self-contained inline CSS.
+   Dark background preferred (does not clash with any app theme).
+   Do not rely on any app CSS classes.
+
+9. Version the comment header of the tracker block (e.g. v1.0, v1.1)
+   whenever it is updated.
+
+─────────────────────────────────────────────────────────────────────────────
+HOW I WILL USE THIS
+─────────────────────────────────────────────────────────────────────────────
+After implementing this feature, my workflow is:
+
+  1. Use the app normally across one or more sessions.
+  2. Open the dashboard (Shift+T).
+  3. Click "Copy JSON".
+  4. Paste the JSON to the LLM.
+  5. Ask the LLM to analyze the data and propose:
+       - Which elements to group spatially (from clusters + couplings)
+       - Which elements to promote visually (from bottlenecks + T1/T2)
+       - Which elements to demote or remove (from orphans + T4)
+       - Which panels need exit affordances added (from dead ends)
+       - How to reassign color/contrast based on salience tiers
+
+The LLM should treat the JSON as ground truth about actual usage
+patterns and use it to make concrete, justified layout and color
+proposals — not intuition-based suggestions.
+
+─────────────────────────────────────────────────────────────────────────────
+END OF SPECIFICATION
+─────────────────────────────────────────────────────────────────────────────
