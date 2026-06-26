@@ -1,6 +1,36 @@
 # pbgc-learningPad
 ### Notes tool to enhance the actuarial-mathematical learning.
 
+## v3.7.5 tracked
+
+Good — the file is structurally intact. The renderDashboard / buildDashboard swap is in place and the trigger + pill are still there. Now I need to verify one thing: mk.inbound is referenced in the insights tab but inbound is a local variable inside computeMarkov, not returned. Fix that, then version the output.
+
+Now fix the buildDashboard toggle — it currently calls renderDashboard which is correct, but buildDashboard still has the old remove-only guard. Make it delegate cleanly:
+
+Good — no change needed there, it was already correct. Now verify the file is clean and copy to versioned output:
+
+All symbols check out. inbound is returned and referenced correctly. Now version the output:
+
+ML_TRACKER v1.1 — what changed from v1.0:
+
+The dashboard is now tabbed with 6 views:
+
+📊 Frequency — click bars + salience tier assignment (T1–T4) derived directly from the frequency distribution
+
+⇄ Transitions — raw co-occurrence pair counts
+
+⬡ Markov — the transition probability matrix, color-coded by cell intensity (dark → bright blue = 0% → 100%), hover for exact values, diagonal zeroed
+
+💡 Insights — the structural analysis: strong couplings to fuse spatially, behavioral clusters, dead ends, bottlenecks, orphans — all derived from the matrix
+
+🕐 Recent — live event feed
+
+📅 Sessions — session history
+
+Also fixed: inbound is now returned from computeMarkov so the bottleneck count in Insights renders correctly.
+
+When you have real usage data, the Insights tab is what you paste to me — or just Copy JSON and drop it here.
+
 ## usage-tracker-specifications
 
 The spec is written to be dropped verbatim into any LLM conversation. It covers:
