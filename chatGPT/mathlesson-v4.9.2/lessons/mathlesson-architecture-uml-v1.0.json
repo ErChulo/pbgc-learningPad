@@ -1,0 +1,219 @@
+{
+  "schemaVersion": "mathlesson.lesson.v1",
+  "exportedFrom": "mathlesson.v4.9.2-target",
+  "source": "assistant-authored-real-lesson-pilot",
+  "lessonKey": "mathlesson-architecture-uml-v1",
+  "blockSchemaVersion": "mathlesson.block.v4.4.0",
+  "schemaRegistryVersion": "mathlesson.schema-registry.v4.4.0",
+  "structuredModelVersion": "4.9.2",
+  "lessonVersion": "1.0",
+  "title": "MathLesson Architecture: UML, Object Interactions, State, Rendering, and Authoring Workflow",
+  "description": "A practical architecture lesson for understanding MathLesson v4.9.2, including UML-style diagrams, object interactions, functional/event-driven ideas, technical debt, and preparation for Vite + React migration.",
+  "audio": {
+    "src": "",
+    "label": ""
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "label": "1. Why architecture?",
+      "title": "Why This Architecture Lesson Matters",
+      "content": "<h1>MathLesson Architecture: Why This Lesson Exists</h1>\n<p>This lesson explains the current <strong>MathLesson v4.9.2</strong> application as an architecture, not merely as a file that happens to run in a browser. The purpose is to prepare you to maintain the current single-file version, create real lessons confidently, and later migrate the project to a modular <strong>Vite + React</strong> architecture without losing the core design.</p>\n\n<div class=\"callout warn\"><div class=\"callout-tag\">Honest framing</div>\nMathLesson v4.9.2 is not a clean object-oriented codebase in the strict Java/C#/TypeScript-class sense. It is a single-file JavaScript application built around object-shaped lesson data, event-driven UI, functional rendering routines, localStorage persistence, and renderer adapters. The architecture is real, but its boundaries are currently implicit rather than enforced by modules.\n</div>\n\n<h2>The architectural thesis</h2>\n<p>The app is architecturally strongest where it treats a lesson as data:</p>\n<ul>\n  <li><strong>Lesson JSON</strong> is the domain model.</li>\n  <li><strong>Import/export</strong> are serialization boundaries.</li>\n  <li><strong>Rendering</strong> is a transformation from lesson data to DOM.</li>\n  <li><strong>Student export</strong> is a derived artifact produced from author data.</li>\n  <li><strong>UX telemetry</strong> is an observability layer.</li>\n</ul>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">The core idea: lesson data is the center</div><pre class=\"mermaid\">flowchart LR\n  A[Author] --> B[Lesson JSON]\n  B --> C[Editor Workspace]\n  B --> D[Runtime Renderer]\n  B --> E[Student Export]\n  D --> F[Interactive Lesson]\n  E --> G[Standalone Student Lesson]\n  F --> H[UX Stats]\n  G --> H\n</pre></div>\n\n<div class=\"exercise-widget\" data-answer=\"lesson json\" data-alt-answers=\"Lesson JSON|lesson data|JSON lesson\" data-hint=\"The domain model is the importable/exportable representation of a lesson.\">\n  <div class=\"exercise-prompt\">What is the central domain object in the current MathLesson architecture?</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s2",
+      "label": "2. System context",
+      "title": "System Context and Boundaries",
+      "content": "<h1>System Context</h1>\n<p>A system-context view answers: <em>who uses the system, what enters it, what leaves it, and what external services are assumed?</em> MathLesson is intentionally local-first. It can be opened directly from the filesystem, stores authoring state in the browser, and exports JSON or student HTML files.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">System context diagram</div><pre class=\"mermaid\">flowchart TB\n  U[Author / Teacher] -->|imports JSON| M[MathLesson App]\n  U -->|edits sections, quiz, code blocks| M\n  L[Learner / Student] -->|uses exported lesson| S[Student Lesson HTML]\n  M -->|exports lesson JSON| J[Lesson JSON File]\n  M -->|exports student lesson| S\n  M -->|stores drafts and settings| LS[(Browser localStorage)]\n  M -->|loads CDN libraries| CDN[Renderer Libraries]\n  CDN --> K[KaTeX]\n  CDN --> R[Mermaid]\n  CDN --> P[Plotly]\n  CDN --> X[JSXGraph]\n  CDN --> C[CodeMirror]\n</pre></div>\n\n<h2>Primary boundaries</h2>\n<table>\n<thead><tr><th>Boundary</th><th>What crosses it</th><th>Why it matters</th></tr></thead>\n<tbody>\n<tr><td>Import boundary</td><td>JSON files</td><td>Controls what becomes lesson state.</td></tr>\n<tr><td>Render boundary</td><td>Lesson sections, code blocks, quiz data</td><td>Controls what appears in the lesson UI.</td></tr>\n<tr><td>Persistence boundary</td><td>localStorage keys</td><td>Controls what survives refresh.</td></tr>\n<tr><td>Export boundary</td><td>JSON and student HTML</td><td>Controls what can be shared or versioned.</td></tr>\n</tbody>\n</table>\n\n<div class=\"callout tip\"><div class=\"callout-tag\">Migration insight</div>\nIn Vite + React, these boundaries should become explicit modules: <code>importers</code>, <code>renderers</code>, <code>storage</code>, <code>exporters</code>, <code>components</code>, and <code>state</code>.\n</div>"
+    },
+    {
+      "id": "s3",
+      "label": "3. Domain model",
+      "title": "Lesson JSON as the Domain Model",
+      "content": "<h1>Lesson JSON as the Domain Model</h1>\n<p>The importable JSON lesson is the most important architectural object. It is the stable representation that survives outside the app. The app can change, but the JSON lesson schema should remain intelligible, versioned, and backward-compatible.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">UML-style lesson data model</div><pre class=\"mermaid\">classDiagram\n  class Lesson {\n    string schemaVersion\n    string lessonKey\n    string lessonVersion\n    string title\n    string description\n    Section[] sections\n    QuizItem[] quiz\n    Object plots\n  }\n  class Section {\n    string id\n    string label\n    string title\n    string content\n  }\n  class QuizItem {\n    string type\n    string stem\n    string[] options\n    number answer\n    string feedback\n  }\n  class CodeBlock {\n    string id\n    string language\n    string code\n    string targetSectionId\n  }\n  Lesson \"1\" o-- \"many\" Section\n  Lesson \"1\" o-- \"many\" QuizItem\n  Lesson \"1\" o-- \"many\" CodeBlock\n</pre></div>\n\n<h2>Core object responsibilities</h2>\n<ul>\n  <li><strong>Lesson</strong>: whole instructional unit.</li>\n  <li><strong>Section</strong>: ordered content block, usually HTML plus embedded widgets.</li>\n  <li><strong>QuizItem</strong>: assessment item independent of section content.</li>\n  <li><strong>CodeBlock</strong>: reusable or inspectable code attached to lesson authoring.</li>\n</ul>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Architecture analogy</div>\n$$\\text{Lesson JSON}\\xrightarrow{\\text{render}}\\text{Interactive DOM}\\xrightarrow{\\text{export}}\\text{Student artifact}.$$\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"section\" data-alt-answers=\"Section|lesson section\" data-hint=\"This object has id, label, title, and content fields.\">\n  <div class=\"exercise-prompt\">Which domain object stores the HTML body for one portion of a lesson?</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s4",
+      "label": "4. Runtime state",
+      "title": "Runtime State and localStorage",
+      "content": "<h1>Runtime State</h1>\n<p>The app does not only display lesson JSON. It also tracks runtime state: active lesson, saved imported lessons, editor draft, quiz answers, UX mode, notes, and telemetry events. Some of that state is ephemeral; some is persisted in <code>localStorage</code>.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">State lifecycle for a lesson</div><pre class=\"mermaid\">stateDiagram-v2\n  [*] --> BuiltInLesson\n  [*] --> ImportedLesson\n  BuiltInLesson --> EditableCopy: open in editor\n  ImportedLesson --> EditorDraft: select in editor\n  EditableCopy --> EditorDraft\n  EditorDraft --> SavedLesson: save\n  SavedLesson --> ActiveLesson: preview / select\n  ActiveLesson --> StudentExport: export student lesson\n  ActiveLesson --> JsonExport: export JSON\n  SavedLesson --> [*]\n</pre></div>\n\n<h2>State categories</h2>\n<table>\n<thead><tr><th>State</th><th>Example</th><th>Persistence</th></tr></thead>\n<tbody>\n<tr><td>Domain state</td><td>lesson title, sections, quiz</td><td>JSON and localStorage</td></tr>\n<tr><td>UI state</td><td>selected section, active panel</td><td>usually ephemeral</td></tr>\n<tr><td>Student state</td><td>quiz score, notes, completed questions</td><td>student localStorage</td></tr>\n<tr><td>Telemetry state</td><td>click counts, transition sequence</td><td>localStorage until cleared</td></tr>\n</tbody>\n</table>\n\n<div class=\"callout warn\"><div class=\"callout-tag\">Technical debt</div>\nIn the single-file app, state transitions are mostly enforced by conventions and functions, not by a formal state machine. During the Vite migration, state should be centralized and documented.\n</div>"
+    },
+    {
+      "id": "s5",
+      "label": "5. Rendering pipeline",
+      "title": "Rendering Pipeline and Renderer Adapters",
+      "content": "<h1>Rendering Pipeline</h1>\n<p>The renderer takes lesson data and produces interactive browser content. The important architectural idea is that different content types should be routed to different renderer adapters.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Rendering pipeline</div><pre class=\"mermaid\">flowchart LR\n  L[Lesson JSON] --> S[Section HTML]\n  S --> D[DOM Container]\n  D --> K[KaTeX pass]\n  D --> M[Mermaid pass]\n  D --> P[Plotly pass]\n  D --> J[JSXGraph pass]\n  D --> Q[Quiz / Exercise binding]\n  D --> T[Telemetry binding]\n</pre></div>\n\n<h2>Renderer adapter idea</h2>\n<p>A renderer adapter is a small layer that knows how to initialize one library safely. For example:</p>\n<ul>\n  <li><strong>KaTeX adapter</strong>: renders math delimiters.</li>\n  <li><strong>Mermaid adapter</strong>: renders diagrams and handles oversized diagrams.</li>\n  <li><strong>Plotly adapter</strong>: creates plots and cleans up WebGL contexts.</li>\n  <li><strong>JSXGraph adapter</strong>: initializes interactive boards.</li>\n  <li><strong>MathLive adapter</strong>: initializes exercise math fields.</li>\n  <li><strong>CodeMirror adapter</strong>: provides syntax-highlighted authoring.</li>\n</ul>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Definition</div>\nA <strong>renderer adapter</strong> isolates third-party library details from the rest of the app. It should expose a small interface such as <code>render(container, lesson)</code>, <code>dispose(container)</code>, or <code>refresh(container)</code>.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"adapter\" data-alt-answers=\"renderer adapter|adapter layer\" data-hint=\"It isolates a third-party renderer such as Mermaid or Plotly.\">\n  <div class=\"exercise-prompt\">What architectural pattern best describes the layer that isolates Mermaid, Plotly, KaTeX, and JSXGraph details?</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s6",
+      "label": "6. Import/edit/save",
+      "title": "Object Interactions: Import, Edit, Save",
+      "content": "<h1>Import, Edit, Save: Object Interactions</h1>\n<p>The author workflow is event-driven. The user selects a file or presses a button; an event handler parses data, validates it lightly, updates state, refreshes UI selectors, and renders the active lesson.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Sequence: importing a lesson</div><pre class=\"mermaid\">sequenceDiagram\n  actor Author\n  participant FileInput\n  participant Importer\n  participant LessonStore\n  participant UI\n  participant Renderer\n  Author->>FileInput: choose JSON file\n  FileInput->>Importer: read text\n  Importer->>Importer: parse and normalize lesson\n  Importer->>LessonStore: add or skip duplicate\n  LessonStore->>UI: refresh lesson selector\n  UI->>Renderer: render selected lesson\n  Renderer-->>Author: interactive lesson appears\n</pre></div>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Sequence: editing and saving a section</div><pre class=\"mermaid\">sequenceDiagram\n  actor Author\n  participant Editor\n  participant CodeMirror\n  participant LessonDraft\n  participant LessonStore\n  participant Renderer\n  Author->>Editor: select lesson and section\n  Editor->>CodeMirror: load section content\n  Author->>CodeMirror: edit HTML / Mermaid / table\n  CodeMirror->>LessonDraft: update draft content\n  Author->>Editor: save\n  Editor->>LessonStore: persist updated lesson\n  LessonStore->>Renderer: refresh active lesson\n  Renderer-->>Author: updated lesson preview\n</pre></div>\n\n<h2>Architectural lesson</h2>\n<p>The app should make the selected lesson and selected section unmistakable because edits are destructive operations on the current draft. This is why the v4.9 line moved toward a full authoring workspace with more visible selection state.</p>\n\n<div class=\"callout warn\"><div class=\"callout-tag\">Workflow risk</div>\nIf the selected lesson or section is visually ambiguous, the user can edit the wrong object. In an authoring tool, this is not a cosmetic issue; it is a data-integrity risk.\n</div>"
+    },
+    {
+      "id": "s7",
+      "label": "7. Student export",
+      "title": "Student Export as a Derived Artifact",
+      "content": "<h1>Student Export Pipeline</h1>\n<p>The student lesson is not the same thing as the authoring app. It is a derived artifact: a simpler standalone HTML lesson generated from lesson data and quiz data.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Student export pipeline</div><pre class=\"mermaid\">flowchart LR\n  A[Author Lesson JSON] --> B[Export Builder]\n  B --> C[Embed lesson data]\n  B --> D[Embed renderer runtime]\n  B --> E[Embed quiz / exercise logic]\n  C --> F[Student HTML]\n  D --> F\n  E --> F\n  F --> G[Student opens file]\n  G --> H[Student localStorage state]\n</pre></div>\n\n<h2>What should be included?</h2>\n<ul>\n  <li>The lesson title and section content.</li>\n  <li>Quiz and exercise logic.</li>\n  <li>Renderer support for math, diagrams, and plots.</li>\n  <li>A clear-state mechanism scoped to that exported lesson.</li>\n</ul>\n\n<h2>What should not leak?</h2>\n<ul>\n  <li>Author-only editor controls.</li>\n  <li>Unrelated imported lessons.</li>\n  <li>Confusing authoring telemetry modes unless deliberately enabled.</li>\n</ul>\n\n<div class=\"exercise-widget\" data-answer=\"derived artifact\" data-alt-answers=\"derived artifact|exported artifact|student export\" data-hint=\"The student file is built from the author lesson; it is not the authoring environment itself.\">\n  <div class=\"exercise-prompt\">Architecturally, what is the exported student HTML relative to the author lesson?</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s8",
+      "label": "8. OOP analysis",
+      "title": "Object-Oriented Analysis of the App",
+      "content": "<h1>Object-Oriented Analysis</h1>\n<p>Even if the implementation is currently single-file JavaScript, we can still analyze it using object-oriented concepts: entities, value objects, services, adapters, controllers, and views.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Conceptual class diagram for a modular future</div><pre class=\"mermaid\">classDiagram\n  class Lesson {\n    +title\n    +sections\n    +quiz\n  }\n  class LessonRepository {\n    +loadAll()\n    +save(lesson)\n    +remove(id)\n  }\n  class ImportService {\n    +parseJson(fileText)\n    +detectDuplicate(lesson)\n  }\n  class ExportService {\n    +exportJson(lesson)\n    +exportStudentHtml(lesson)\n  }\n  class RenderEngine {\n    +renderLesson(lesson)\n    +renderSection(section)\n  }\n  class RendererAdapter {\n    +render(container)\n    +dispose(container)\n  }\n  class EditorWorkspace {\n    +selectLesson(id)\n    +selectSection(id)\n    +saveDraft()\n  }\n  LessonRepository --> Lesson\n  ImportService --> Lesson\n  ExportService --> Lesson\n  RenderEngine --> RendererAdapter\n  EditorWorkspace --> LessonRepository\n  EditorWorkspace --> RenderEngine\n</pre></div>\n\n<h2>Candidate objects for Vite + React</h2>\n<table>\n<thead><tr><th>Concept</th><th>Likely module</th><th>Primary responsibility</th></tr></thead>\n<tbody>\n<tr><td>Lesson</td><td><code>domain/Lesson.ts</code></td><td>Typed lesson data model.</td></tr>\n<tr><td>LessonRepository</td><td><code>storage/LessonRepository.ts</code></td><td>localStorage and saved lesson access.</td></tr>\n<tr><td>ImportService</td><td><code>services/importLesson.ts</code></td><td>Parse, normalize, validate, duplicate-detect.</td></tr>\n<tr><td>ExportService</td><td><code>services/exportLesson.ts</code></td><td>JSON and student HTML export.</td></tr>\n<tr><td>RenderEngine</td><td><code>rendering/RenderEngine.ts</code></td><td>Coordinate renderer adapters.</td></tr>\n<tr><td>EditorWorkspace</td><td><code>components/EditorWorkspace.tsx</code></td><td>Author-facing editing UI.</td></tr>\n</tbody>\n</table>\n\n<div class=\"callout tip\"><div class=\"callout-tag\">Design rule</div>\nDo not migrate by copying the single file into React components line by line. First identify responsibilities; then cut module boundaries around those responsibilities.\n</div>"
+    },
+    {
+      "id": "s9",
+      "label": "9. Functional ideas",
+      "title": "Functional and Event-Driven Ideas",
+      "content": "<h1>Functional and Event-Driven Architecture</h1>\n<p>The app is also functional in spirit. Many operations are transformations of data:</p>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Functional view</div>\n$$\\text{new state}=f(\\text{old state},\\text{user event}).$$\n</div>\n\n<p>For example, importing a JSON file transforms the saved lesson collection; editing a section transforms the lesson draft; rendering transforms lesson data into DOM.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Event-driven state update pattern</div><pre class=\"mermaid\">flowchart LR\n  E[User event] --> H[Event handler]\n  H --> V[Validate / normalize]\n  V --> S[Update state]\n  S --> P[Persist if needed]\n  S --> R[Render affected UI]\n  R --> O[Observable result]\n</pre></div>\n\n<h2>Pure functions versus side effects</h2>\n<table>\n<thead><tr><th>Operation</th><th>Mostly pure?</th><th>Side effects?</th></tr></thead>\n<tbody>\n<tr><td>Normalize lesson JSON</td><td>Yes</td><td>No, if written carefully.</td></tr>\n<tr><td>Render KaTeX into DOM</td><td>No</td><td>Mutates DOM.</td></tr>\n<tr><td>Save lesson to localStorage</td><td>No</td><td>Writes browser storage.</td></tr>\n<tr><td>Build student export string</td><td>Mostly yes</td><td>No until file download starts.</td></tr>\n<tr><td>Record telemetry event</td><td>No</td><td>Updates telemetry state/storage.</td></tr>\n</tbody>\n</table>\n\n<div class=\"exercise-widget\" data-answer=\"side effect\" data-alt-answers=\"side effect|side-effect\" data-hint=\"Writing to localStorage changes the outside world.\">\n  <div class=\"exercise-prompt\">In functional-programming language, what do we call writing a lesson to localStorage?</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s10",
+      "label": "10. Technical debt",
+      "title": "What Is Solid and What Is Technical Debt",
+      "content": "<h1>Solid Design Decisions and Technical Debt</h1>\n<p>An honest architecture lesson must distinguish stable design choices from temporary implementation pressure.</p>\n\n<h2>Solid design decisions</h2>\n<ul>\n  <li><strong>JSON-first lessons</strong>: lessons can be imported, exported, versioned, and shared.</li>\n  <li><strong>Renderer diversity</strong>: the app supports math, diagrams, plots, boards, code, and quizzes.</li>\n  <li><strong>Local-first workflow</strong>: authors can work without a server.</li>\n  <li><strong>Student export</strong>: deployable learning artifacts can be generated from author lessons.</li>\n  <li><strong>UX telemetry</strong>: real usage can drive future design decisions.</li>\n</ul>\n\n<h2>Technical debt</h2>\n<table>\n<thead><tr><th>Debt</th><th>Risk</th><th>Migration response</th></tr></thead>\n<tbody>\n<tr><td>Single-file scale</td><td>Hard to locate responsibilities.</td><td>Split by domain, services, rendering, components.</td></tr>\n<tr><td>Implicit global state</td><td>Unexpected interactions and persistence bugs.</td><td>Central state store or explicit React state boundaries.</td></tr>\n<tr><td>Mixed DOM/render/state logic</td><td>Fragile changes.</td><td>Separate render adapters from UI components.</td></tr>\n<tr><td>Renderer lifecycle complexity</td><td>Plotly/WebGL or Mermaid refresh issues.</td><td>Adapters with explicit mount/unmount lifecycle.</td></tr>\n<tr><td>Large diagram ergonomics</td><td>Unreadable Mermaid or clipped preview.</td><td>Dedicated diagram editor and bounded preview behavior.</td></tr>\n</tbody>\n</table>\n\n<div class=\"callout warn\"><div class=\"callout-tag\">Important distinction</div>\nTechnical debt does not mean failure. It means the current design has succeeded enough to reveal where stronger abstractions are now necessary.\n</div>"
+    },
+    {
+      "id": "s11",
+      "label": "11. Vite + React map",
+      "title": "Migration Map to Vite + React",
+      "content": "<h1>Migration Map to Vite + React</h1>\n<p>The Vite + React migration should preserve the domain model and improve the boundaries. The migration is not merely a packaging change. It is an architectural extraction.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Target modular structure</div><pre class=\"mermaid\">flowchart TB\n  A[src] --> B[domain]\n  A --> C[components]\n  A --> D[services]\n  A --> E[rendering]\n  A --> F[storage]\n  A --> G[telemetry]\n  A --> H[styles]\n  B --> B1[Lesson types]\n  C --> C1[EditorWorkspace]\n  C --> C2[LessonViewer]\n  C --> C3[QuizPanel]\n  D --> D1[ImportService]\n  D --> D2[ExportService]\n  E --> E1[KaTeXAdapter]\n  E --> E2[MermaidAdapter]\n  E --> E3[PlotlyAdapter]\n  F --> F1[LocalStorageRepository]\n</pre></div>\n\n<h2>Migration sequence</h2>\n<ol>\n  <li><strong>Freeze v4.9.2 as a reference baseline.</strong></li>\n  <li><strong>Extract lesson schema</strong> into TypeScript types.</li>\n  <li><strong>Extract pure services</strong>: import, normalize, duplicate detection, export JSON.</li>\n  <li><strong>Extract renderer adapters</strong> with lifecycle methods.</li>\n  <li><strong>Build React components</strong> around stable services.</li>\n  <li><strong>Maintain backward compatibility</strong> with existing lesson JSON files.</li>\n  <li><strong>Only then add new features.</strong></li>\n</ol>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Migration invariant</div>\nA lesson JSON file that imports into <code>mathlesson.v4.9.2</code> should also import into the Vite + React version unless a deliberate schema migration is documented.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"backward compatibility\" data-alt-answers=\"compatibility|backward-compatible|backward compatibility\" data-hint=\"Existing v4.9.2 lesson JSON files should keep importing after migration.\">\n  <div class=\"exercise-prompt\">What migration property protects lessons already created in v4.9.2?</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s12",
+      "label": "12. Exercises",
+      "title": "Architecture Exercises and Migration Practice",
+      "content": "<h1>Exercises: Think Like the Maintainer</h1>\n<p>These exercises are designed to prepare you to maintain and migrate the project.</p>\n\n<h2>Exercise A: classify responsibilities</h2>\n<p>For each function or feature in the current app, classify it into one of these future modules:</p>\n<ul>\n  <li><code>domain</code></li>\n  <li><code>services</code></li>\n  <li><code>rendering</code></li>\n  <li><code>storage</code></li>\n  <li><code>components</code></li>\n  <li><code>telemetry</code></li>\n</ul>\n\n<table>\n<thead><tr><th>Feature</th><th>Likely module</th><th>Reason</th></tr></thead>\n<tbody>\n<tr><td>Duplicate import detection</td><td><code>services</code></td><td>It is import workflow logic.</td></tr>\n<tr><td>Saving lessons to localStorage</td><td><code>storage</code></td><td>It is persistence logic.</td></tr>\n<tr><td>Rendering Mermaid diagrams</td><td><code>rendering</code></td><td>It initializes a renderer library.</td></tr>\n<tr><td>Lesson Editor tab row</td><td><code>components</code></td><td>It is UI composition.</td></tr>\n<tr><td>UX event log</td><td><code>telemetry</code></td><td>It observes usage.</td></tr>\n</tbody>\n</table>\n\n<h2>Exercise B: draw a sequence diagram</h2>\n<p>Draw a Mermaid sequence diagram for exporting a student lesson. Include: Author, EditorWorkspace, ExportService, Lesson, FileDownload, StudentRuntime.</p>\n\n<h2>Exercise C: identify technical debt</h2>\n<p>Pick one future feature, such as a dedicated Mermaid editor. Identify which current technical debt makes it harder and which module would own the feature after migration.</p>\n\n<div class=\"exercise-widget\" data-answer=\"rendering\" data-alt-answers=\"rendering module|rendering adapter|renderer\" data-hint=\"Mermaid is a renderer library, so it belongs near renderer adapters.\">\n  <div class=\"exercise-prompt\">In the proposed Vite + React architecture, which module should own Mermaid initialization and lifecycle cleanup?</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s13",
+      "label": "13. Summary",
+      "title": "Summary: What You Should Now Understand",
+      "content": "<h1>Summary</h1>\n<p>You should now be able to describe MathLesson v4.9.2 as an architecture:</p>\n\n<ul>\n  <li>The <strong>lesson JSON</strong> is the central domain model.</li>\n  <li>The current app is a <strong>single-file modular JavaScript application</strong>, not a pure OOP codebase.</li>\n  <li>The implementation combines <strong>object-shaped data</strong>, <strong>event-driven UI</strong>, <strong>functional transformations</strong>, <strong>renderer adapters</strong>, and <strong>localStorage persistence</strong>.</li>\n  <li>The strongest future architecture is a <strong>Vite + React modular extraction</strong>, not a blind rewrite.</li>\n  <li>The migration should protect existing lesson JSON files and preserve the import/export contract.</li>\n</ul>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">From current architecture to future architecture</div><pre class=\"mermaid\">flowchart LR\n  A[v4.9.2 single-file baseline] --> B[Identify responsibilities]\n  B --> C[Extract domain model]\n  C --> D[Extract services]\n  D --> E[Extract renderer adapters]\n  E --> F[Build React components]\n  F --> G[Preserve JSON compatibility]\n  G --> H[Add new extensions]\n</pre></div>\n\n<div class=\"callout tip\"><div class=\"callout-tag\">Practical next step</div>\nBefore migration, create several real lessons and record workflow blockers. Real authoring pressure will reveal the correct module boundaries better than abstract planning alone.\n</div>"
+    }
+  ],
+  "plots": {},
+  "quiz": [
+    {
+      "type": "mc",
+      "stem": "What is the central domain model in MathLesson v4.9.2?",
+      "options": [
+        "The CSS theme",
+        "The lesson JSON object",
+        "The browser console",
+        "The print dialog"
+      ],
+      "answer": 1,
+      "feedback": "The importable/exportable lesson JSON object is the central domain model."
+    },
+    {
+      "type": "mc",
+      "stem": "Which boundary controls what becomes lesson state after selecting a file?",
+      "options": [
+        "Import boundary",
+        "Print boundary",
+        "Theme boundary",
+        "Viewport boundary"
+      ],
+      "answer": 0,
+      "feedback": "The import boundary parses and normalizes JSON files into app lesson state."
+    },
+    {
+      "type": "mc",
+      "stem": "What is a renderer adapter responsible for?",
+      "options": [
+        "Writing README files",
+        "Isolating a third-party renderer such as Mermaid or Plotly",
+        "Choosing the user’s operating system",
+        "Replacing the lesson schema"
+      ],
+      "answer": 1,
+      "feedback": "A renderer adapter isolates library-specific rendering details from the rest of the app."
+    },
+    {
+      "type": "mc",
+      "stem": "Which item is technical debt in the current single-file architecture?",
+      "options": [
+        "Versioned lesson JSON",
+        "Implicit global state and mixed responsibilities",
+        "Import/export capability",
+        "Local-first usage"
+      ],
+      "answer": 1,
+      "feedback": "Implicit state and mixed UI/state/rendering responsibilities are technical debt to resolve during migration."
+    },
+    {
+      "type": "mc",
+      "stem": "What should the Vite + React migration preserve?",
+      "options": [
+        "Only the color theme",
+        "Backward compatibility with existing lesson JSON where possible",
+        "The exact single-file structure",
+        "Console warnings"
+      ],
+      "answer": 1,
+      "feedback": "Existing v4.9.2 lesson JSON files should remain importable unless a documented schema migration is made."
+    },
+    {
+      "type": "tf",
+      "stem": "The current app should be described as purely object-oriented.",
+      "answer": false,
+      "feedback": "False. It uses object-shaped data and OOP concepts, but the implementation is also event-driven, functional, and DOM-oriented."
+    },
+    {
+      "type": "tf",
+      "stem": "Student export is best understood as a derived artifact built from the author lesson.",
+      "answer": true,
+      "feedback": "True. Student HTML is generated from author lesson data and quiz/exercise logic."
+    },
+    {
+      "type": "tf",
+      "stem": "Renderer lifecycle matters because libraries like Plotly, Mermaid, and JSXGraph can require setup and cleanup.",
+      "answer": true,
+      "feedback": "True. Renderer adapters should manage mount, render, refresh, and cleanup behavior."
+    },
+    {
+      "type": "mc",
+      "stem": "In a modular future, localStorage access should mainly live in which layer?",
+      "options": [
+        "storage",
+        "domain",
+        "CSS",
+        "quiz wording"
+      ],
+      "answer": 0,
+      "feedback": "Persistence should be isolated in a storage layer or repository."
+    },
+    {
+      "type": "mc",
+      "stem": "What is the safest migration strategy?",
+      "options": [
+        "Rewrite everything immediately and discard old lessons",
+        "Extract responsibilities while preserving the JSON contract",
+        "Move only CSS to Vite",
+        "Add features before establishing modules"
+      ],
+      "answer": 1,
+      "feedback": "The safe migration strategy is responsibility extraction with compatibility preserved."
+    },
+    {
+      "type": "mc",
+      "stem": "Which module should own Mermaid initialization in a Vite + React architecture?",
+      "options": [
+        "rendering",
+        "storage",
+        "README",
+        "telemetry only"
+      ],
+      "answer": 0,
+      "feedback": "Mermaid is a renderer library and belongs under rendering adapters."
+    },
+    {
+      "type": "tf",
+      "stem": "Real lesson authoring should inform the Vite migration before new abstractions are frozen.",
+      "answer": true,
+      "feedback": "True. Real lessons reveal workflow pressure and better module boundaries."
+    }
+  ]
+}

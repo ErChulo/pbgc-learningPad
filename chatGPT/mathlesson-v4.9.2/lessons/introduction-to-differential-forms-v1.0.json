@@ -1,0 +1,171 @@
+{
+  "schemaVersion": "mathlesson.lesson.v1",
+  "exportedFrom": "mathlesson.v4.9.2-target",
+  "source": "assistant-authored-real-lesson-pilot",
+  "lessonKey": "introduction-to-differential-forms-v1",
+  "blockSchemaVersion": "mathlesson.block.v4.4.0",
+  "schemaRegistryVersion": "mathlesson.schema-registry.v4.4.0",
+  "structuredModelVersion": "4.9.2",
+  "lessonVersion": "1.0",
+  "title": "Introduction to Differential Forms + Exercises",
+  "description": "A first serious MathLesson pilot lesson on differential forms: covectors, wedge products, exterior derivative, pullbacks, integration, Stokes' theorem, exact and closed forms, with exercises and quiz questions.",
+  "audio": {
+    "src": "",
+    "label": ""
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "label": "1. Why forms?",
+      "title": "Why differential forms?",
+      "content": "<h1>Why Differential Forms?</h1>\n<p>Differential forms are the language of oriented measurement. They generalize the basic objects that appear in calculus: gradients, line integrals, flux integrals, curls, divergences, and change of variables.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Core idea</div>\nA differential form is a field of alternating multilinear measurement rules. A $k$-form eats $k$ tangent vectors and returns a signed scalar.\n</div>\n\n<table>\n<thead><tr><th>Degree</th><th>Object</th><th>Input</th><th>Geometric measurement</th></tr></thead>\n<tbody>\n<tr><td>$0$</td><td>function $f$</td><td>a point</td><td>scalar value</td></tr>\n<tr><td>$1$</td><td>covector field $P\\,dx+Q\\,dy$</td><td>one tangent vector</td><td>oriented length component / work density</td></tr>\n<tr><td>$2$</td><td>area form $F\\,dx\\wedge dy$</td><td>two tangent vectors</td><td>oriented area density / flux density</td></tr>\n<tr><td>$3$</td><td>volume form $G\\,dx\\wedge dy\\wedge dz$</td><td>three tangent vectors</td><td>oriented volume density</td></tr>\n</tbody>\n</table>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Differential forms as oriented measurements</div><pre class=\"mermaid\">flowchart LR\n  A[\"Function\"] --> B[\"0-form\"]\n  C[\"Line density\"] --> D[\"1-form\"]\n  E[\"Area density\"] --> F[\"2-form\"]\n  G[\"Volume density\"] --> H[\"3-form\"]\n  B --> I[\"Exterior derivative\"]\n  D --> I\n  F --> I\n</pre></div>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Prototype in the plane</div>\n$$\\omega=P(x,y)\\,dx+Q(x,y)\\,dy.$$\n</div>\n\n<p>At a point $(x,y)$, the $1$-form above acts on a tangent vector $v=(a,b)$ by</p>\n<div class=\"math-display avoid-break\">\n$$\\omega_{(x,y)}(v)=P(x,y)a+Q(x,y)b.$$\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"2\" data-hint=\"Evaluate \\(2x\\,a+y\\,b\\) at \\((x,y)=(1,4)\\) and \\((a,b)=(3,-1)\\).\">\n  <div class=\"exercise-prompt\">Let $\\omega=2x\\,dx+y\\,dy$. Evaluate $\\omega_{(1,4)}(3,-1)$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s2",
+      "label": "2. Covectors",
+      "title": "Covectors and one-forms",
+      "content": "<h1>Covectors and One-Forms</h1>\n<p>A vector points in a direction. A covector measures a component of a vector. The basic coordinate covectors are $dx$, $dy$, and $dz$.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Coordinate covectors</div>\nOn $\\mathbb{R}^2$, if $v=a\\,\\partial_x+b\\,\\partial_y$, then\n<div class=\"math-display\">$$dx(v)=a,\\qquad dy(v)=b.$$</div>\nThus $dx$ extracts the $x$-component and $dy$ extracts the $y$-component.\n</div>\n\n<p>A general $1$-form in the plane is</p>\n<div class=\"math-display avoid-break\">\n$$\\omega=P(x,y)\\,dx+Q(x,y)\\,dy.$$\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Example: a work form</div>\nA force field $F=(P,Q)$ in the plane corresponds to the work $1$-form\n<div class=\"math-display\">$$\\omega_F=P\\,dx+Q\\,dy.$$</div>\nThe line integral $\\int_C \\omega_F$ is the work done along the oriented curve $C$.\n</div>\n\n<table>\n<thead><tr><th>Vector calculus object</th><th>Differential-form version</th><th>Typical integral</th></tr></thead>\n<tbody>\n<tr><td>scalar field $f$</td><td>$0$-form $f$</td><td>evaluation or derivative</td></tr>\n<tr><td>force field $(P,Q)$</td><td>$1$-form $P\\,dx+Q\\,dy$</td><td>$\\int_C P\\,dx+Q\\,dy$</td></tr>\n<tr><td>density field $\\rho$</td><td>$2$-form $\\rho\\,dx\\wedge dy$</td><td>$\\int_R \\rho\\,dx\\wedge dy$</td></tr>\n</tbody>\n</table>\n\n<div class=\"exercise-widget\" data-answer=\"5\" data-hint=\"Substitute \\(x=2\\), \\(y=1\\), \\(a=1\\), and \\(b=-2\\) into \\(x a-3y b\\).\">\n  <div class=\"exercise-prompt\">Let $\\omega=x\\,dx-3y\\,dy$. Evaluate $\\omega_{(2,1)}(1,-2)$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s3",
+      "label": "3. Wedge product",
+      "title": "The wedge product",
+      "content": "<h1>The Wedge Product</h1>\n<p>The wedge product builds higher-degree forms from lower-degree forms. Its defining feature is antisymmetry: swapping two inputs changes the sign.</p>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Antisymmetry</div>\n$$dx\\wedge dy=-dy\\wedge dx,\\qquad dx\\wedge dx=0.$$\n</div>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Area from two vectors</div>\nFor vectors $u=(a,b)$ and $v=(c,d)$ in $\\mathbb{R}^2$,\n<div class=\"math-display\">$$(dx\\wedge dy)(u,v)=\\begin{vmatrix}a&c\\\\ b&d\\end{vmatrix}=ad-bc.$$</div>\nThis is the signed area of the parallelogram spanned by $u$ and $v$.\n</div>\n\n<div class=\"svg-wrap avoid-break\" data-title=\"Signed area from a wedge product\">\n<svg viewBox=\"0 0 520 240\" width=\"100%\" height=\"230\">\n  <defs><marker id=\"arrow-df\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"3.5\" orient=\"auto\"><polygon points=\"0 0, 8 3.5, 0 7\" fill=\"currentColor\"></polygon></marker></defs>\n  <line x1=\"60\" y1=\"200\" x2=\"480\" y2=\"200\" stroke=\"currentColor\" stroke-width=\"2\"></line>\n  <line x1=\"60\" y1=\"200\" x2=\"60\" y2=\"30\" stroke=\"currentColor\" stroke-width=\"2\"></line>\n  <polygon points=\"120,170 310,140 410,70 220,100\" fill=\"currentColor\" opacity=\"0.12\" stroke=\"currentColor\" stroke-width=\"2\"></polygon>\n  <line x1=\"120\" y1=\"170\" x2=\"310\" y2=\"140\" stroke=\"currentColor\" stroke-width=\"4\" marker-end=\"url(#arrow-df)\"></line>\n  <line x1=\"120\" y1=\"170\" x2=\"220\" y2=\"100\" stroke=\"currentColor\" stroke-width=\"4\" marker-end=\"url(#arrow-df)\"></line>\n  <text x=\"320\" y=\"145\" fill=\"currentColor\">u</text><text x=\"225\" y=\"95\" fill=\"currentColor\">v</text>\n  <text x=\"245\" y=\"118\" fill=\"currentColor\">signed area</text>\n</svg>\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Why this matters</div>\nThe wedge product remembers orientation. The expression $dx\\wedge dy$ treats the ordered pair $(\\partial_x,\\partial_y)$ as positive and $(\\partial_y,\\partial_x)$ as negative.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"-1\" data-hint=\"Use \\((dx\\wedge dy)(u,v)=ad-bc\\). Here \\(u=(0,1)\\), \\(v=(1,0)\\).\">\n  <div class=\"exercise-prompt\">Compute $(dx\\wedge dy)((0,1),(1,0))$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s4",
+      "label": "4. Exterior derivative",
+      "title": "The exterior derivative",
+      "content": "<h1>The Exterior Derivative</h1>\n<p>The exterior derivative is the fundamental differentiation operator for differential forms. It raises degree by one:</p>\n\n<div class=\"math-display avoid-break\">\n$$d:\\Omega^k\\longrightarrow \\Omega^{k+1}.$$\n</div>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Exterior derivative ladder</div><pre class=\"mermaid\">flowchart LR\n  F[\"0-forms: functions\"] -->|\"d\"| O[\"1-forms\"]\n  O -->|\"d\"| T[\"2-forms\"]\n  T -->|\"d\"| H[\"3-forms\"]\n  H -->|\"d\"| Z[\"0 in R3\"]\n</pre></div>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Derivative of a function</div>\nFor a smooth function $f(x,y)$,\n<div class=\"math-display\">$$df=f_x\\,dx+f_y\\,dy.$$</div>\nThis is the differential form version of the gradient, but written as a covector field.\n</div>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Derivative of a plane one-form</div>\nIf $\\omega=P\\,dx+Q\\,dy$, then\n<div class=\"math-display\">$$d\\omega=(Q_x-P_y)\\,dx\\wedge dy.$$</div>\nThis is the scalar curl expression in differential-form notation.\n</div>\n\n<div class=\"callout important\"><div class=\"callout-tag\">Structural rule</div>\nThe exterior derivative always satisfies\n<div class=\"math-display\">$$d(d\\alpha)=0.$$</div>\nThis single identity contains familiar facts such as curl grad $=0$ and div curl $=0$.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"2x-2y\" data-alt-answers='[\"2(x-y)\",\"2x - 2y\"]' data-hint=\"For \\(P=y^2\\) and \\(Q=x^2\\), compute \\(Q_x-P_y\\).\">\n  <div class=\"exercise-prompt\">Let $\\omega=y^2\\,dx+x^2\\,dy$. Enter the coefficient of $dx\\wedge dy$ in $d\\omega$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s5",
+      "label": "5. Pullbacks",
+      "title": "Pullbacks and parametrization",
+      "content": "<h1>Pullbacks and Parametrization</h1>\n<p>Forms are designed to be integrated over parametrized curves and surfaces. The mechanism is the <strong>pullback</strong>.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Pullback intuition</div>\nIf $\\phi:U\\to M$ is a parametrization and $\\omega$ is a form on $M$, the pullback $\\phi^*\\omega$ is the form on the parameter domain $U$ obtained by substituting the parametrization and its differentials.\n</div>\n\n<p>For a curve $\\gamma(t)=(x(t),y(t))$ and a $1$-form $\\omega=P\\,dx+Q\\,dy$,</p>\n<div class=\"math-display avoid-break\">\n$$\\gamma^*\\omega=\\left(P(x(t),y(t))x'(t)+Q(x(t),y(t))y'(t)\\right)dt.$$\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Example</div>\nLet $\\gamma(t)=(t,t^2)$ and $\\omega=y\\,dx+x\\,dy$. Then $x=t$, $y=t^2$, $dx=dt$, and $dy=2t\\,dt$, so\n<div class=\"math-display\">$$\\gamma^*\\omega=t^2\\,dt+t(2t\\,dt)=3t^2\\,dt.$$</div>\n</div>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Pullback workflow</div><pre class=\"mermaid\">flowchart LR\n  A[\"Form on target\"] --> B[\"Choose parametrization\"]\n  B --> C[\"Substitute coordinates\"]\n  C --> D[\"Substitute differentials\"]\n  D --> E[\"Integrate on parameter domain\"]\n</pre></div>\n\n<div class=\"exercise-widget\" data-answer=\"3t^2\" data-alt-answers='[\"3 t^2\",\"3t^{2}\"]' data-hint=\"Use \\(x=t\\), \\(y=t^2\\), \\(dx=dt\\), and \\(dy=2t\\,dt\\).\">\n  <div class=\"exercise-prompt\">For $\\gamma(t)=(t,t^2)$ and $\\omega=y\\,dx+x\\,dy$, enter the coefficient of $dt$ in $\\gamma^*\\omega$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s6",
+      "label": "6. Line integrals",
+      "title": "Integrating one-forms over curves",
+      "content": "<h1>Integrating One-Forms Over Curves</h1>\n<p>Line integrals become simple once the $1$-form is pulled back to the parameter interval.</p>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Line integral of a one-form</div>\n$$\\int_C \\omega=\\int_a^b \\gamma^*\\omega.$$\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Example: direct calculation</div>\nLet $\\omega=y\\,dx+x\\,dy$ and let $C$ be $\\gamma(t)=(t,t^2)$ for $0\\le t\\le 1$. From the previous section,\n<div class=\"math-display\">$$\\gamma^*\\omega=3t^2\\,dt.$$</div>\nTherefore\n<div class=\"math-display\">$$\\int_C\\omega=\\int_0^1 3t^2\\,dt=1.$$</div>\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Exact shortcut</div>\nSince $\\omega=y\\,dx+x\\,dy=d(xy)$, the same integral equals\n<div class=\"math-display\">$$xy\\big|_{(0,0)}^{(1,1)}=1-0=1.$$</div>\nExact forms integrate by endpoints on curves.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"1\" data-hint=\"Integrate \\(3t^2\\) from \\(0\\) to \\(1\\).\">\n  <div class=\"exercise-prompt\">Compute $\\int_0^1 3t^2\\,dt$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s7",
+      "label": "7. Surface integrals",
+      "title": "Two-forms, surfaces, and orientation",
+      "content": "<h1>Two-Forms, Surfaces, and Orientation</h1>\n<p>A $2$-form measures oriented area. On $\\mathbb{R}^2$, a typical $2$-form is $F(x,y)\\,dx\\wedge dy$. On a surface in $\\mathbb{R}^3$, $2$-forms encode flux-type quantities.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Plane area form</div>\nThe form $dx\\wedge dy$ is the standard positively oriented area form on the $xy$-plane. Reversing orientation changes the sign of the integral.\n</div>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Area density integral</div>\n$$\\int_R F(x,y)\\,dx\\wedge dy=\\iint_R F(x,y)\\,dA$$\nwhen $R$ has the standard orientation.\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Example</div>\nOver the unit square $[0,1]\\times[0,1]$,\n<div class=\"math-display\">$$\\int_R x\\,dx\\wedge dy=\\int_0^1\\int_0^1 x\\,dy\\,dx=\\frac12.$$</div>\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"1/2\" data-alt-answers='[\"0.5\",\"\\frac{1}{2}\"]' data-hint=\"Integrate \\(x\\) over the unit square. The inner \\(y\\)-integral contributes a factor of \\(1\\).\">\n  <div class=\"exercise-prompt\">Compute $\\int_{[0,1]^2}x\\,dx\\wedge dy$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s8",
+      "label": "8. Stokes",
+      "title": "The generalized Stokes theorem",
+      "content": "<h1>The Generalized Stokes Theorem</h1>\n<p>The central theorem of differential forms is a single statement that contains the fundamental theorem of calculus, Green's theorem, Stokes' theorem, and the divergence theorem.</p>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Generalized Stokes theorem</div>\n$$\\int_M d\\omega=\\int_{\\partial M}\\omega.$$\n</div>\n\n<div class=\"callout important\"><div class=\"callout-tag\">Meaning</div>\nThe integral of a derivative over a region equals the integral of the original form over the boundary, provided the orientations are compatible.\n</div>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Classical theorems as cases of Stokes</div><pre class=\"mermaid\">flowchart LR\n  A[\"General Stokes\"] --> B[\"Fundamental theorem\"]\n  A --> C[\"Green theorem\"]\n  A --> D[\"Vector Stokes theorem\"]\n  A --> E[\"Divergence theorem\"]\n</pre></div>\n\n<table>\n<thead><tr><th>Dimension of $M$</th><th>Form degree</th><th>Classical theorem</th></tr></thead>\n<tbody>\n<tr><td>$1$</td><td>$0$-form</td><td>Fundamental theorem of calculus</td></tr>\n<tr><td>$2$</td><td>$1$-form</td><td>Green's theorem / planar curl theorem</td></tr>\n<tr><td>$3$ surface in $\\mathbb{R}^3$</td><td>$1$-form on surface</td><td>Stokes' curl theorem</td></tr>\n<tr><td>$3$ region</td><td>$2$-form</td><td>Divergence theorem</td></tr>\n</tbody>\n</table>\n\n<div class=\"exercise-widget\" data-answer=\"boundary\" data-alt-answers='[\"the boundary\",\"partial M\",\"∂M\",\"\\\\partial M\"]' data-hint=\"The right side of Stokes integrates \\(\\omega\\) over \\(\\partial M\\).\">\n  <div class=\"exercise-prompt\">In $\\int_M d\\omega=\\int_{\\partial M}\\omega$, the symbol $\\partial M$ represents the ______ of $M$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s9",
+      "label": "9. Closed and exact",
+      "title": "Closed forms, exact forms, and first cohomology intuition",
+      "content": "<h1>Closed Forms, Exact Forms, and First Cohomology Intuition</h1>\n<p>The identity $d^2=0$ implies that every exact form is closed. The converse may fail, and that failure measures topology.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Closed and exact</div>\nA form $\\omega$ is <strong>closed</strong> if $d\\omega=0$. It is <strong>exact</strong> if there exists a form $\\eta$ such that $\\omega=d\\eta$.\n</div>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Exact implies closed</div>\n$$\\omega=d\\eta\\quad\\Longrightarrow\\quad d\\omega=d(d\\eta)=0.$$\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">A closed but not globally exact example</div>\nOn the punctured plane $\\mathbb{R}^2\\setminus\\{0\\}$, the form\n<div class=\"math-display\">$$\\omega=\\frac{-y}{x^2+y^2}\\,dx+\\frac{x}{x^2+y^2}\\,dy$$</div>\nis closed but not globally exact. Its integral around the unit circle is $2\\pi$.\n</div>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Topology enters through exactness failure</div><pre class=\"mermaid\">flowchart LR\n  A[\"Exact\"] --> B[\"Closed\"]\n  B --> C[\"Locally potential-like\"]\n  B --> D[\"May fail globally\"]\n  D --> E[\"Topology detected by periods\"]\n</pre></div>\n\n<div class=\"exercise-widget\" data-answer=\"0\" data-hint=\"Use \\(d(d\\eta)=0\\).\">\n  <div class=\"exercise-prompt\">If $\\omega=d\\eta$, what is $d\\omega$?</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s10",
+      "label": "10. Worked review",
+      "title": "Worked review exercises",
+      "content": "<h1>Worked Review Exercises</h1>\n<p>This section consolidates the main skills: evaluate one-forms, compute wedge products, compute exterior derivatives, pull back along curves, and interpret Stokes' theorem.</p>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Exercise A: exterior derivative</div>\nLet $\\omega=(x^2y)\\,dx+(xy^2)\\,dy$. Then\n<div class=\"math-display\">$$d\\omega=\\left(\\frac{\\partial}{\\partial x}(xy^2)-\\frac{\\partial}{\\partial y}(x^2y)\\right)dx\\wedge dy=(y^2-x^2)\\,dx\\wedge dy.$$</div>\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"y^2-x^2\" data-alt-answers='[\"y^{2}-x^{2}\",\"y^2 - x^2\"]' data-hint=\"Use \\(Q_x-P_y\\) with \\(P=x^2y\\) and \\(Q=xy^2\\).\">\n  <div class=\"exercise-prompt\">For $\\omega=x^2y\\,dx+xy^2\\,dy$, enter the coefficient of $dx\\wedge dy$ in $d\\omega$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Exercise B: pullback</div>\nLet $\\gamma(t)=(\\cos t,\\sin t)$ and $\\omega=-y\\,dx+x\\,dy$. Since $dx=-\\sin t\\,dt$ and $dy=\\cos t\\,dt$,\n<div class=\"math-display\">$$\\gamma^*\\omega=-(\\sin t)(-\\sin t\\,dt)+(\\cos t)(\\cos t\\,dt)=dt.$$</div>\nThus $\\int_0^{2\\pi}\\gamma^*\\omega=2\\pi$.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"1\" data-hint=\"Substitute \\(x=\\cos t\\), \\(y=\\sin t\\), \\(dx=-\\sin t\\,dt\\), and \\(dy=\\cos t\\,dt\\).\">\n  <div class=\"exercise-prompt\">For $\\gamma(t)=(\\cos t,\\sin t)$ and $\\omega=-y\\,dx+x\\,dy$, enter the coefficient of $dt$ in $\\gamma^*\\omega$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Mental model</div>\nDifferential forms are not just notation. They encode what is being measured, how orientation matters, and why the same theorem appears in many versions of vector calculus.\n</div>"
+    }
+  ],
+  "plots": {},
+  "quiz": [
+    {
+      "type": "mc",
+      "stem": "A differential $1$-form primarily acts on how many tangent vectors?",
+      "options": [
+        "Zero",
+        "One",
+        "Two",
+        "Three"
+      ],
+      "answer": 1,
+      "feedback": "A $1$-form is a covector field, so it acts on one tangent vector."
+    },
+    {
+      "type": "mc",
+      "stem": "Which identity expresses the antisymmetry of the wedge product?",
+      "options": [
+        "$dx\\wedge dy=dy\\wedge dx$",
+        "$dx\\wedge dy=-dy\\wedge dx$",
+        "$dx\\wedge dx=dx$",
+        "$d(dx)=1$"
+      ],
+      "answer": 1,
+      "feedback": "The wedge product is alternating, so swapping factors changes the sign."
+    },
+    {
+      "type": "tf",
+      "stem": "For every form $\\alpha$, the exterior derivative satisfies $d(d\\alpha)=0$.",
+      "answer": true,
+      "feedback": "This is the structural identity $d^2=0$."
+    },
+    {
+      "type": "mc",
+      "stem": "If $\\omega=P\\,dx+Q\\,dy$ on $\\mathbb{R}^2$, then $d\\omega$ equals which expression?",
+      "options": [
+        "$(P_x+Q_y)\\,dx\\wedge dy$",
+        "$(Q_x-P_y)\\,dx\\wedge dy$",
+        "$(P_y-Q_x)\\,dx$",
+        "$P\\,dy+Q\\,dx$"
+      ],
+      "answer": 1,
+      "feedback": "The exterior derivative of $P\\,dx+Q\\,dy$ is $(Q_x-P_y)\\,dx\\wedge dy$."
+    },
+    {
+      "type": "math",
+      "stem": "Let $f(x,y)=x^2+y^2$. Enter the coefficient of $dx$ in $df$.",
+      "answer": "2x",
+      "numeric": false,
+      "hint": "Compute \\(f_x\\).",
+      "feedback": "Since $df=2x\\,dx+2y\\,dy$, the coefficient of $dx$ is $2x$."
+    },
+    {
+      "type": "math",
+      "stem": "Compute $(dx\\wedge dy)((1,0),(0,1))$.",
+      "answer": "1",
+      "numeric": false,
+      "hint": "This is the determinant of the identity matrix.",
+      "feedback": "The ordered basis $(\\partial_x,\\partial_y)$ has positive orientation, so the value is $1$."
+    },
+    {
+      "type": "mc",
+      "stem": "In the generalized Stokes theorem $\\int_M d\\omega=\\int_{\\partial M}\\omega$, what is integrated on the boundary?",
+      "options": [
+        "$d\\omega$",
+        "$\\omega$",
+        "$d^2\\omega$",
+        "Only scalar functions"
+      ],
+      "answer": 1,
+      "feedback": "The original form $\\omega$ is integrated over the boundary $\\partial M$."
+    },
+    {
+      "type": "tf",
+      "stem": "Every exact form is closed.",
+      "answer": true,
+      "feedback": "If $\\omega=d\\eta$, then $d\\omega=d^2\\eta=0$."
+    },
+    {
+      "type": "tf",
+      "stem": "Every closed form is globally exact on every domain.",
+      "answer": false,
+      "feedback": "Closed forms need not be globally exact on domains with nontrivial topology, such as a punctured plane."
+    },
+    {
+      "type": "math",
+      "stem": "Let $\\gamma(t)=(t,t^2)$ and $\\omega=y\\,dx+x\\,dy$. Enter the coefficient of $dt$ in $\\gamma^*\\omega$.",
+      "answer": "3t^2",
+      "numeric": false,
+      "hint": "Use \\(x=t\\), \\(y=t^2\\), \\(dx=dt\\), and \\(dy=2t\\,dt\\).",
+      "feedback": "The pullback is $t^2dt+t(2tdt)=3t^2dt$."
+    }
+  ]
+}
