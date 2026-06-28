@@ -1,0 +1,213 @@
+{
+  "schemaVersion": "mathlesson.lesson.v1",
+  "exportedFrom": "mathlesson.v4.9.2-target",
+  "source": "assistant-authored-real-lesson-pilot",
+  "lessonKey": "classical-bayesian-credibility-theory-v1",
+  "blockSchemaVersion": "mathlesson.block.v4.4.0",
+  "schemaRegistryVersion": "mathlesson.schema-registry.v4.4.0",
+  "structuredModelVersion": "4.9.2",
+  "lessonVersion": "1.0",
+  "title": "Classical and Bayesian Credibility Theory + Exercises",
+  "description": "A serious MathLesson pilot lesson on classical and Bayesian credibility theory: limited fluctuation credibility, Bühlmann credibility, Bühlmann-Straub exposure weighting, EPV, VHM, and Bayesian conjugate credibility models with exercises.",
+  "audio": {
+    "src": "",
+    "label": ""
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "label": "1. Why credibility?",
+      "title": "Why credibility theory?",
+      "content": "<h1>Classical and Bayesian Credibility Theory</h1>\n<p>Credibility theory is the actuarial mathematics of combining <strong>individual experience</strong> with <strong>collective experience</strong>. It answers a practical pricing question:</p>\n\n<div class=\"callout question\"><div class=\"callout-tag\">Central question</div>\nIf one policyholder, employer, class, territory, or risk cell has its own experience, how much should that experience influence the next premium?\n</div>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Credibility premium</div>\n$$\\widehat{\\mu}=Z\\,\\bar X+(1-Z)m,\\qquad 0\\le Z\\le 1.$$\n</div>\n\n<table>\n<thead><tr><th>Symbol</th><th>Meaning</th><th>Interpretation</th></tr></thead>\n<tbody>\n<tr><td>$\\bar X$</td><td>risk-specific average experience</td><td>what this risk has shown</td></tr>\n<tr><td>$m$</td><td>collective mean</td><td>what the population suggests</td></tr>\n<tr><td>$Z$</td><td>credibility factor</td><td>weight assigned to individual experience</td></tr>\n</tbody>\n</table>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Credibility as weighted evidence</div><pre class=\"mermaid\">flowchart LR\n  A[\"Individual experience\"] --> C[\"Credibility premium\"]\n  B[\"Collective experience\"] --> C\n  D[\"Volume and heterogeneity\"] --> E[\"Credibility factor Z\"]\n  E --> C\n</pre></div>\n\n<div class=\"callout important\"><div class=\"callout-tag\">Actuarial interpretation</div>\nCredibility is not merely a weighted average trick. The weight $Z$ is a quantitative statement about the relative reliability of the risk's own data versus the stability of the collective mean.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"114\" data-hint=\"Compute \\(0.70(120)+0.30(100)\\).\">\n  <div class=\"exercise-prompt\">If $Z=0.70$, $\\bar X=120$, and $m=100$, compute $Z\\bar X+(1-Z)m$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s2",
+      "label": "2. Limited fluctuation",
+      "title": "Limited fluctuation credibility",
+      "content": "<h1>Limited Fluctuation Credibility</h1>\n<p>The classical limited-fluctuation approach asks how much volume is needed for the observed experience to be within a specified relative error with high probability.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Full credibility criterion</div>\nA risk has full credibility if\n<div class=\"math-display\">$$\\Pr\\left(\\left|\\frac{X-\\mathbb{E}[X]}{\\mathbb{E}[X]}\\right|\\le r\\right)\\ge p,$$</div>\nwhere $r$ is the tolerance and $p$ is the confidence probability.\n</div>\n\n<p>For a Poisson count with mean $\\lambda$, a common normal approximation gives the full-credibility standard</p>\n<div class=\"math-display avoid-break\">\n$$\\lambda_0\\approx \\left(\\frac{z}{r}\\right)^2,$$\n</div>\n<p>where $z$ is the normal quantile corresponding to the desired two-sided probability.</p>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Example</div>\nFor $p=95\\%$, use $z\\approx1.96$. If $r=5\\%$, then\n<div class=\"math-display\">$$\\lambda_0\\approx\\left(\\frac{1.96}{0.05}\\right)^2=1536.64.$$</div>\nSo roughly $1537$ expected claims are required for full credibility.\n</div>\n\n<table>\n<thead><tr><th>Input</th><th>Effect on full-credibility standard</th></tr></thead>\n<tbody>\n<tr><td>Higher confidence $p$</td><td>requires more volume</td></tr>\n<tr><td>Smaller tolerance $r$</td><td>requires much more volume</td></tr>\n<tr><td>More process volatility</td><td>requires more volume</td></tr>\n</tbody>\n</table>\n\n<div class=\"callout warn\"><div class=\"callout-tag\">Limitation</div>\nLimited-fluctuation credibility is useful operationally, but it does not explicitly model heterogeneity between risks. That is the role of greatest-accuracy credibility.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"400\" data-hint=\"Compute \\((2/0.10)^2=20^2\\).\">\n  <div class=\"exercise-prompt\">Using $z=2$ and $r=0.10$, compute the approximate full-credibility standard $(z/r)^2$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s3",
+      "label": "3. Partial credibility",
+      "title": "Partial credibility under limited fluctuation",
+      "content": "<h1>Partial Credibility</h1>\n<p>When experience volume is below the full-credibility standard, a common limited-fluctuation rule assigns partial credibility.</p>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Square-root rule</div>\n$$Z=\\min\\left(1,\\sqrt{\\frac{n}{n_0}}\\right),$$\n</div>\n<p>where $n$ is observed or expected volume and $n_0$ is the full-credibility standard.</p>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Example</div>\nIf $n=400$ and $n_0=1600$, then\n<div class=\"math-display\">$$Z=\\sqrt{400/1600}=\\sqrt{0.25}=0.5.$$</div>\nThe credibility estimate is halfway between the risk's own experience and the collective mean.\n</div>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Limited fluctuation workflow</div><pre class=\"mermaid\">flowchart LR\n  A[\"Choose p and r\"] --> B[\"Compute full standard n0\"]\n  B --> C[\"Compare actual volume n\"]\n  C --> D[\"Z = min(1, sqrt(n/n0))\"]\n  D --> E[\"Blend own and collective experience\"]\n</pre></div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Interpretation</div>\nThe square-root rule is volume-driven. It does not ask whether this risk is systematically different from the portfolio. It asks whether the observed amount of data is stable enough by a prescribed fluctuation criterion.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"0.5\" data-alt-answers='[\"1/2\", \"0.50\"]' data-hint=\"Compute \\(\\sqrt{225/900}=\\sqrt{1/4}\\).\">\n  <div class=\"exercise-prompt\">If $n=225$ and $n_0=900$, compute $Z=\\sqrt{n/n_0}$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s4",
+      "label": "4. Bühlmann model",
+      "title": "The Bühlmann credibility model",
+      "content": "<h1>The Bühlmann Model</h1>\n<p>The Bühlmann model gives a least-squares optimal linear credibility estimate under a random-effects model for risks.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Model</div>\nEach risk has a latent risk parameter $\\Theta$. Conditional on $\\Theta$, observations $X_1,\\ldots,X_n$ are independent and identically distributed with conditional mean $\\mu(\\Theta)$ and conditional variance $\\sigma^2(\\Theta)$.\n</div>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Bühlmann credibility estimate</div>\n$$\\widehat{\\mu}=Z\\bar X+(1-Z)m,\\qquad Z=\\frac{n}{n+K},\\qquad K=\\frac{v}{a}.$$\n</div>\n\n<table>\n<thead><tr><th>Quantity</th><th>Formula</th><th>Name</th></tr></thead>\n<tbody>\n<tr><td>$m$</td><td>$\\mathbb{E}[\\mu(\\Theta)]$</td><td>collective mean</td></tr>\n<tr><td>$v$</td><td>$\\mathbb{E}[\\sigma^2(\\Theta)]$</td><td>expected process variance, EPV</td></tr>\n<tr><td>$a$</td><td>$\\operatorname{Var}(\\mu(\\Theta))$</td><td>variance of hypothetical means, VHM</td></tr>\n<tr><td>$K$</td><td>$v/a$</td><td>credibility constant</td></tr>\n</tbody>\n</table>\n\n<div class=\"callout important\"><div class=\"callout-tag\">Key insight</div>\nCredibility rises with $n$ and with heterogeneity $a$, but falls with process noise $v$. If risks differ substantially from one another, individual experience deserves more credibility.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"4\" data-hint=\"Divide the expected process variance by the variance of hypothetical means.\">\n  <div class=\"exercise-prompt\">In a Bühlmann model with $v=12$ and $a=3$, compute $K=v/a$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s5",
+      "label": "5. EPV and VHM",
+      "title": "EPV, VHM, and the meaning of K",
+      "content": "<h1>EPV, VHM, and the Meaning of $K$</h1>\n<p>The Bühlmann credibility constant $K=v/a$ compares two sources of variation.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Two sources of variation</div><pre class=\"mermaid\">flowchart TB\n  A[\"Observed experience\"] --> B[\"Process noise within a risk\"]\n  A --> C[\"Heterogeneity between risks\"]\n  B --> D[\"EPV: expected process variance v\"]\n  C --> E[\"VHM: variance of hypothetical means a\"]\n  D --> F[\"K = v / a\"]\n  E --> F\n  F --> G[\"Z = n / (n + K)\"]\n</pre></div>\n\n<table>\n<thead><tr><th>Case</th><th>Effect on $K$</th><th>Effect on $Z$</th></tr></thead>\n<tbody>\n<tr><td>Large process noise $v$</td><td>$K$ increases</td><td>$Z$ decreases</td></tr>\n<tr><td>Large between-risk heterogeneity $a$</td><td>$K$ decreases</td><td>$Z$ increases</td></tr>\n<tr><td>More observations $n$</td><td>$K$ unchanged</td><td>$Z$ increases</td></tr>\n</tbody>\n</table>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Numerical example</div>\nIf $v=20$, $a=5$, and $n=8$, then $K=4$ and\n<div class=\"math-display\">$$Z=\\frac{8}{8+4}=\\frac{2}{3}.$$</div>\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Mental model</div>\n$K$ is the amount of exposure that makes individual experience and collective experience comparably influential. It is sometimes interpreted as a credibility volume constant.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"2/3\" data-alt-answers='[\"0.6667\", \"0.667\", \"\\frac{2}{3}\"]' data-hint=\"Compute \\(8/(8+4)=8/12\\).\">\n  <div class=\"exercise-prompt\">If $n=8$ and $K=4$, compute $Z=n/(n+K)$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s6",
+      "label": "6. Bühlmann-Straub",
+      "title": "Bühlmann-Straub with exposure weights",
+      "content": "<h1>Bühlmann-Straub Credibility</h1>\n<p>The Bühlmann-Straub model generalizes Bühlmann credibility to observations with different exposure weights. Instead of counting observations equally, it uses exposure volume.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Weighted mean</div>\nFor risk $i$ with observations $X_{ij}$ and exposures $w_{ij}$,\n<div class=\"math-display\">$$\\bar X_i=\\frac{\\sum_j w_{ij}X_{ij}}{\\sum_j w_{ij}},\\qquad w_i=\\sum_j w_{ij}.$$</div>\n</div>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Bühlmann-Straub credibility estimate</div>\n$$\\widehat{\\mu}_i=Z_i\\bar X_i+(1-Z_i)m,\\qquad Z_i=\\frac{w_i}{w_i+K}.$$\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Example</div>\nSuppose $w_i=90$, $K=30$, $\\bar X_i=1.20$, and $m=1.00$. Then\n<div class=\"math-display\">$$Z_i=\\frac{90}{120}=0.75,$$</div>\nso\n<div class=\"math-display\">$$\\widehat{\\mu}_i=0.75(1.20)+0.25(1.00)=1.15.$$</div>\n</div>\n\n<table>\n<thead><tr><th>Bühlmann</th><th>Bühlmann-Straub</th></tr></thead>\n<tbody>\n<tr><td>Equal exposure observations</td><td>Unequal exposure observations</td></tr>\n<tr><td>$Z=n/(n+K)$</td><td>$Z=w/(w+K)$</td></tr>\n<tr><td>Arithmetic mean</td><td>Exposure-weighted mean</td></tr>\n</tbody>\n</table>\n\n<div class=\"exercise-widget\" data-answer=\"0.75\" data-alt-answers='[\"3/4\", \"0.750\"]' data-hint=\"Compute \\(90/(90+30)=90/120\\).\">\n  <div class=\"exercise-prompt\">If $w=90$ and $K=30$, compute $Z=w/(w+K)$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s7",
+      "label": "7. Bayesian view",
+      "title": "Bayesian credibility as posterior mean",
+      "content": "<h1>Bayesian Credibility</h1>\n<p>Bayesian credibility treats the risk parameter as uncertain and updates its distribution after observing data. In conjugate models, the posterior mean often has the same weighted-average form as credibility.</p>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Bayesian updating workflow</div><pre class=\"mermaid\">flowchart LR\n  A[\"Prior distribution\"] --> B[\"Likelihood from observed data\"]\n  B --> C[\"Posterior distribution\"]\n  A --> C\n  C --> D[\"Posterior mean\"]\n  D --> E[\"Credibility estimate\"]\n</pre></div>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Credibility form</div>\nA Bayesian posterior mean has credibility form when it can be written as\n<div class=\"math-display\">$$\\mathbb{E}[\\Theta\\mid \\text{data}]=Z\\cdot \\text{experience}+(1-Z)\\cdot \\text{prior mean}.$$</div>\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Interpretation</div>\nThe prior mean plays the role of the collective mean. The data-based estimator plays the role of the individual experience. The credibility factor is determined by prior precision and data precision.\n</div>\n\n<table>\n<thead><tr><th>Model family</th><th>Prior</th><th>Credibility estimate</th></tr></thead>\n<tbody>\n<tr><td>Poisson frequency</td><td>Gamma</td><td>posterior mean of claim frequency</td></tr>\n<tr><td>Binomial probability</td><td>Beta</td><td>posterior mean of success/loss probability</td></tr>\n<tr><td>Normal mean</td><td>Normal</td><td>posterior mean of risk mean</td></tr>\n</tbody>\n</table>\n\n<div class=\"exercise-widget\" data-answer=\"116\" data-hint=\"Compute \\(96+20\\).\">\n  <div class=\"exercise-prompt\">If a posterior mean is $0.8(120)+0.2(100)$, compute it.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s8",
+      "label": "8. Poisson-Gamma",
+      "title": "Poisson-Gamma credibility",
+      "content": "<h1>Poisson-Gamma Credibility</h1>\n<p>A central Bayesian credibility model for claim counts is the Poisson-Gamma model.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Model</div>\nAssume conditional on $\\Lambda$, the claim count $N$ over exposure $t$ satisfies\n<div class=\"math-display\">$$N\\mid \\Lambda\\sim \\operatorname{Poisson}(t\\Lambda),$$</div>\nand the prior is\n<div class=\"math-display\">$$\\Lambda\\sim \\operatorname{Gamma}(\\alpha,\\beta),$$</div>\nwhere $\\beta$ is a rate parameter.\n</div>\n\n<p>After observing $N=n$, the posterior is</p>\n<div class=\"math-display avoid-break\">\n$$\\Lambda\\mid N=n\\sim \\operatorname{Gamma}(\\alpha+n,\\beta+t).$$\n</div>\n\n<div class=\"math-display avoid-break\"><div class=\"math-label\">Posterior mean as credibility</div>\n$$\\mathbb{E}[\\Lambda\\mid N=n]=\\frac{\\alpha+n}{\\beta+t}=Z\\left(\\frac{n}{t}\\right)+(1-Z)\\left(\\frac{\\alpha}{\\beta}\\right),\\qquad Z=\\frac{t}{\\beta+t}.$$\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Example</div>\nLet $\\alpha=4$, $\\beta=2$, $t=8$, and $n=24$. The prior mean is $2$, the observed rate is $3$, and\n<div class=\"math-display\">$$Z=\\frac{8}{10}=0.8.$$</div>\nThus the posterior mean is\n<div class=\"math-display\">$$0.8(3)+0.2(2)=2.8.$$</div>\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"2.8\" data-alt-answers='[\"14/5\", \"2.80\"]' data-hint=\"Compute \\((4+24)/(2+8)=28/10\\).\">\n  <div class=\"exercise-prompt\">For $\\alpha=4$, $\\beta=2$, $t=8$, and $n=24$, compute the posterior mean $(\\alpha+n)/(\\beta+t)$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s9",
+      "label": "9. Normal-Normal",
+      "title": "Normal-Normal credibility",
+      "content": "<h1>Normal-Normal Credibility</h1>\n<p>The Normal-Normal model gives the cleanest link between credibility and precision weighting.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Model</div>\nAssume\n<div class=\"math-display\">$$\\bar X\\mid \\Theta\\sim N\\left(\\Theta,\\frac{\\sigma^2}{n}\\right),\\qquad \\Theta\\sim N(m,\\tau^2).$$</div>\n</div>\n\n<p>The posterior mean is a credibility-weighted average:</p>\n<div class=\"math-display avoid-break\">\n$$\\mathbb{E}[\\Theta\\mid \\bar X]=Z\\bar X+(1-Z)m,$$\n</div>\n<div class=\"math-display avoid-break\">\n$$Z=\\frac{n}{n+\\sigma^2/\\tau^2}.$$\n</div>\n\n<div class=\"callout important\"><div class=\"callout-tag\">Precision interpretation</div>\nIf data variance $\\sigma^2/n$ is small, the data are precise and $Z$ is large. If prior variance $\\tau^2$ is small, the prior is precise and $Z$ is smaller.\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Example</div>\nIf $n=10$, $\\sigma^2=20$, and $\\tau^2=5$, then $\\sigma^2/\\tau^2=4$ and\n<div class=\"math-display\">$$Z=\\frac{10}{14}=\\frac57.$$</div>\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"5/7\" data-alt-answers='[\"0.714\", \"0.7143\", \"10/14\"]' data-hint=\"First compute \\(\\sigma^2/\\tau^2=20/5=4\\), then \\(10/(10+4)=10/14\\).\">\n  <div class=\"exercise-prompt\">If $n=10$, $\\sigma^2=20$, and $\\tau^2=5$, compute $Z=n/(n+\\sigma^2/\\tau^2)$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s10",
+      "label": "10. Classical vs Bayesian",
+      "title": "Classical and Bayesian credibility compared",
+      "content": "<h1>Classical and Bayesian Credibility Compared</h1>\n<p>The two approaches often produce similar algebraic structures, but their interpretations differ.</p>\n\n<table>\n<thead><tr><th>Feature</th><th>Classical credibility</th><th>Bayesian credibility</th></tr></thead>\n<tbody>\n<tr><td>Unknown risk parameter</td><td>random effect or hypothetical mean</td><td>explicit prior distribution</td></tr>\n<tr><td>Main output</td><td>best linear estimate</td><td>posterior mean</td></tr>\n<tr><td>Credibility factor</td><td>derived from variance components</td><td>derived from prior and likelihood precision</td></tr>\n<tr><td>Typical notation</td><td>$Z=n/(n+K)$</td><td>$Z$ from conjugate posterior algebra</td></tr>\n</tbody>\n</table>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Conceptual bridge</div><pre class=\"mermaid\">flowchart LR\n  A[\"Risk heterogeneity\"] --> B[\"VHM / prior variance\"]\n  C[\"Process noise\"] --> D[\"EPV / likelihood variance\"]\n  B --> E[\"Credibility factor\"]\n  D --> E\n  E --> F[\"Weighted premium\"]\n</pre></div>\n\n<div class=\"callout important\"><div class=\"callout-tag\">Honest distinction</div>\nBühlmann credibility is optimal among linear estimators under its model assumptions. Bayesian credibility is a full posterior calculation. When the posterior mean is linear, the two viewpoints align especially well.\n</div>\n\n<div class=\"callout warn\"><div class=\"callout-tag\">Common error</div>\nDo not interpret $Z$ as a subjective confidence percentage. It is a model-derived weight determined by volume, process variance, and heterogeneity or prior precision.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"increase\" data-alt-answers='[\"increases\", \"goes up\"]' data-hint=\"Since \\(K=v/a\\) decreases, \\(Z=n/(n+K)\\) increases.\">\n  <div class=\"exercise-prompt\">In Bühlmann credibility, if VHM $a$ increases while EPV $v$ is fixed, does $Z$ generally increase or decrease?</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s11",
+      "label": "11. Estimation issues",
+      "title": "Estimating credibility parameters",
+      "content": "<h1>Estimating Credibility Parameters</h1>\n<p>In practice, the credibility parameters $m$, $v$, and $a$ must be estimated from portfolio data. This is where credibility theory becomes an actuarial modeling workflow rather than a single formula.</p>\n\n<div class=\"callout def\"><div class=\"callout-tag\">Operational target</div>\nThe modeler estimates:\n<ul>\n<li>the collective mean $m$,</li>\n<li>within-risk process variation $v$, and</li>\n<li>between-risk variation in true means $a$.</li>\n</ul>\nThen $K=v/a$ and $Z$ follow.\n</div>\n\n<div class=\"mermaid-wrap avoid-break\"><div class=\"mermaid-label\">Parameter estimation workflow</div><pre class=\"mermaid\">flowchart TB\n  A[\"Portfolio experience data\"] --> B[\"Clean and segment data\"]\n  B --> C[\"Estimate collective mean m\"]\n  B --> D[\"Estimate EPV v\"]\n  B --> E[\"Estimate VHM a\"]\n  D --> F[\"K = v / a\"]\n  E --> F\n  F --> G[\"Risk-level Z\"]\n  C --> H[\"Credibility premium\"]\n  G --> H\n</pre></div>\n\n<div class=\"callout warn\"><div class=\"callout-tag\">Practical caution</div>\nA negative or unstable estimate of $a$ is a warning sign. It can indicate too little data, poor segmentation, excessive noise, or that the model structure is not appropriate for the data.\n</div>\n\n<table>\n<thead><tr><th>Modeling decision</th><th>Why it matters</th></tr></thead>\n<tbody>\n<tr><td>Segmentation</td><td>changes the collective mean and heterogeneity</td></tr>\n<tr><td>Exposure base</td><td>changes weighted averages and credibility volume</td></tr>\n<tr><td>Trend and development</td><td>affects comparability of historical observations</td></tr>\n<tr><td>Outliers</td><td>can distort process variance and hypothetical means</td></tr>\n</tbody>\n</table>\n\n<div class=\"exercise-widget\" data-answer=\"5\" data-hint=\"Compute \\(30/6\\).\">\n  <div class=\"exercise-prompt\">If $v=30$ and $a=6$, compute the credibility constant $K$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>"
+    },
+    {
+      "id": "s12",
+      "label": "12. Review exercises",
+      "title": "Worked review exercises",
+      "content": "<h1>Worked Review Exercises</h1>\n<p>This section consolidates the calculation patterns used in credibility theory.</p>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Exercise A: Bühlmann premium</div>\nSuppose $n=12$, $K=6$, $\\bar X=150$, and $m=120$. Then\n<div class=\"math-display\">$$Z=\\frac{12}{18}=\\frac23,$$</div>\nand the credibility premium is\n<div class=\"math-display\">$$\\widehat{\\mu}=\\frac23(150)+\\frac13(120)=140.$$</div>\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"140\" data-hint=\"First compute \\(Z=12/(12+6)=2/3\\), then blend \\(150\\) and \\(120\\).\">\n  <div class=\"exercise-prompt\">For $n=12$, $K=6$, $\\bar X=150$, and $m=120$, compute the Bühlmann credibility premium.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Exercise B: Poisson-Gamma posterior mean</div>\nIf $N\\mid\\Lambda\\sim\\operatorname{Poisson}(t\\Lambda)$, $\\Lambda\\sim\\operatorname{Gamma}(\\alpha,\\beta)$, and $N=n$, then\n<div class=\"math-display\">$$\\mathbb{E}[\\Lambda\\mid N=n]=\\frac{\\alpha+n}{\\beta+t}.$$</div>\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"2\" data-hint=\"Compute \\((2+18)/(4+6)=20/10\\).\">\n  <div class=\"exercise-prompt\">For $\\alpha=2$, $\\beta=4$, $t=6$, and $n=18$, compute $(\\alpha+n)/(\\beta+t)$.</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n\n<div class=\"callout ex\"><div class=\"callout-tag\">Exercise C: interpretation</div>\nIf $v$ is large relative to $a$, individual observations are noisy compared with the variation between true risk means. Credibility should be lower.\n</div>\n\n<div class=\"exercise-widget\" data-answer=\"decrease\" data-alt-answers='[\"decreases\", \"goes down\"]' data-hint=\"Since \\(K=v/a\\) increases, \\(Z=n/(n+K)\\) decreases.\">\n  <div class=\"exercise-prompt\">If EPV $v$ becomes larger while VHM $a$ and volume $n$ stay fixed, does $Z$ generally increase or decrease?</div>\n  <div class=\"exercise-input-row\"><math-field class=\"exr-field\" placeholder=\"Your answer…\"></math-field><button class=\"exercise-check-btn\">Check</button></div>\n  <div class=\"exercise-result\"></div><div class=\"exercise-hint\"></div>\n</div>\n\n<div class=\"callout rmk\"><div class=\"callout-tag\">Takeaway</div>\nCredibility theory is a disciplined way to avoid two extremes: overreacting to sparse individual experience and ignoring credible risk-specific evidence.\n</div>"
+    }
+  ],
+  "plots": [],
+  "quiz": [
+    {
+      "type": "mc",
+      "stem": "What is the basic form of a credibility premium?",
+      "options": [
+        "$\\bar X-m$",
+        "$Z\\bar X+(1-Z)m$",
+        "$Z+m$",
+        "$\\bar X/Z$"
+      ],
+      "answer": 1,
+      "feedback": "Credibility blends risk-specific experience with the collective mean."
+    },
+    {
+      "type": "tf",
+      "stem": "In limited-fluctuation credibility, full credibility depends on a tolerance level and a probability level.",
+      "answer": true,
+      "feedback": "The criterion usually requires experience to be within a relative error with high probability."
+    },
+    {
+      "type": "mc",
+      "stem": "In Bühlmann credibility, what is $K$?",
+      "options": [
+        "$a/v$",
+        "$v/a$",
+        "$n/(n+a)$",
+        "$m/v$"
+      ],
+      "answer": 1,
+      "feedback": "The credibility constant is $K=v/a$, where $v$ is EPV and $a$ is VHM."
+    },
+    {
+      "type": "mc",
+      "stem": "If $n$ increases while $K$ is fixed, what happens to $Z=n/(n+K)$?",
+      "options": [
+        "It increases",
+        "It decreases",
+        "It becomes negative",
+        "It is unchanged"
+      ],
+      "answer": 0,
+      "feedback": "More volume increases credibility."
+    },
+    {
+      "type": "tf",
+      "stem": "VHM measures variation between hypothetical means of different risks.",
+      "answer": true,
+      "feedback": "VHM is $\\operatorname{Var}(\\mu(\\Theta))$."
+    },
+    {
+      "type": "mc",
+      "stem": "In Bühlmann-Straub credibility, the credibility factor usually uses what quantity instead of $n$?",
+      "options": [
+        "Exposure weight $w$",
+        "The prior variance only",
+        "The number of territories",
+        "The maximum claim"
+      ],
+      "answer": 0,
+      "feedback": "Bühlmann-Straub uses exposure volume $w$ in $Z=w/(w+K)$."
+    },
+    {
+      "type": "mc",
+      "stem": "In the Poisson-Gamma model with $N\\mid\\Lambda\\sim \\operatorname{Poisson}(t\\Lambda)$ and $\\Lambda\\sim\\operatorname{Gamma}(\\alpha,\\beta)$, what is the posterior rate parameter?",
+      "options": [
+        "$\\beta$",
+        "$\\beta+t$",
+        "$\\alpha+n$",
+        "$t/n$"
+      ],
+      "answer": 1,
+      "feedback": "With rate parametrization, the posterior is Gamma$(\\alpha+n,\\beta+t)$."
+    },
+    {
+      "type": "tf",
+      "stem": "Bayesian posterior means always have a linear credibility form.",
+      "answer": false,
+      "feedback": "Many conjugate examples do, but Bayesian posterior means are not always linear credibility estimators."
+    },
+    {
+      "type": "mc",
+      "stem": "Which model gives $Z=n/(n+\\sigma^2/\\tau^2)$?",
+      "options": [
+        "Poisson-Gamma",
+        "Normal-Normal",
+        "Beta-Binomial",
+        "Limited fluctuation"
+      ],
+      "answer": 1,
+      "feedback": "This is the Normal-Normal credibility factor for a normal mean with normal prior."
+    },
+    {
+      "type": "mc",
+      "stem": "If process variance is high relative to between-risk heterogeneity, what should happen to credibility?",
+      "options": [
+        "It should generally be lower",
+        "It should always be one",
+        "It should be negative",
+        "It should ignore the collective mean"
+      ],
+      "answer": 0,
+      "feedback": "High process noise makes individual experience less stable."
+    },
+    {
+      "type": "tf",
+      "stem": "A credibility factor $Z$ should be interpreted as a model-derived weight, not simply a subjective confidence percentage.",
+      "answer": true,
+      "feedback": "$Z$ depends on the credibility model, volume, process variance, and heterogeneity or prior precision."
+    },
+    {
+      "type": "mc",
+      "stem": "What is the main practical purpose of credibility theory?",
+      "options": [
+        "To eliminate all judgment from pricing",
+        "To combine individual and collective experience coherently",
+        "To prove every risk has the same mean",
+        "To avoid using historical data"
+      ],
+      "answer": 1,
+      "feedback": "Credibility provides a disciplined blending of risk-specific and collective information."
+    }
+  ]
+}
