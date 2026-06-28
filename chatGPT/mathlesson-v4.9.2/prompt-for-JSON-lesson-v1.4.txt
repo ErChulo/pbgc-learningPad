@@ -1,0 +1,435 @@
+TITLE: MathLesson JSON Lesson Generator Prompt — v1.4
+
+PROMPT VERSION CONTROL
+- Prompt artifact: prompt-for-JSON-lesson-v1.4.txt
+- Prompt version: v1.4
+- Status: v1.4 prompt update for CodeMirror-readable source, large Mermaid readability, and print-orientation hygiene
+- Intended app baseline: mathlesson.v4.8.1 or later compatible builds
+- Future changes should increment the prompt version, for example v1.3, v1.4, v2.0.
+
+VERSION v1.4 CHANGE NOTES
+- For inline exercise widgets, use `data-answer` for the canonical expected answer and `data-alt-answers` for mathematically equivalent alternatives when likely student answers differ by sign convention, algebraic form, or wording. Separate alternatives with `||`.
+- When an exercise asks for a signed relative change, make the sign convention explicit in the prompt and include common equivalent forms in `data-alt-answers`.
+- Large Mermaid diagrams must use readable layouts: prefer `flowchart TB` or grouped subgraphs over a long one-line `flowchart LR` chain; add `mermaid-large print-full-width` classes when the diagram is meant to be read in exported student lessons.
+- Quiz and exercise feedback must not mix correct wording with incorrect/red icons or styling.
+
+VERSION v1.2 CHANGE NOTES
+- Require Greek symbols and named mathematical variables to be written in LaTeX form when they are variables, for example `\(\lambda\)`, `\(\mu\)`, `\(\theta\)`, not plain words like lambda or mu.
+- Preserve v1.1 render-safe exercise hint, quiz hint, and feedback rules.
+
+VERSION v1.1 CHANGE NOTES
+- Require explicit LaTeX delimiters inside exercise hints, quiz hints, feedback, and any HTML attribute that contains formulas.
+- Prefer `\(...\)` for inline formulas inside attributes such as `data-hint`.
+- Keep `data-answer` values short and answer-oriented; use the hint/feedback text for rendered explanation.
+- Preserve Mermaid source hiding behavior by using only proper Mermaid blocks and no visible duplicate source code blocks unless intentionally teaching syntax as escaped code.
+- Treat MathLive sound warnings, Plotly readback warnings, and local `file://` warnings as app/runtime concerns, not lesson-content features.
+
+PURPOSE
+Use this prompt together with externally supplied source material to generate one importable JSON lesson file for the MathLesson HTML application.
+
+You are to transform the supplied material into a gradual, bachelor-level lesson, broken into easy-to-understand sections, with examples, diagrams where useful, checks for understanding, and a comprehensive quiz.
+
+The output must be a single valid JSON object compatible with MathLesson. Do not output Markdown. Do not wrap the JSON in code fences. Do not explain the JSON after producing it.
+
+============================================================
+USER-SUPPLIED PARAMETERS
+============================================================
+Before generating the lesson, use these parameters. If the user did not provide a value, use the default.
+
+{
+  "target_language": "Spanish",
+  "student_level": "bachelor student / early university level",
+  "lesson_filename": "lesson.json",
+  "lesson_title": "infer from material",
+  "lesson_key": "infer short lowercase slug",
+  "lesson_style": "gradual, explicit, didactic, low cognitive load",
+  "quiz_size": "comprehensive",
+  "include_mermaid": true,
+  "include_inline_exercises": true,
+  "include_tables": true,
+  "include_svg_when_helpful": true,
+  "avoid_intentionally_broken_live_blocks": true,
+  "mathlesson_app_baseline": "mathlesson.v4.7.8",
+  "block_schema_version": "mathlesson.block.v4.4.0",
+  "schema_registry_version": "mathlesson.schema-registry.v4.4.0"
+}
+
+============================================================
+INPUT MATERIAL
+============================================================
+The user will supply material after this prompt, usually as pasted text, PDF text extraction, OCR, notes, or a document.
+
+You must base the lesson on that material. You may add brief prerequisite explanations, intuitive bridges, and simple examples if they are mathematically consistent with the material. Do not invent specialized claims, theorems, historical facts, or citations that are not in the supplied material.
+
+If the material contains figures, diagrams, tables, or captions, incorporate their substance into the lesson when relevant. If a figure cannot be reproduced exactly, explain it in prose or use a simple safe SVG/Mermaid reconstruction.
+
+============================================================
+GRANULARITY DECISION RULE
+============================================================
+You must decide section granularity systematically. Use the following rule internally before writing the final JSON.
+
+A section is too large if any of these are true:
+- It introduces more than 2 major new symbols or definitions.
+- It contains more than one conceptual leap.
+- It requires more than one prerequisite idea that has not already been explained.
+- It combines setup, derivation, interpretation, and application in the same section.
+- It contains a long derivation with no intermediate checkpoint.
+- It contains a formula whose meaning cannot be explained in one short paragraph.
+- It contains a diagram/table/formula and also introduces a separate new theorem.
+- A student would have to ask, “What am I supposed to do with this?”
+
+A section is too small if all of these are true:
+- It repeats the same idea without adding a new role, example, or interpretation.
+- It cannot support at least one micro-objective.
+- It has no natural check-for-understanding question.
+- It is only a heading with no meaningful student action.
+
+Preferred section unit:
+- one micro-objective;
+- one main idea;
+- one short explanation;
+- one formula, diagram, or example when helpful;
+- one student checkpoint or reflection when useful.
+
+Use the following JSON-style decision schema as your internal planning rubric:
+
+{
+  "granularity_decision_schema": {
+    "goal": "Break source material into teachable atomic sections arranged by prerequisite dependency and cognitive load.",
+    "unit": "section",
+    "section_must_have": {
+      "micro_objective": true,
+      "single_main_idea": true,
+      "prerequisites_already_available": true,
+      "student_action_or_checkpoint": "preferred",
+      "clear_transition_from_previous_section": true
+    },
+    "split_when": {
+      "new_symbols_count_exceeds": 2,
+      "separate_conceptual_roles_are_mixed": true,
+      "derivation_has_multiple_steps": true,
+      "formula_requires_independent_interpretation": true,
+      "example_and_theory_compete_for_attention": true,
+      "student_cognitive_load": "high"
+    },
+    "merge_when": {
+      "section_is_only_definition_without_use": true,
+      "section_repeats_previous_idea": true,
+      "section_has_no_assessable_learning_goal": true
+    },
+    "ordering_strategy": [
+      "orientation",
+      "motivation",
+      "prerequisite vocabulary",
+      "basic objects and notation",
+      "core definitions",
+      "first simple example",
+      "main formula or theorem",
+      "derivation in steps",
+      "interpretation",
+      "computation or worked example",
+      "edge cases and limitations",
+      "summary map",
+      "comprehensive quiz"
+    ],
+    "target_section_count": {
+      "short_source": "6-10",
+      "medium_source": "10-18",
+      "dense_mathematical_source": "14-24"
+    }
+  }
+}
+
+============================================================
+PEDAGOGICAL REQUIREMENTS
+============================================================
+Write the lesson so that a bachelor student can follow it without already being an expert.
+
+Required teaching pattern:
+1. Start with what the student will understand by the end.
+2. Translate the big idea into ordinary language.
+3. Define notation before using it heavily.
+4. Use formulas only after explaining the symbols.
+5. Break derivations into named steps.
+6. After each difficult formula, add an interpretation paragraph.
+7. Include “common confusion” callouts when the material is easy to misread.
+8. Include short inline exercises or reflection tasks.
+9. End with a compact summary and a comprehensive quiz.
+
+Do not make the lesson feel like a pasted textbook article. Convert it into a guided path.
+
+============================================================
+MATHLESSON JSON OUTPUT CONTRACT
+============================================================
+Output exactly one valid JSON object with this top-level structure:
+
+{
+  "schemaVersion": "mathlesson.lesson.v1",
+  "exportedFrom": "external-llm-prompt-for-mathlesson.v1.4",
+  "source": "external-supplied-material",
+  "lessonKey": "short-lowercase-slug-v1",
+  "blockSchemaVersion": "mathlesson.block.v4.4.0",
+  "schemaRegistryVersion": "mathlesson.schema-registry.v4.4.0",
+  "structuredModelVersion": "4.7.7",
+  "audio": { "src": "", "label": "" },
+  "title": "Lesson title in target language",
+  "description": "Brief description in target language",
+  "sections": [
+    {
+      "id": "short-stable-id",
+      "label": "Short label",
+      "title": "Section title",
+      "content": "HTML content string with escaped JSON characters"
+    }
+  ],
+  "plots": {},
+  "quiz": [
+    {
+      "type": "mc",
+      "stem": "Question text",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "answer": 0,
+      "feedback": "Brief explanation"
+    }
+  ]
+}
+
+Top-level requirements:
+- `sections` must contain the full lesson body.
+- `quiz` must contain the formal final assessment.
+- `plots` may be `{}` unless you define Plotly registry functions.
+- `lessonKey` must be lowercase, URL-safe, and unique enough.
+- Every section `id` must be lowercase, URL-safe, and unique.
+- Every `content` value must be one JSON string.
+
+============================================================
+SECTION CONTENT FORMAT
+============================================================
+Each section content must be HTML with inline LaTeX supported by MathLesson.
+
+Allowed and recommended content patterns:
+
+1. Paragraphs:
+<p>Texto explicativo con matemáticas en línea como $x^2+1$.</p>
+
+2. Display math:
+<div class="math-display avoid-break">
+  <div class="math-label">Etiqueta breve</div>
+  $$U(t)=u+ct-S(t)$$
+</div>
+
+3. Callouts:
+<div class="callout rmk"><div class="callout-tag">Idea clave</div>
+Texto de la idea clave.
+</div>
+
+<div class="callout ex"><div class="callout-tag">Ejercicio rápido</div>
+Pregunta o tarea breve para el estudiante.
+</div>
+
+<div class="callout warn"><div class="callout-tag">Cuidado</div>
+Confusión común o advertencia.
+</div>
+
+4. Tables:
+<div class="table-wrap avoid-break">
+<table>
+<thead><tr><th>Símbolo</th><th>Significado</th></tr></thead>
+<tbody>
+<tr><td>$u$</td><td>Capital inicial</td></tr>
+</tbody>
+</table>
+</div>
+
+For very wide tables, wrap them with:
+<div class="landscape-section table-wrap avoid-break"> ... </div>
+
+5. Mermaid diagrams:
+<div class="mermaid-wrap avoid-break"><div class="mermaid-label">Mapa conceptual</div><pre class="mermaid">flowchart LR
+  A["Idea inicial"] --> B["Definicion"]
+  B --> C["Aplicacion"]
+</pre></div>
+
+Mermaid safety rules:
+- Use simple node IDs: A, B, C, D.
+- Put labels in double quotes.
+- Avoid raw LaTeX inside Mermaid labels.
+- Avoid parentheses, commas, semicolons, inequality symbols, and long formulas inside labels.
+- Do not include intentionally broken Mermaid as a live Mermaid block.
+- If showing bad Mermaid syntax, show it only as escaped code in a normal `<pre><code>` block, not inside `<pre class="mermaid">`.
+
+6. Simple SVG diagrams:
+Use SVG only when it clarifies the concept and is not too complex. Keep it responsive:
+<div class="svg-wrap avoid-break">
+<svg viewBox="0 0 600 260" role="img" aria-label="Descripción breve">
+  <line x1="60" y1="210" x2="540" y2="210" stroke="currentColor"/>
+  <text x="60" y="235">Texto</text>
+</svg>
+</div>
+
+7. Inline exercise widgets:
+Use this canonical pattern only when a short answer can be checked directly. Otherwise use a stable callout exercise.
+
+<div class="exercise-widget" data-answer="e^{-R}-1" data-alt-answers="-(1-e^{-R}) || -1+e^{-R}" data-hint="Compara \(e^{-R(u+1)}\) con \(e^{-Ru}\), luego resta 1 porque se pide el cambio relativo con signo.">
+  <div class="exercise-prompt">Si la aproximación es $C e^{-Ru}$, ¿por qué factor cambia al aumentar $u$ en 1?</div>
+  <div class="exercise-input-row"><math-field class="exr-field" placeholder="Tu respuesta…"></math-field><button class="exercise-check-btn">Revisar</button></div>
+  <div class="exercise-result"></div><div class="exercise-hint"></div>
+</div>
+
+Exercise-widget rules:
+- `data-answer` should contain the expected short answer, not a long derivation.
+
+- If several equivalent answers should be accepted, add `data-alt-answers` and separate alternatives with `||`, for example:
+  `data-answer="e^{-R}-1" data-alt-answers="-(1-e^{-R}) || -1+e^{-R}"`.
+- Do not ask for a "factor" if the expected answer is a signed change. Use precise wording: "factor" expects `e^{-R}`; "signed relative change" expects `e^{-R}-1`.
+- `data-hint` may contain formulas, but every formula must use explicit LaTeX delimiters.
+- For inline math inside `data-hint`, write `\(...\)`, for example `\(e^{-Ru}\)`.
+- Do not write raw formulas such as `e^{-Ru}` in a hint without delimiters.
+- Keep hints human-readable and brief.
+- Do not use intentionally broken MathLive, ComputeEngine, JSXGraph, Mermaid, or Plotly snippets as live widgets.
+- If MathLesson exercise widget syntax is uncertain for a task, use a callout exercise instead of inventing unsupported custom syntax.
+
+============================================================
+HINTS, FEEDBACK, AND RENDERED MATH POLICY
+============================================================
+Any lesson-generated explanatory string that may be displayed to the student must be render-safe. This includes:
+
+- exercise `data-hint` attributes;
+- quiz `feedback` fields;
+- quiz `hint` fields, if used;
+- callout text;
+- table cells;
+- SVG labels only when they are simple text, not LaTeX;
+- any other HTML attribute that contains mathematical notation.
+
+Rules:
+- Wrap all inline formulas in `\(...\)` when the formula appears inside an HTML attribute such as `data-hint`.
+- Wrap display formulas in `$$...$$` only inside normal HTML content, not inside HTML attributes.
+- In JSON, escape LaTeX backslashes. For rendered `\theta`, write `\\theta`.
+- Do not rely on the app to guess that plain text like `e^{-Ru}` is LaTeX.
+- When a Greek letter is a mathematical variable, write it with LaTeX delimiters, for example `\(\lambda\)`, `\(\mu\)`, `\(\theta\)`, `\(\sigma\)`. Do not write plain `lambda`, `mu`, or `theta` in hints, feedback, table cells, or prose when the symbol is intended.
+- Prefer clear prose plus a delimited formula: `Usa \(U(t)=u+ct-S(t)\).`
+- Avoid putting long derivations in hints. Put derivations in sections or feedback paragraphs.
+
+============================================================
+QUIZ FORMAT
+============================================================
+Create a comprehensive quiz in the target language.
+
+Use these question types:
+
+Multiple choice:
+{
+  "type": "mc",
+  "stem": "Question text",
+  "options": ["A", "B", "C", "D"],
+  "answer": 1,
+  "feedback": "Explanation."
+}
+
+True/false:
+{
+  "type": "tf",
+  "stem": "Statement text",
+  "answer": true,
+  "feedback": "Explanation."
+}
+
+Math answer:
+{
+  "type": "math",
+  "stem": "Compute or simplify ...",
+  "answer": "expected answer",
+  "feedback": "Explanation."
+}
+
+Free response:
+{
+  "type": "free",
+  "stem": "Explain in your own words ...",
+  "feedback": "Rubric or expected reasoning."
+}
+
+Quiz size guide:
+- short source: 8-12 questions;
+- medium source: 14-22 questions;
+- dense mathematical source: 20-35 questions.
+
+Quiz coverage requirements:
+- definitions;
+- notation;
+- interpretation;
+- one or more formula-reading questions;
+- one or more conceptual comparison questions;
+- one or more application/computation questions if the material supports it;
+- at least one free-response question asking the student to explain the main idea.
+
+============================================================
+LATEX AND JSON ESCAPING RULES
+============================================================
+The final answer must be valid JSON.
+
+Important escaping rules:
+- In JSON strings, backslashes must be escaped.
+- Write `\\theta` in JSON when the rendered LaTeX should be `\theta`.
+- Write `\\frac{a}{b}` in JSON when the rendered LaTeX should be `\frac{a}{b}`.
+- Newlines inside content strings may be written as `\n`.
+- Double quotes inside HTML attributes must be escaped as `\"`, unless the whole string construction avoids them.
+- Do not use unescaped control characters.
+
+Before final output, mentally validate:
+- valid JSON syntax;
+- all strings closed;
+- no trailing commas;
+- all arrays and objects closed;
+- every quiz answer index is valid;
+- Mermaid labels are safe;
+- no intentionally broken live block.
+
+============================================================
+QUALITY CONTROL CHECKLIST
+============================================================
+Before outputting the final JSON, verify all items:
+
+Content accuracy:
+- The lesson is grounded in the supplied material.
+- Added explanations do not contradict the source.
+- Important formulas and definitions from the source are included.
+- Important figures/tables from the source are summarized or reconstructed if useful.
+
+Pedagogy:
+- The lesson is divided into gradual sections.
+- Every section has a clear purpose.
+- Notation is introduced before use.
+- Difficult ideas are followed by interpretation.
+- The student is told what to do, not merely shown information.
+
+MathLesson compatibility:
+- Top-level schema matches the MathLesson JSON contract.
+- Section content is HTML string content.
+- LaTeX is JSON-escaped.
+- Exercise hints use explicit delimiters such as `\(...\)` for all formulas.
+- Quiz feedback/hints use explicit delimiters for all formulas.
+- Greek variables are written as LaTeX symbols, for example `\(\lambda\)` and `\(\mu\)`, not as plain words when symbols are intended.
+- Mermaid syntax is conservative and safe.
+- Quiz objects use supported types: `mc`, `tf`, `math`, `free`.
+
+User experience:
+- The lesson title is clear.
+- Section labels are short.
+- The lesson has a summary section.
+- The quiz is comprehensive but not random.
+- The output is importable into MathLesson without requiring the user to fix schema warnings.
+
+============================================================
+FINAL OUTPUT RULE
+============================================================
+Output only the final JSON object. No Markdown. No code fence. No explanation. No surrounding text.
+
+
+## v1.4 authoring-workspace rules
+
+- For large Mermaid diagrams, prefer top-to-bottom `flowchart TD` layouts, subgraphs, and short labels. Avoid long one-line `flowchart LR` chains unless horizontal scrolling is intentional.
+- When a Mermaid diagram is intentionally large, wrap it in `mermaid-wrap mermaid-large` or `print-full-width` so MathLesson can present it with readable scroll/pan behavior.
+- For tables or code-heavy examples, preserve indentation and line breaks. These sections are edited in CodeMirror and should remain readable as source.
+- For content likely to need landscape print geometry, mark the block with `print-landscape`, but do not assume mixed portrait/landscape orientation will work in one browser print job.
